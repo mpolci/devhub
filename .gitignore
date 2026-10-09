@@ -1,0 +1,40 @@
+# macOS
+.DS_Store
+
+# KiCad
+hardware/**/*-backups/
+hardware/**/*.kicad_prl
+hardware/**/*-cache.lib
+hardware/**/fp-info-cache
+hardware/**/*.bak
+hardware/**/*.kicad_sch-bak
+hardware/**/*.kicad_pcb-bak
+hardware/**/_autosave-*
+hardware/**/*.lck
+hardware/**/#auto_saved_files#
+hardware/**/gerber/
+
+# Firmware (pico-sdk / cmake)
+firmware/build/
+firmware/**/build/
+*.elf
+*.uf2
+*.bin
+*.hex
+*.map
+
+# Python (host tool)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Editor
+.idea/
+*.swp

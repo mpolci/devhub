@@ -1,0 +1,58 @@
+# Protocollo di controllo (bozza)
+
+Canale: USB HID, usage page vendor (0xFF00). Report ID fissi, dimensione fissa 64 byte, little
+endian. Scelta HID perché non richiede driver su nessun sistema operativo e `hidapi` è disponibile
+ovunque.
+
+Il protocollo è versionato: `GET_INFO` restituisce `proto_version`; la CLI rifiuta versioni
+maggiori che non conosce.
+
+## Convenzioni
+
+- Porte numerate da 1 a N (`n_ports` da `GET_INFO`). Le porte 1-4 sono le USB-C, la 5 è la USB-A.
+- Relè numerati da 1 a 2.
+- Ogni comando riceve una risposta con lo stesso `cmd` e un campo `status` (0 = OK, altrimenti
+  codice di errore).
+
+## Comandi (Output report, host → hub) e risposte (Input report)
+
+| cmd | Nome | Parametri | Risposta |
+|---|---|---|---|
+| 0x01 | GET_INFO | — | proto_version, fw_version, n_ports, n_relays, capabilities (bitmask: current_meas, pd_status, …), serial |
+| 0x02 | GET_STATUS | — | per porta: flags (power, data, fault, budget_blocked), corrente mA; relè: stato; alimentazione: V bus mV, PD negoziato V/I, budget mA totale/usato |
+| 0x10 | SET_PORT | port, power (0/1/keep), data (0/1/keep) | status |
+| 0x11 | CYCLE_PORT | port, what (power \| data \| both), off_ms (u16), on_delay_ms (u16, ritardo dati dopo VBUS) | status (il ciclo prosegue in autonomia) |
+| 0x12 | SET_ALL | power, data | status |
+| 0x20 | SET_RELAY | relay, state | status |
+| 0x21 | PULSE_RELAY | relay, state_during_pulse, ms (u16) | status |
+| 0x30 | GET_DEFAULTS / 0x31 SET_DEFAULTS | stato all'accensione di porte e relè, limite budget | status |
+| 0x32 | SAVE_DEFAULTS | — | status (scrive in flash) |
+| 0x40 | CLEAR_FAULT | port | status |
+| 0x7E | REBOOT | — | — |
+| 0x7F | ENTER_BOOTLOADER | magic | — |
+
+## Eventi (Input report non sollecitati)
+
+| evt | Nome | Contenuto |
+|---|---|---|
+| 0x80 | PORT_FAULT | port, causa (sovracorrente / tensione bassa) |
+| 0x81 | PORT_CHANGED | port, nuovi flags (fine di un ciclo, pulsante fisico) |
+| 0x82 | POWER_CHANGED | alimentatore collegato/scollegato, nuovo PDO |
+
+## CLI (host/)
+
+```
+devhub info
+devhub status [--json]
+devhub port <n> on|off
+devhub port <n> power on|off
+devhub port <n> data on|off
+devhub port <n> cycle [--ms 500] [--power-only|--data-only]
+devhub all on|off
+devhub relay <n> on|off
+devhub relay <n> pulse --ms 200
+devhub defaults show|set ...|save
+devhub watch            # stampa gli eventi
+```
+
+Uscita `--json` per l'uso negli script di test. Codice di uscita ≠ 0 su errore o su fault.
