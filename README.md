@@ -16,12 +16,12 @@ il PC può:
 |---|---|
 | Porte downstream | 4 × USB-C + 1 × USB-A |
 | Velocità | USB 2.0 Hi-Speed (480 Mbit/s) |
-| Alimentazione per porta | 5 V, ≥ 2 A, con limitazione di corrente e sezionamento per porta |
+| Alimentazione per porta | 5 V, fino a 2 A sulla singola porta, ~2,5 A totali, con limitazione di corrente e sezionamento per porta |
 | Sezionamento | VBUS (load switch) **e** D+/D- (switch analogico), comandati separatamente |
-| Alimentazione hub | ingresso USB-C con negoziazione USB-PD (20 V) e buck a 5 V |
+| Alimentazione hub | ingresso USB-C a 5 V / 3 A, senza USB-PD: va bene qualunque alimentatore USB-C |
 | Upstream (verso il PC) | USB-C (USB 2.0) |
-| Controllo | MCU su porta interna dell'hub, interfaccia USB HID senza driver + CLI Python |
-| Relè ausiliari | 2 × SPDT su boccole a banana |
+| Controllo | STM32G0B1 su porta interna dell'hub, interfaccia USB HID senza driver + CLI Python |
+| Relè ausiliari | 2 × SPDT su boccole a banana, contatti max 16 V / 3 A |
 
 Le motivazioni delle scelte (in particolare USB 2.0 invece di USB 3 e il non sezionare GND)
 sono in [docs/architettura.md](docs/architettura.md).
@@ -39,9 +39,11 @@ host/        strumento da riga di comando per il PC
 
 - [docs/requisiti.md](docs/requisiti.md) — cosa deve fare il dispositivo
 - [docs/architettura.md](docs/architettura.md) — schema a blocchi, scelte progettuali, componenti candidati, bilancio di potenza
+- [docs/componenti.md](docs/componenti.md) — componenti candidati, package, fornitori, classe JLCPCB
 - [docs/protocollo-controllo.md](docs/protocollo-controllo.md) — bozza del protocollo HID tra PC e hub
 - [docs/domande-aperte.md](docs/domande-aperte.md) — decisioni ancora da prendere
 
 ## Stato
 
-Fase di definizione: requisiti e architettura. Nessun hardware ancora disegnato.
+Fase di definizione: requisiti e architettura chiusi nelle linee generali, componenti scelti in
+prima battuta. Nessun hardware ancora disegnato.

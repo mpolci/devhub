@@ -18,8 +18,9 @@ il cavo. Si vuole poterlo fare **dal PC**, in modo scriptabile, senza toccare il
   solo i dati lasciando alimentato il dispositivo, o viceversa).
 - **RF-4** Comando di "ciclo" (stacca, attendi N ms, riattacca) eseguito in autonomia dal MCU, così
   che un singolo comando dal PC sia sufficiente anche se l'host perde il dispositivo nel frattempo.
-- **RF-5** Ogni porta fornisce 5 V con almeno 2 A disponibili, con **limitazione di corrente** e
-  segnalazione di sovracorrente per porta.
+- **RF-5** Ogni porta fornisce 5 V con almeno 2 A disponibili per la singola porta, con
+  **limitazione di corrente** e segnalazione di sovracorrente per porta. Il totale disponibile per
+  tutte le porte insieme è limitato dall'alimentatore (vedi RF-13) e gestito dal firmware (RF-15).
 - **RF-6** Lettura della corrente assorbita da ogni porta (risoluzione dell'ordine dei mA).
 
 ### Dispositivo di controllo
@@ -40,11 +41,13 @@ il cavo. Si vuole poterlo fare **dal PC**, in modo scriptabile, senza toccare il
 
 ### Alimentazione
 
-- **RF-13** Ingresso di alimentazione su connettore USB-C dedicato, da alimentatore USB-PD.
-- **RF-14** L'hub negozia con l'alimentatore una tensione superiore a 5 V (20 V preferita) per
-  disporre della potenza necessaria a tutte le porte.
-- **RF-15** Il MCU conosce la potenza negoziata e, se insufficiente, lo segnala all'host e limita
-  il numero di porte attivabili (budget di potenza).
+- **RF-13** Ingresso di alimentazione su connettore USB-C dedicato, a **5 V senza negoziazione
+  PD**: funziona con qualunque alimentatore USB-C da 5 V / 3 A (compresi quelli PD, che erogano
+  5 V / 3 A di default). Totale disponibile per le porte: ~2,5 A.
+- **RF-14** Il MCU legge la corrente pubblicizzata dall'alimentatore sulle linee CC (0,5 / 1,5 /
+  3 A) e ne ricava il budget di potenza.
+- **RF-15** Il MCU misura la corrente totale e per porta; non accende una porta se il budget non
+  basta, spegne una porta se il totale lo supera e lo segnala all'host (budget di potenza).
 - **RF-16** Con alimentatore assente, hub e MCU restano alimentati dalla porta upstream quanto basta
   per enumerare e riportare "alimentatore assente" (le porte downstream restano spente).
 
@@ -60,6 +63,7 @@ il cavo. Si vuole poterlo fare **dal PC**, in modo scriptabile, senza toccare il
 ## Fuori ambito (v1)
 
 - USB 3.x SuperSpeed (vedi motivazione in `architettura.md`).
+- Negoziazione USB-PD sull'ingresso (variante ad alta potenza documentata in `architettura.md`).
 - Power Delivery verso i dispositivi downstream (solo 5 V).
 - Ricarica di laptop/host dall'hub.
 - Logica di "hub smart" lato host (es. hot-plug automatico su timeout): è responsabilità degli

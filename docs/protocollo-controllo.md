@@ -19,7 +19,7 @@ maggiori che non conosce.
 | cmd | Nome | Parametri | Risposta |
 |---|---|---|---|
 | 0x01 | GET_INFO | — | proto_version, fw_version, n_ports, n_relays, capabilities (bitmask: current_meas, pd_status, …), serial |
-| 0x02 | GET_STATUS | — | per porta: flags (power, data, fault, budget_blocked), corrente mA; relè: stato; alimentazione: V bus mV, PD negoziato V/I, budget mA totale/usato |
+| 0x02 | GET_STATUS | — | per porta: flags (power, data, fault, budget_blocked), corrente mA; relè: stato; alimentazione: 5V_SYS mV, corrente totale mA, corrente pubblicizzata dall'alimentatore (0,5/1,5/3 A), budget mA e usato |
 | 0x10 | SET_PORT | port, power (0/1/keep), data (0/1/keep) | status |
 | 0x11 | CYCLE_PORT | port, what (power \| data \| both), off_ms (u16), on_delay_ms (u16, ritardo dati dopo VBUS) | status (il ciclo prosegue in autonomia) |
 | 0x12 | SET_ALL | power, data | status |
@@ -35,9 +35,9 @@ maggiori che non conosce.
 
 | evt | Nome | Contenuto |
 |---|---|---|
-| 0x80 | PORT_FAULT | port, causa (sovracorrente / tensione bassa) |
+| 0x80 | PORT_FAULT | port, causa (sovracorrente / tensione bassa / budget) |
 | 0x81 | PORT_CHANGED | port, nuovi flags (fine di un ciclo, pulsante fisico) |
-| 0x82 | POWER_CHANGED | alimentatore collegato/scollegato, nuovo PDO |
+| 0x82 | POWER_CHANGED | alimentatore collegato/scollegato, nuova corrente pubblicizzata |
 
 ## CLI (host/)
 
