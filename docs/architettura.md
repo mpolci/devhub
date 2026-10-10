@@ -144,7 +144,7 @@ in conduzione già a ~6,4 V e con un alimentatore da 12–20 V collegato per err
 che l'eFuse possa staccare; con la SMAJ20A è l'eFuse a staccare la 5V_SYS e, tolto l'alimentatore
 sbagliato, tutto riparte. Sulle VBUS delle porte non c'è TVS: una scarica da 8 kV (~1,2 µC) sui
 22 µF della porta alza la tensione di ~0,05 V, lo stacco di un cavo sotto carico di pochi decimi
-di volt, i picchi negativi li fermano i diodi del MOSFET di scarica e dell'USBLC6; contro una
+di volt, i picchi negativi li ferma il diodo interno del MOSFET di scarica; contro una
 tensione continua rimandata da una scheda una TVS non serve (brucerebbe) e una da 5 V limiterebbe
 comunque sopra i 7 V massimi del TPS2561A.
 
@@ -237,8 +237,8 @@ Per ogni porta:
 | Scarica VBUS | AO3400 + 100 Ω 1206 | pilotato dal MCU |
 | Switch D+/D- | PI3USB4002A | EN (OE_N) dal MCU, alto = scollegato; 1 µF 25 V sul pin REF |
 | Misura corrente | INA3221 (3 canali) × 2 | shunt 20 mΩ tra l'uscita del load switch e il connettore |
-| ESD dati | USBLC6-2SC6 | tra switch e connettore |
-| Protezione VBUS | pin VBUS dell'USBLC6-2SC6 e i 22 µF della porta | TVS dedicata (SMAJ20A) solo sull'ingresso (D25) |
+| ESD dati | integrata nel PI3USB4002A (10 kV IEC 61000-4-2 sul lato connettore) | nessuna protezione esterna sulle porte (D27): una USBLC6 con il pin VBUS sulla VBUS commutata accoppiava dati e alimentazione e aggirava la tolleranza a 24 V dello switch. Layout: Diodes consiglia di non accorciare troppo la pista tra connettore e switch |
+| Protezione VBUS | i 22 µF + 100 nF della porta | TVS dedicata (SMAJ20A) solo sull'ingresso (D25) |
 | USB-C: CC1, CC2 | Rp **22 kΩ** a VBUS commutata (pubblicizza 1,5 A) | la VBUS commutata fa cadere anche CC quando la porta è spenta |
 | LED | 2 (alimentata / fault) via 74HC595 | |
 | Pulsante | tattile: ogni pressione alterna la porta (alimentazione e dati insieme) | debounce in firmware; rispetta il budget (RF-17) |
@@ -303,11 +303,11 @@ le schede in prova possono essere montate male, ci sono scariche elettrostatiche
 | Picco all'inserzione dell'alimentatore | avvio dolce dell'eFuse (~5 ms) |
 | Corto o sovraccarico su una porta | TPS2561A: limite ~2,3 A, protezione termica, FAULT al MCU e agli OCS del hub; il firmware spegne la porta |
 | Corto o sovraccarico sulla 5V_SYS (prima delle porte) | limite 3,5 A dell'eFuse |
-| D+/D- in corto con VBUS (o fino a 24 V) su una scheda o un cavo | PI3USB4002A: si apre sopra 4,75 V |
+| D+/D- in corto con VBUS, o con tensioni fino a 24 V, su una scheda o un cavo | PI3USB4002A: regge 24 V sul lato connettore e si apre sopra 4,75 V; tra switch e connettore non c'è altro che possa portare la tensione verso le alimentazioni (D27) |
 | D+/D- in corto con GND o tra loro | innocuo (richiesto dalla specifica USB 2.0) |
 | CC in corto con VBUS sulle porte USB-C | innocuo: c'è solo la Rp da 22 kΩ |
 | Scheda che rimanda tensione sulla VBUS di una porta | a porta spenta il TPS2561A blocca fino a 7 V; a porta accesa il firmware legge la VBUS dall'INA3221 e spegne la porta sopra ~5,5 V; oltre 7 V non c'è protezione (servirebbe un integrato per porta) |
-| Scariche elettrostatiche su D+/D- e VBUS | USBLC6-2SC6 su ogni connettore (±8 kV a contatto); PI3USB4002A 10 kV IEC sul lato connettore; in layout la protezione va vicinissima al connettore con ritorno corto a GND |
+| Scariche elettrostatiche su D+/D- e VBUS | sulle porte: protezione integrata nel PI3USB4002A (10 kV IEC) e condensatori sulla VBUS; sulla porta upstream: USBLC6-2SC6 (15 kV); in layout le protezioni vanno vicino al connettore con ritorno corto a GND |
 | Scariche elettrostatiche su CC, pulsanti, LED, boccole | nessun integrato esposto sulle CC (solo resistenze; verso l'ADC filtro 1 kΩ + 100 nF); prolunghe dei pulsanti in plastica; boccole sui contatti dei relè, isolati dalla scheda |
 | Corto o sovracorrente sulle boccole | contatti da 3 A: va protetto il circuito esterno (fusibile); snubber RC previsti |
 | Anelli di massa (sonda dell'oscilloscopio, schede con massa a un altro potenziale) | non risolti a bordo: la massa USB unisce PC, hub e schede. Isolare a 480 Mbit/s costa e toglie l'alimentazione dal PC (RF-16); per lavori a rischio si usa un isolatore USB commerciale tra PC e hub |
