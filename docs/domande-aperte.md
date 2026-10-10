@@ -27,6 +27,9 @@
 | D21 | Protezione d'ingresso | eFuse **TPS259470A**: stacca sopra 5,84 V e sotto 4,0 V, limite 3,5 A, avvio dolce ~5 ms, FLT al MCU (PB1) |
 | D22 | Switch dati delle porte | **PI3USB4002A** al posto del TS3USB30E: il lato connettore regge 24 V e si apre sopra 4,75 V (corti D+/D- su VBUS) |
 | D23 | Fornitore | orientamento verso DigiKey (non ancora definitivo, vedi D11); le alternative trovate sono in `componenti.md` |
+| D24 | LED per porta | due: alimentata (verde) e fault (rosso); lo stato delle linee dati non ha un LED |
+| D25 | TVS | sull'ingresso **SMAJ20A** (non conduce fino a 20 V, l'eFuse gestisce le sovratensioni); sulle VBUS delle porte nessuna TVS e nessuna piazzola: bastano l'USBLC6 e i 22 µF |
+| D26 | Pulsanti | uno per porta e uno per relè (SW1/SW2 aggiunti); ogni pressione alterna lo stato: porta accesa/spenta con alimentazione e dati sempre insieme, linea del relè collegata/staccata (RF-17) |
 
 ## Aperte
 

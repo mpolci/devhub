@@ -36,7 +36,7 @@ parte della v1.
 | Driver LED | **74HC595** ×2 | SOIC-16 | sì | basic | sì | 14 LED (10 porte, 2 relè, alimentatore, host) con 4 GPIO; /OE dal MCU con pull-up (LED spenti all'accensione) |
 | Driver relè | **ULN2003** o 2× 2N7002 + 1N4148 | SOIC-16 / SOT-23 | sì | basic | sì | |
 | ESD dati (×6) | **USBLC6-2SC6** | SOT-23-6 | sì | basic | sì | upstream e 5 downstream |
-| TVS VBUS d'ingresso (×1) | **SMAJ5.0A** o PESD5V0 | SMA | sì | basic | sì | sulle VBUS delle porte basta il pin VBUS dell'USBLC6-2 |
+| TVS VBUS d'ingresso (×1) | **SMAJ20A** | SMA | sì | basic | sì | 20 V senza condurre, rottura ~22 V: lascia lavorare l'eFuse fino a 20 V d'ingresso; nessuna TVS sulle porte (D25) |
 | Quarzo hub | YXC **X322524MOB4SI**: 24 MHz, 3225 4 pad, C_L 12 pF, ±20 ppm | SMD | aria calda | basic | C70590, ~0,07 $ | C22/C23 = 15 pF C0G; il USB2517 tollera ±350 ppm, quindi va bene qualunque 24 MHz fondamentale (su Mouser/DigiKey: un 3225 da 12 pF equivalente, con gli stessi condensatori); il MCU non ha bisogno di quarzo (HSI48 + CRS) |
 
 ## Alternative sugli altri fornitori (Mouser / DigiKey)
@@ -62,7 +62,7 @@ Con il montaggio a mano e un fornitore unico il catalogo si allarga. Per blocco:
 | USB-C upstream (×1) | GCT **USB4105-GF-A** | Rd 5,1 kΩ su CC1 e CC2 |
 | USB-C alimentazione (×1) | GCT **USB4105-GF-A** | solo CC1, CC2 (Rd 5,1 kΩ, verso ADC), VBUS, GND; 5 V / 3 A (il connettore regge 5 A) |
 | USB-A downstream (×1) | Kycon **KUSBX-AS1N-B**: orizzontale, passante | |
-| Pulsanti porta (×5) | tattili 6×6 ad asta lunga, o con estensore stampato in 3D | |
+| Pulsanti (×7: 5 porte, 2 relè) | tattili 6×6 ad asta lunga, o con estensore stampato in 3D | ogni pressione alterna lo stato (RF-17) |
 | LED (×14) | 0805 o 3 mm | 2 per porta (alimentata / fault), 1 per relè (acceso = linea staccata), alimentatore presente, host collegato |
 
 ## Conteggio dei tipi "extended" per l'assemblaggio JLCPCB

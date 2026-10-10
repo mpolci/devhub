@@ -37,7 +37,7 @@ il cavo. Si vuole poterlo fare **dal PC**, in modo scriptabile, senza toccare il
 ### Relè ausiliari
 
 - **RF-11** 2 relè indipendenti, con contatti portati su boccole a banana da 4 mm, comandabili dal
-  PC (on/off e impulso di N ms).
+  PC (on/off e impulso di N ms) e da un pulsante sul pannello (vedi RF-17).
 - **RF-12** I contatti dei relè sono galvanicamente isolati dall'hub.
 
 ### Alimentazione
@@ -52,13 +52,21 @@ il cavo. Si vuole poterlo fare **dal PC**, in modo scriptabile, senza toccare il
 - **RF-16** Con alimentatore assente, hub e MCU restano alimentati dalla porta upstream quanto basta
   per enumerare e riportare "alimentatore assente" (le porte downstream restano spente).
 
+### Comandi sul pannello
+
+- **RF-17** Un pulsante per ogni porta e uno per ogni relè. Ogni pressione alterna lo stato:
+  la porta si accende o si spegne (alimentazione e dati sempre insieme, con la stessa sequenza
+  dei comandi da PC), la linea del relè si collega o si stacca. L'accensione di una porta da
+  pulsante rispetta il budget di potenza (RF-15). Ogni cambio di stato da pulsante è notificato
+  all'host.
+
 ## Requisiti non funzionali
 
 - **RNF-1** PCB realizzabile con servizio di prototipazione standard (4 strati); componenti
   montabili a mano con piastra riscaldante e aria calda (strategia C in `architettura.md`).
 - **RNF-2** Componenti reperibili presso distributori comuni (LCSC/JLCPCB, Mouser, DigiKey).
-- **RNF-3** Protezione ESD su tutte le linee dati esposte, TVS sulla VBUS d'ingresso e clamp sulle
-  VBUS delle porte.
+- **RNF-3** Protezione ESD su tutte le linee dati esposte e TVS sulla VBUS d'ingresso (sulle VBUS
+  delle porte bastano il clamp dell'ESD e i condensatori, vedi D25).
 - **RNF-4** Firmware e strumento host open source e documentati; protocollo stabile e versionato.
 - **RNF-5** LED di stato per porta (alimentata / fault).
 

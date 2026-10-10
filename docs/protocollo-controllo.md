@@ -41,6 +41,7 @@ maggiori che non conosce.
 | 0x80 | PORT_FAULT | port, causa (sovracorrente / tensione bassa / budget / tensione inversa) |
 | 0x81 | PORT_CHANGED | port, nuovi flags (fine di un ciclo, pulsante fisico) |
 | 0x82 | POWER_CHANGED | alimentatore collegato/scollegato, nuova corrente pubblicizzata, eFuse in guasto (sovratensione / sovracorrente) |
+| 0x83 | RELAY_CHANGED | relè, nuovo stato della linea (fine di un impulso, pulsante fisico) |
 
 ## CLI (host/)
 

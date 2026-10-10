@@ -127,7 +127,7 @@ Regole:
    pubblicizzano correttamente.
 Il limite di corrente dell'alimentatore resta la protezione di ultima istanza.
 
-**Protezione d'ingresso.** TVS 5 V (SMAJ5.0A), shunt R5 e poi l'eFuse **TPS259470A** (U13, D21):
+**Protezione d'ingresso.** TVS **SMAJ20A**, shunt R5 e poi l'eFuse **TPS259470A** (U13, D21):
 - stacca l'uscita sopra 5,84 V (riaccende sotto 5,3 V) e sotto 4,0 V, con un solo partitore
   (R30/R31/R32); lo zener D4 tiene il pin EN sotto il suo massimo (6,5 V) fino a 28 V d'ingresso;
 - limite di corrente 3,5 A (R33), transitori ammessi fino a ~8 ms (C12), ripartenza automatica;
@@ -136,8 +136,17 @@ Il limite di corrente dell'alimentatore resta la protezione di ultima istanza.
 - blocca la corrente inversa; FLT (open-drain) va al MCU su PB1;
 - lo shunt sta prima dell'eFuse, così l'INA3221 misura la tensione d'ingresso anche quando l'eFuse
   ha staccato e il firmware può segnalare "ingresso fuori tensione".
-Caduta aggiuntiva: ~28 mΩ, cioè ~0,1 V a 3 A. La TVS c'è solo sull'ingresso: sulle VBUS delle
-porte la protezione è il pin VBUS dell'USBLC6-2SC6.
+Caduta aggiuntiva: ~28 mΩ, cioè ~0,1 V a 3 A.
+
+**TVS (D25).** La TVS d'ingresso è una **SMAJ20A**: non conduce fino a 20 V (il massimo di un
+alimentatore USB-C) e limita i picchi oltre ~22 V. Una TVS da 5 V (la SMAJ5.0A di prima) entrerebbe
+in conduzione già a ~6,4 V e con un alimentatore da 12–20 V collegato per errore brucerebbe prima
+che l'eFuse possa staccare; con la SMAJ20A è l'eFuse a staccare la 5V_SYS e, tolto l'alimentatore
+sbagliato, tutto riparte. Sulle VBUS delle porte non c'è TVS: una scarica da 8 kV (~1,2 µC) sui
+22 µF della porta alza la tensione di ~0,05 V, lo stacco di un cavo sotto carico di pochi decimi
+di volt, i picchi negativi li fermano i diodi del MOSFET di scarica e dell'USBLC6; contro una
+tensione continua rimandata da una scheda una TVS non serve (brucerebbe) e una da 5 V limiterebbe
+comunque sopra i 7 V massimi del TPS2561A.
 
 **Logica (RF-16).** 3V3 da LDO a basso dropout (**AP7361C-33E**, 1 A, SOT-223) alimentato da un ORing a diodi
 Schottky tra 5V_SYS e la VBUS upstream: con alimentatore assente hub e MCU enumerano e riportano "alimentatore assente"; le
@@ -198,8 +207,8 @@ Scelto tra gli STM32 per questi motivi:
   (nessuna negoziazione PD) ma lascia aperta la variante ad alta potenza senza cambiare MCU.
 - **LQFP-64**, saldabile a mano, ~60 GPIO: bastano per pilotare tutto senza expander. Conteggio:
   5 porte × (EN, FAULT, OE, DIS, pulsante) = 25, 74HC595 per i LED = 4 (SER, SCK, latch, /OE), 2 relè, I2C condiviso = 2,
-  USB = 2, ADC (CC1, CC2, 5V_SYS) = 3, reset hub = 1, guasto eFuse = 1, SWD = 2, UART debug = 2:
-  totale ~44 sui 60 disponibili.
+  USB = 2, ADC (CC1, CC2, 5V_SYS) = 3, reset hub = 1, guasto eFuse = 1, pulsanti dei relè = 2, SWD = 2,
+  UART debug = 2: totale ~46 sui 60 disponibili.
 - 512 kB flash / 144 kB RAM: largo per stack USB + logica, e per uno stack PD futuro.
 - Disponibile su LCSC (C2829307, ~2,7 $) e su Mouser/DigiKey.
 
@@ -229,10 +238,10 @@ Per ogni porta:
 | Switch D+/D- | PI3USB4002A | EN (OE_N) dal MCU, alto = scollegato; 1 µF 25 V sul pin REF |
 | Misura corrente | INA3221 (3 canali) × 2 | shunt 20 mΩ tra l'uscita del load switch e il connettore |
 | ESD dati | USBLC6-2SC6 | tra switch e connettore |
-| Protezione VBUS | pin VBUS dell'USBLC6-2SC6 | TVS dedicata (SMAJ5.0A) solo sull'ingresso |
+| Protezione VBUS | pin VBUS dell'USBLC6-2SC6 e i 22 µF della porta | TVS dedicata (SMAJ20A) solo sull'ingresso (D25) |
 | USB-C: CC1, CC2 | Rp **22 kΩ** a VBUS commutata (pubblicizza 1,5 A) | la VBUS commutata fa cadere anche CC quando la porta è spenta |
 | LED | 2 (alimentata / fault) via 74HC595 | |
-| Pulsante | tattile, toggle della porta | debounce in firmware |
+| Pulsante | tattile: ogni pressione alterna la porta (alimentazione e dati insieme) | debounce in firmware; rispetta il budget (RF-17) |
 | Condensatori VBUS | 22 µF + 100 nF; sulla USB-A anche 100 µF | USB 2.0 chiede ≥ 120 µF sulle porte di tipo A |
 
 Sul valore di Rp: con limite hardware a ~2,2 A si pubblicizza 1,5 A (22 kΩ); 3 A (10 kΩ) sarebbe
@@ -248,7 +257,8 @@ di un impulso, e se l'hub perde alimentazione o si blocca la linea torna collega
 sicuro per una scheda in prova). Il contatto NO è portato su un **ponticello a saldare** interno:
 spostandolo la seconda boccola diventa NO per un eventuale uso "normalmente aperto".
 Nel protocollo i comandi parlano di linea ("collegata / staccata", "stacca per N ms"), non di
-bobina. LED per canale, acceso quando la linea è staccata.
+bobina. LED per canale, acceso quando la linea è staccata. Un pulsante per canale (SW1/SW2, su
+PB12/PB13): ogni pressione alterna la linea, collegata o staccata (RF-17).
 
 ### Upstream
 
@@ -277,8 +287,8 @@ ripiego se la rifusione dell'hub dà problemi. La D è il ripiego se non si vuol
 - Scatola **stampata in 3D su misura**, disegnata sulle misure reali del PCB a layout finito.
 - Tutti i connettori saldati sul PCB e affacciati alle aperture della scatola; boccole a banana
   in versione da PCB. Nessun cablaggio interno a filo.
-- Connettori sui due lati corti: lato "banco" le 5 porte downstream, i pulsanti con i LED e le
-  4 boccole con i LED dei relè; lato posteriore upstream e alimentazione.
+- Connettori sui due lati corti: lato "banco" le 5 porte downstream con i loro pulsanti e LED, le
+  4 boccole con i pulsanti e i LED dei relè; lato posteriore upstream e alimentazione.
 - PCB fissato alla scatola con viti su boccole filettate o inserti; i pulsanti tattili con
   estensori stampati o pulsanti ad asta lunga.
 

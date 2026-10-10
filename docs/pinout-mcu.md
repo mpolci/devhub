@@ -36,8 +36,8 @@ I pin senza segnale sono liberi (no-connect nello schema).
 | 29 | PB2 | — |  |
 | 30 | PB10 | RLY1 | uscita: relè 1 (alto = linea staccata) |
 | 31 | PB11 | RLY2 | uscita: relè 2 |
-| 32 | PB12 | — |  |
-| 33 | PB13 | — |  |
+| 32 | PB12 | BTN_RLY1 | ingresso: pulsante relè 1 (basso = premuto; pull-up interno) |
+| 33 | PB13 | BTN_RLY2 | ingresso: pulsante relè 2 (basso = premuto; pull-up interno) |
 | 34 | PB14 | — |  |
 | 35 | PB15 | — |  |
 | 36 | PA8 | HUB_RST_N | uscita open-drain: RESET_N del hub (basso = reset), in wired-OR con il supervisore U12 |
