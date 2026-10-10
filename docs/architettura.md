@@ -57,7 +57,8 @@ lascia GND sempre collegata:
 - Togliere solo VBUS non basta per i dispositivi **auto-alimentati** (es. una scheda con la propria
   alimentazione): continuano a tenere il pull-up su D+ e l'host non li vede mai scollegati.
   Sezionando anche D+/D- lo scollegamento è garantito in ogni caso (RF-2).
-- Sezionare dati e alimentazione separatamente dà in più il requisito RF-3.
+- Dati e alimentazione hanno due interruttori distinti, comandati dal MCU, ma si staccano e si
+  riattaccano sempre insieme e in sequenza (RF-3, D28).
 
 ### Porte: stato solido, non relè
 

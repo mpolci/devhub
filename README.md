@@ -17,7 +17,7 @@ il PC può:
 | Porte downstream | 4 × USB-C + 1 × USB-A |
 | Velocità | USB 2.0 Hi-Speed (480 Mbit/s) |
 | Alimentazione per porta | 5 V, fino a 2 A sulla singola porta, ~2,3 A totali, con limitazione di corrente e sezionamento per porta |
-| Sezionamento | VBUS (load switch) **e** D+/D- (switch analogico), comandati separatamente |
+| Sezionamento | VBUS (load switch) **e** D+/D- (switch analogico), staccati e riattaccati sempre insieme, in sequenza |
 | Alimentazione hub | ingresso USB-C a 5 V / 3 A, senza USB-PD: va bene qualunque alimentatore USB-C |
 | Upstream (verso il PC) | USB-C (USB 2.0) |
 | Controllo | STM32G0B1 su porta interna dell'hub, interfaccia USB HID senza driver + CLI Python |

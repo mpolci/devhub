@@ -21,9 +21,9 @@ maggiori che non conosce.
 |---|---|---|---|
 | 0x01 | GET_INFO | — | proto_version, fw_version, n_ports, n_relays, capabilities (bitmask: current_meas, pd_status, …), serial |
 | 0x02 | GET_STATUS | — | per porta: flags (power, data, fault, budget_blocked), corrente mA; relè: stato; alimentazione: tensione d'ingresso mV, stato dell'eFuse, 5V_SYS mV, corrente totale mA, corrente pubblicizzata dall'alimentatore (0,5/1,5/3 A), budget mA e usato |
-| 0x10 | SET_PORT | port, power (0/1/keep), data (0/1/keep) | status |
-| 0x11 | CYCLE_PORT | port, what (power \| data \| both), off_ms (u16), on_delay_ms (u16, ritardo dati dopo VBUS) | status (il ciclo prosegue in autonomia) |
-| 0x12 | SET_ALL | power, data | status |
+| 0x10 | SET_PORT | port, on (0/1): alimentazione e dati insieme, in sequenza (RF-3) | status |
+| 0x11 | CYCLE_PORT | port, off_ms (u16), on_delay_ms (u16, ritardo dati dopo VBUS) | status (il ciclo prosegue in autonomia) |
+| 0x12 | SET_ALL | on (0/1) | status |
 | 0x20 | SET_RELAY | relay, line (connected / disconnected) | status |
 | 0x21 | PULSE_RELAY | relay, ms (u16): stacca la linea per ms, poi la ricollega | status |
 | 0x30 | GET_DEFAULTS | — | stato all'accensione delle porte, limite budget |
@@ -49,9 +49,7 @@ maggiori che non conosce.
 devhub info
 devhub status [--json]
 devhub port <n> on|off
-devhub port <n> power on|off
-devhub port <n> data on|off
-devhub port <n> cycle [--ms 500] [--on-delay 50] [--power-only|--data-only]
+devhub port <n> cycle [--ms 500] [--on-delay 50]
 devhub all on|off
 devhub relay <n> connect|disconnect
 devhub relay <n> cycle [--ms 500]   # stacca la linea per N ms

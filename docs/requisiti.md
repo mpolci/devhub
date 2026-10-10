@@ -14,8 +14,9 @@ il cavo. Si vuole poterlo fare **dal PC**, in modo scriptabile, senza toccare il
 - **RF-2** Ogni porta deve poter essere **staccata e riattaccata** su comando del PC. Lo stacco
   deve essere equivalente allo sfilare il cavo: il dispositivo deve risultare scollegato per
   l'host e perdere l'alimentazione da VBUS.
-- **RF-3** Alimentazione e linee dati devono essere comandabili **separatamente** (es. togliere
-  solo i dati lasciando alimentato il dispositivo, o viceversa).
+- **RF-3** Alimentazione e linee dati si staccano e si riattaccano **sempre insieme**, in sequenza:
+  allo stacco prima i dati, poi VBUS e la sua scarica; al riattacco prima VBUS, poi i dati dopo un
+  ritardo (`on_delay_ms`), così il dispositivo si enumera già alimentato stabilmente.
 - **RF-4** Comando di "ciclo" (stacca, attendi N ms, riattacca) eseguito in autonomia dal MCU, così
   che un singolo comando dal PC sia sufficiente anche se l'host perde il dispositivo nel frattempo.
 - **RF-5** Ogni porta fornisce 5 V con almeno 2 A disponibili per la singola porta, con
@@ -29,7 +30,7 @@ il cavo. Si vuole poterlo fare **dal PC**, in modo scriptabile, senza toccare il
   da driver** (USB HID con usage page vendor) e funziona su Linux, macOS e Windows.
 - **RF-8** Il dispositivo di controllo resta raggiungibile anche quando tutte le porte downstream
   sono staccate (è su una porta interna non sezionabile).
-- **RF-9** Comandi: stato globale, stato porta, on/off alimentazione, on/off dati, ciclo con durata,
+- **RF-9** Comandi: stato globale, stato porta, on/off della porta (alimentazione e dati insieme), ciclo con durata,
   comando relè, stato relè, impostazione dello stato di default all'accensione.
 - **RF-10** Libreria Python generica per il PC e, sopra di essa, uno strumento da riga di comando
   per macOS (es. `devhub port 2 cycle 500`).
