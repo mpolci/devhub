@@ -43,7 +43,12 @@ host/        strumento da riga di comando per il PC
 - [docs/protocollo-controllo.md](docs/protocollo-controllo.md) — bozza del protocollo HID tra PC e hub
 - [docs/domande-aperte.md](docs/domande-aperte.md) — decisioni ancora da prendere
 
+## Licenze
+
+- **Hardware** (`hardware/`): [CERN-OHL-W 2.0](hardware/LICENSE).
+- **Firmware, libreria e CLI, documentazione** (tutto il resto): [MIT](LICENSE).
+
 ## Stato
 
-Fase di definizione: requisiti e architettura chiusi nelle linee generali, componenti scelti in
-prima battuta. Nessun hardware ancora disegnato.
+Requisiti, architettura e decisioni di base chiuse (vedi `docs/domande-aperte.md`), componenti
+scelti in prima battuta. Prossimo passo: schema elettrico in KiCad.

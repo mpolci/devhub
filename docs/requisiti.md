@@ -31,7 +31,8 @@ il cavo. Si vuole poterlo fare **dal PC**, in modo scriptabile, senza toccare il
   sono staccate (è su una porta interna non sezionabile).
 - **RF-9** Comandi: stato globale, stato porta, on/off alimentazione, on/off dati, ciclo con durata,
   comando relè, stato relè, impostazione dello stato di default all'accensione.
-- **RF-10** Strumento da riga di comando per il PC (es. `devhub port 2 cycle 500`).
+- **RF-10** Libreria Python generica per il PC e, sopra di essa, uno strumento da riga di comando
+  per macOS (es. `devhub port 2 cycle 500`).
 
 ### Relè ausiliari
 

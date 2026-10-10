@@ -10,7 +10,8 @@ maggiori che non conosce.
 ## Convenzioni
 
 - Porte numerate da 1 a N (`n_ports` da `GET_INFO`). Le porte 1-4 sono le USB-C, la 5 è la USB-A.
-- Relè numerati da 1 a 2.
+- Relè numerati da 1 a 2. Lo stato di un relè è espresso come stato della **linea**: `connected`
+  (riposo, bobina diseccitata) o `disconnected` (bobina eccitata).
 - Ogni comando riceve una risposta con lo stesso `cmd` e un campo `status` (0 = OK, altrimenti
   codice di errore).
 
@@ -23,9 +24,9 @@ maggiori che non conosce.
 | 0x10 | SET_PORT | port, power (0/1/keep), data (0/1/keep) | status |
 | 0x11 | CYCLE_PORT | port, what (power \| data \| both), off_ms (u16), on_delay_ms (u16, ritardo dati dopo VBUS) | status (il ciclo prosegue in autonomia) |
 | 0x12 | SET_ALL | power, data | status |
-| 0x20 | SET_RELAY | relay, state | status |
-| 0x21 | PULSE_RELAY | relay, state_during_pulse, ms (u16) | status |
-| 0x30 | GET_DEFAULTS / 0x31 SET_DEFAULTS | stato all'accensione di porte e relè, limite budget | status |
+| 0x20 | SET_RELAY | relay, line (connected / disconnected) | status |
+| 0x21 | PULSE_RELAY | relay, ms (u16): stacca la linea per ms, poi la ricollega | status |
+| 0x30 | GET_DEFAULTS / 0x31 SET_DEFAULTS | stato all'accensione delle porte, limite budget (i relè all'accensione sono sempre "linea collegata") | status |
 | 0x32 | SAVE_DEFAULTS | — | status (scrive in flash) |
 | 0x40 | CLEAR_FAULT | port | status |
 | 0x7E | REBOOT | — | — |
@@ -49,8 +50,8 @@ devhub port <n> power on|off
 devhub port <n> data on|off
 devhub port <n> cycle [--ms 500] [--power-only|--data-only]
 devhub all on|off
-devhub relay <n> on|off
-devhub relay <n> pulse --ms 200
+devhub relay <n> connect|disconnect
+devhub relay <n> cycle [--ms 500]   # stacca la linea per N ms
 devhub defaults show|set ...|save
 devhub watch            # stampa gli eventi
 ```

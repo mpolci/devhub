@@ -22,7 +22,7 @@ parte della v1.
 | Hub USB 2.0, 7 porte | Microchip **USB2517I-JZX** | QFN-64 9×9, passo 0,5 mm, pad esposto | aria calda + stencil | extended (da confermare) | C478081, ~4,4 $ cad. | 3 000+ pezzi in stock a ottobre 2026 |
 | Hub, alternativa saldabile a mano | Terminus **FE2.1** | LQFP-48 | sì | extended | sì | documentazione scarsa, usato in molti hub commerciali |
 | MCU di controllo | ST **STM32G0B1RET6** | LQFP-64 | sì | extended | C2829307, ~2,7 $ cad. | USB FS device senza quarzo, 2× UCPD, 512 kB flash, ~60 GPIO |
-| Load switch VBUS (×3, doppio canale) | TI **TPS2561A** | VSON-10 3×3 | aria calda / piastra | extended | sì | 2,5 A continui per canale, limite regolabile 0,25–2,8 A (accurato 2,1–2,5 A), FAULT per canale, 44 mΩ; scarica dell'uscita **[da verificare]**, si prevede comunque il MOSFET di scarica |
+| Load switch VBUS (×3, doppio canale) | TI **TPS2561A** | VSON-10 3×3 | aria calda / piastra | extended | sì | 2,5 A continui per canale, limite regolabile 0,25–2,8 A (accurato 2,1–2,5 A), FAULT per canale, 44 mΩ; nessuna scarica dell'uscita (verificato): MOSFET di scarica esterno; R_ILIM 24,3 kΩ |
 | Load switch, alternativa a pin | TI **TPS25221DBV** | SOT-23-6 | sì | extended | sì | 2 A continui (al limite del requisito), limite 0,275–2,7 A, FAULT, nessuna scarica dell'uscita |
 | Scarica VBUS porta (×5) | MOSFET N **AO3400** + R 100 Ω 0,5 W | SOT-23 | sì | basic | sì | pilotato dal MCU per ~100 ms dopo lo spegnimento |
 | Switch dati D+/D- (×5) | TI **TS3USB30E DGS** | VSSOP-10 | sì | extended | sì | banda 1 400 MHz, Ron 10 Ω, OE, ESD 15 kV su I/O; si usa solo un lato del mux |
@@ -45,7 +45,7 @@ Con il montaggio a mano e un fornitore unico il catalogo si allarga. Per blocco:
 |---|---|---|---|
 | Hub 7 porte | USB2517I (QFN-64) | 2 × Microchip **USB2514B** (QFN-36, 4 porte, cascata 4+3); 2 × Infineon/Cypress **CY7C65642** (QFN-56) | Non esiste un hub Hi-Speed a 7 porte in package a pin da nessun fornitore. Gli hub a 4 porte in SSOP-28 (GL850G, FE1.1s) sono solo su LCSC. La cascata aggiunge un quarzo e un hop. USB2517 resta la scelta. |
 | Load switch | TPS2561A | TPS25221 (SOT-23-6, 2 A); Diodes **AP22814** (SOT-25, limite fisso 3,45 A, troppo alto per il budget) | TPS2561A è il migliore sui 2 A: 2,5 A continui e limite accurato. Un canale resta libero. |
-| Switch dati | TS3USB30E (VSSOP-10) | TI TS3USB221 (QFN); Nexperia NX3DV221 (XSON, minuscolo); Diodes **PI3USB102** **[da verificare]** package; onsemi FSUSB42 (segnalato obsoleto) | TS3USB30E resta: a pin, banda 1,4 GHz, ESD integrata. |
+| Switch dati | TS3USB30E (VSSOP-10) | TI TS3USB221 (QFN); Nexperia NX3DV221 (XSON, minuscolo); Diodes PI3USB102 (package da verificare); onsemi FSUSB42 (segnalato obsoleto) | TS3USB30E resta: a pin, banda 1,4 GHz, ESD integrata. |
 | Misura corrente | INA3221 ×2 (VQFN-16) | TI **INA260** ×5 (TSSOP-16, shunt 2 mΩ integrato, ~4,7 € cad., lead time lungo segnalato); TI **INA226** ×5 (MSOP-10, shunt esterno); TI **INA219** ×5 (SOT-23-8) | INA3221 è il più compatto e il più economico (2 chip). INA260 elimina gli shunt ma costa 5 volte tanto e la disponibilità è incerta. |
 | Relè | Omron G5Q-1 / Songle SRD | Omron **G5LE-1**, TE **OJE-SH-105LM** (5 A, slim), Panasonic **JS1-5V** | Tutti equivalenti per 16 V / 3 A; scelta per ingombro e prezzo. |
 | Connettori USB-C 16 pin | — | GCT **USB4105-GF-A**, Würth **632723300011**, Amphenol **12401610E4#2A** | Tutti a catalogo Mouser/DigiKey, footprint KiCad disponibili. |
@@ -54,14 +54,14 @@ Con il montaggio a mano e un fornitore unico il catalogo si allarga. Per blocco:
 
 | Funzione | Candidato | Note |
 |---|---|---|
-| Relè ausiliari (×2) | SPDT 5–10 A, bobina 5 V: Omron **G5Q-1** DC5, Songle **SRD-05VDC-SL-C**, Hongfa **HF32F** | specifica contatti: 16 V / 3 A max; snubber RC opzionale sui contatti |
-| Boccole a banana 4 mm (×6) | da pannello, isolate | COM / NO / NC per canale |
+| Relè ausiliari (×2) | SPDT 5–10 A, bobina 5 V: Omron **G5Q-1** DC5, Songle **SRD-05VDC-SL-C**, Hongfa **HF32F** | specifica contatti: 16 V / 3 A max; usati su COM/NC; snubber RC opzionale sui contatti |
+| Boccole a banana 4 mm (×4) | **da PCB** (es. Keystone 575-4, Cliff FCR7350), passo 19 mm | COM e NC per canale; NO su ponticello interno |
 | USB-C downstream (×4) | ricettacolo 16 pin (solo USB 2.0), mid-mount o top-mount | es. GCT USB4105 o equivalente LCSC; sui 16 pin bastano D+/D-, CC1, CC2, VBUS, GND |
 | USB-C upstream (×1) | ricettacolo 16 pin | Rd 5,1 kΩ su CC1 e CC2 |
 | USB-C alimentazione (×1) | ricettacolo 16 pin | solo CC1, CC2 (Rd 5,1 kΩ, verso ADC), VBUS, GND; 5 V / 3 A |
 | USB-A downstream (×1) | ricettacolo USB-A orizzontale | |
-| Pulsanti porta (×5) | tattili 6×6 | |
-| LED (×12) | 0805 o 3 mm | 2 per porta (alimentata / fault), 1 per relè |
+| Pulsanti porta (×5) | tattili 6×6 ad asta lunga, o con estensore stampato in 3D | |
+| LED (×12) | 0805 o 3 mm | 2 per porta (alimentata / fault), 1 per relè (acceso = linea staccata) |
 
 ## Conteggio dei tipi "extended" per l'assemblaggio JLCPCB
 

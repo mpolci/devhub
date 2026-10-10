@@ -62,12 +62,14 @@ lascia GND sempre collegata:
 ### Porte: stato solido, non relè
 
 - **VBUS**: load switch **TI TPS2561A** (doppio canale, VSON-10 3×3): 2,5 A continui per canale,
-  limite regolabile con una resistenza su ILIM (accurato tra 2,1 e 2,5 A, impostato a ~2,3 A),
-  FAULT per canale, soft-start, 44 mΩ. Tre chip coprono le 5 porte con un canale di scorta. La
-  scarica dell'uscita allo spegnimento è **[da verificare]** sul datasheet; si prevede comunque per
-  porta un MOSFET N (AO3400) con 100 Ω verso GND, pilotato dal MCU per ~100 ms dopo lo
-  spegnimento (pin DIS): senza scarica un dispositivo con grossi condensatori resta "acceso" per
-  secondi e non si resetta.
+  FAULT per canale (open-drain, deglitch 9 ms), soft-start, 44 mΩ, blocco della corrente inversa.
+  Una **sola resistenza ILIM per chip** imposta il limite di entrambi i canali, indipendenti tra
+  loro: I_OS(nom) = 56000 / R_ILIM(kΩ) mA. Con **R_ILIM = 24,3 kΩ 1 %** il limite è 2,1–2,5 A
+  (2,3 A tipico) per canale, verificato sul datasheet (SLVSB28, tabella EC). Tre chip coprono le
+  5 porte con un canale di scorta. Il TPS2561A **non ha la scarica dell'uscita**: per porta un
+  MOSFET N (AO3400) con 100 Ω verso GND, pilotato dal MCU per ~100 ms dopo lo spegnimento
+  (pin DIS); senza scarica un dispositivo con grossi condensatori resta "acceso" per secondi e
+  non si resetta.
   Alternativa a pin: **TPS25221** (SOT-23-6), ma 2 A continui, al limite del requisito RF-5.
 - **D+/D-**: **TI TS3USB30E** (VSSOP-10): mux 1:2 per USB Hi-Speed, banda 1 400 MHz, Ron 10 Ω,
   ESD 15 kV sulle linee. Si usa un solo lato del mux; con OE alto le linee sono in alta impedenza e
@@ -139,11 +141,27 @@ configurazione via resistenze o SMBus, regolatore 1,8 V interno). Il package si 
 aria calda o piastra riscaldante e stencil: i pad perimetrali sono sotto il bordo e il pad
 centrale è la massa e va saldato; con il solo saldatore è un ripiego (pad centrale scaldato dai
 via termici sul retro). 7 porte coprono 4 USB-C + 1 USB-A + 1 porta interna per il MCU
-e ne lasciano 1 di scorta (header interno).
+e ne lasciano 1 di scorta su un header interno a 4 pin (VBUS, D-, D+, GND), non sezionato e
+alimentato direttamente dalla 5V_SYS con un fusibile ripristinabile.
 
-I pin PRTPWR/OCS del hub non pilotano i load switch: l'abilitazione è decisa dal MCU. I flag
-FAULT dei load switch arrivano al MCU, che li riporta via HID. **[da verificare]** se collegare i
-FAULT anche agli OCS del hub per far arrivare all'host la notifica standard di sovracorrente.
+Dettagli verificati sul datasheet (DS00001598C) e sull'errata (DS80000628A):
+
+- **PRTPWR** del hub non usati: l'abilitazione delle porte è del MCU. I **FAULT** dei load switch
+  (open-drain) vanno sia al MCU sia agli ingressi **OCS_N** del hub, che hanno pull-up interno:
+  l'host riceve così la notifica standard di sovracorrente senza componenti in più.
+- **Configurazione via SMBus** (CFG_SEL = 001, indirizzo 0x2C): il MCU scrive VID/PID, stringhe,
+  porta 6 "non rimovibile" (il MCU stesso), corrente massima, e poi comanda l'attach. Ponticelli a
+  saldare sui CFG_SEL permettono di tornare ai default interni (000) per il bring-up senza
+  firmware.
+- **Reset**: l'errata dice che il POR interno non funziona; RESET_N è pilotato dal MCU (pull-down,
+  hub in reset finché il firmware non lo rilascia), con ponticello verso un pull-up RC per il
+  bring-up. Questo dà anche il comando "reset hub" via HID.
+- **VBUS_DET** dalla VBUS upstream con partitore 100 k / 100 k; **LOCAL_PWR** da un partitore su
+  5V_SYS (alto = alimentatore presente).
+- RBIAS 12,0 kΩ 1 %; quarzo 24 MHz con condensatori da adattare al C_L del quarzo; 1,8 V dal
+  regolatore interno (VDD18, VDD18PLL con 1 µF ciascuno); TEST a massa; slug a massa.
+- Mappa porte: 1–4 → USB-C, 5 → USB-A, 6 → MCU, 7 → header interno. Le porte 1–5 sono sul lato
+  inferiore del QFN, da orientare verso il pannello frontale.
 
 Alternativa saldabile a mano: **FE2.1** (LQFP-48), documentazione scarsa ma diffusissimo.
 
@@ -169,7 +187,8 @@ Interfacce USB esposte:
 
 Stack software: STM32CubeG0 HAL; per l'USB device TinyUSB o la libreria USB device di ST. Build con CMake e arm-none-eabi-gcc (già presenti sulla macchina di sviluppo).
 
-VID/PID: da decidere (pid.codes per progetti open source, oppure VID ST 0x0483 con PID di test).
+VID/PID: VID 0x1209 (pid.codes) con PID di test (0x0001–0x0010) durante lo sviluppo; PID definitivo
+da richiedere a pid.codes alla pubblicazione del repository.
 
 ### Porte downstream
 
@@ -177,7 +196,7 @@ Per ogni porta:
 
 | Funzione | Componente | Note |
 |---|---|---|
-| Load switch VBUS | TPS2561A (½ chip) | RILIM per ~2,3 A **[da verificare]** valore dalla tabella del datasheet |
+| Load switch VBUS | TPS2561A (½ chip) | R_ILIM 24,3 kΩ 1 % → 2,1–2,5 A per canale |
 | Scarica VBUS | AO3400 + 100 Ω | pilotato dal MCU |
 | Switch D+/D- | TS3USB30E DGS | OE dal MCU, S fisso |
 | Misura corrente | INA3221 (3 canali) × 2 | shunt 20 mΩ sul lato 5V_SYS, prima del load switch |
@@ -194,9 +213,13 @@ scorretto. Le schede di sviluppo in genere ignorano CC.
 
 Specifica contatti: **max 16 V, max 3 A**. 2 relè **SPDT** con bobina 5 V (es. Omron G5Q-1,
 Songle SRD-05VDC-SL-C: 10 A nominali, ampio margine) pilotati da ULN2003 (diodi di ricircolo
-integrati). Su pannello, per ogni canale: **COM, NO, NC** su boccole a banana da 4 mm (6 boccole).
-Stato all'accensione configurabile da firmware (RF-9); il contatto NC permette di avere una linea
-"normalmente collegata" senza alimentare la bobina. LED per canale.
+integrati). Su pannello, per ogni canale, **due boccole a banana da 4 mm su COM e NC**: la linea
+è **normalmente collegata** e la bobina si eccita solo per staccarla. Così lo stacco dura il tempo
+di un impulso, e se l'hub perde alimentazione o si blocca la linea torna collegata (comportamento
+sicuro per una scheda in prova). Il contatto NO è portato su un **ponticello a saldare** interno:
+spostandolo la seconda boccola diventa NO per un eventuale uso "normalmente aperto".
+Nel protocollo i comandi parlano di linea ("collegata / staccata", "stacca per N ms"), non di
+bobina. LED per canale, acceso quando la linea è staccata.
 
 ### Upstream
 
@@ -224,9 +247,13 @@ senza pensieri.
 
 ## Meccanica
 
-- Connettori su due fronti: lato "banco" le 5 porte downstream, i pulsanti e le boccole; lato
-  posteriore upstream e alimentazione.
-- Scatola: da definire (stampata 3D o profilo in alluminio).
+- Scatola **stampata in 3D su misura**, disegnata sulle misure reali del PCB a layout finito.
+- Tutti i connettori saldati sul PCB e affacciati alle aperture della scatola; boccole a banana
+  in versione da PCB. Nessun cablaggio interno a filo.
+- Connettori sui due lati corti: lato "banco" le 5 porte downstream, i pulsanti con i LED e le
+  4 boccole con i LED dei relè; lato posteriore upstream e alimentazione.
+- PCB fissato alla scatola con viti su boccole filettate o inserti; i pulsanti tattili con
+  estensori stampati o pulsanti ad asta lunga.
 
 ## Rischi / punti aperti tecnici
 
