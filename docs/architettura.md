@@ -7,7 +7,7 @@ La tabella dei componenti con package, fornitore e classe JLCPCB è in [componen
 ## Schema a blocchi
 
 ```
-USB-C PWR IN 5 V / 3 A ──► TVS + shunt INA3221 ──► 5V_SYS ────────────────────────────────┐
+USB-C PWR IN 5 V / 3 A ──► TVS + shunt + eFuse ───► 5V_SYS ────────────────────────────────┐
 (qualunque alimentatore      │                       │                                     │
  USB-C, anche PD)            │ CC1/CC2 (Rd 5,1 kΩ)    ▼ ORing Schottky + LDO 3,3 V          │
                              └──► ADC del MCU      3V3 (hub, MCU, switch)                  │
@@ -15,8 +15,8 @@ USB-C PWR IN 5 V / 3 A ──► TVS + shunt INA3221 ──► 5V_SYS ───�
 USB-C UPSTREAM ─── VBUS ───────────────────────────────┘ (RF-16)                           │
 (verso il PC)   │                                                                          │
                 └──► HUB USB 2.0, 7 porte (USB2517)                                        │
-                         ├─ DS1..DS4 ─► TS3USB30E ─► USB-C 1..4 ◄─ TPS2561A + scarica ◄────┤
-                         ├─ DS5 ─────► TS3USB30E ─► USB-A      ◄─ TPS2561A + scarica ◄────┤
+                         ├─ DS1..DS4 ─► PI3USB4002A ► USB-C 1..4 ◄─ TPS2561A + scarica ◄───┤
+                         ├─ DS5 ─────► PI3USB4002A ► USB-A      ◄─ TPS2561A + scarica ◄───┤
                          ├─ DS6 ─────► MCU STM32G0B1 (USB FS) — porta interna, mai sezionata
                          └─ DS7 ─────  header interno (scorta)
                                              │
@@ -71,9 +71,10 @@ lascia GND sempre collegata:
   (pin DIS); senza scarica un dispositivo con grossi condensatori resta "acceso" per secondi e
   non si resetta.
   Alternativa a pin: **TPS25221** (SOT-23-6), ma 2 A continui, al limite del requisito RF-5.
-- **D+/D-**: **TI TS3USB30E** (VSSOP-10): mux 1:2 per USB Hi-Speed, banda 1 400 MHz, Ron 10 Ω,
-  ESD 15 kV sulle linee. Si usa un solo lato del mux; con OE alto le linee sono in alta impedenza e
-  l'hub vede il distacco.
+- **D+/D-**: **Diodes PI3USB4002A** (UQFN-10 1,5×2 mm): interruttore USB 2.0 (banda 1 GHz, 5 Ω)
+  con EN alto = linee in alta impedenza, così l'hub vede il distacco. Il lato connettore regge
+  24 V e si apre da solo sopra 4,75 V: un corto D+/D- su VBUS in una scheda in prova o in un cavo
+  non arriva alla 3,3 V (D22). Sostituisce il TS3USB30E, che sui pin dati reggeva solo VCC + 0,3 V.
 
 Sequenza di stacco (default nel firmware): OE dati off → EN VBUS off → DIS on per 100 ms.
 Riattacco: EN VBUS on → dopo `on_delay_ms` (default 50 ms) OE dati on, così il dispositivo si
@@ -126,9 +127,17 @@ Regole:
    pubblicizzano correttamente.
 Il limite di corrente dell'alimentatore resta la protezione di ultima istanza.
 
-**Protezione d'ingresso.** TVS 5 V (SMAJ5.0A) e, opzionale, un eFuse / load switch da 3 A con
-blocco della corrente inversa (es. TPS2596) al posto del semplice diodo di ORing. La TVS c'è
-solo sull'ingresso: sulle VBUS delle porte la protezione è il pin VBUS dell'USBLC6-2SC6.
+**Protezione d'ingresso.** TVS 5 V (SMAJ5.0A), shunt R5 e poi l'eFuse **TPS259470A** (U13, D21):
+- stacca l'uscita sopra 5,84 V (riaccende sotto 5,3 V) e sotto 4,0 V, con un solo partitore
+  (R30/R31/R32); lo zener D4 tiene il pin EN sotto il suo massimo (6,5 V) fino a 28 V d'ingresso;
+- limite di corrente 3,5 A (R33), transitori ammessi fino a ~8 ms (C12), ripartenza automatica;
+- avvio dolce: la 5V_SYS sale in ~5 ms e i 460 µF di bulk si caricano con ~0,4 A invece di un picco
+  di decine di ampere; i condensatori d'ingresso restano quelli attuali (D20);
+- blocca la corrente inversa; FLT (open-drain) va al MCU su PB1;
+- lo shunt sta prima dell'eFuse, così l'INA3221 misura la tensione d'ingresso anche quando l'eFuse
+  ha staccato e il firmware può segnalare "ingresso fuori tensione".
+Caduta aggiuntiva: ~28 mΩ, cioè ~0,1 V a 3 A. La TVS c'è solo sull'ingresso: sulle VBUS delle
+porte la protezione è il pin VBUS dell'USBLC6-2SC6.
 
 **Logica (RF-16).** 3V3 da LDO a basso dropout (**AP7361C-33E**, 1 A, SOT-223) alimentato da un ORing a diodi
 Schottky tra 5V_SYS e la VBUS upstream: con alimentatore assente hub e MCU enumerano e riportano "alimentatore assente"; le
@@ -189,8 +198,8 @@ Scelto tra gli STM32 per questi motivi:
   (nessuna negoziazione PD) ma lascia aperta la variante ad alta potenza senza cambiare MCU.
 - **LQFP-64**, saldabile a mano, ~60 GPIO: bastano per pilotare tutto senza expander. Conteggio:
   5 porte × (EN, FAULT, OE, DIS, pulsante) = 25, 74HC595 per i LED = 4 (SER, SCK, latch, /OE), 2 relè, I2C condiviso = 2,
-  USB = 2, ADC (CC1, CC2, 5V_SYS) = 3, reset hub = 1, SWD = 2, UART debug = 2:
-  totale ~43 sui 60 disponibili.
+  USB = 2, ADC (CC1, CC2, 5V_SYS) = 3, reset hub = 1, guasto eFuse = 1, SWD = 2, UART debug = 2:
+  totale ~44 sui 60 disponibili.
 - 512 kB flash / 144 kB RAM: largo per stack USB + logica, e per uno stack PD futuro.
 - Disponibile su LCSC (C2829307, ~2,7 $) e su Mouser/DigiKey.
 
@@ -217,7 +226,7 @@ Per ogni porta:
 |---|---|---|
 | Load switch VBUS | TPS2561A (½ chip) | R_ILIM 24,3 kΩ 1 % → 2,1–2,5 A per canale |
 | Scarica VBUS | AO3400 + 100 Ω 1206 | pilotato dal MCU |
-| Switch D+/D- | TS3USB30E DGS | OE dal MCU, S fisso |
+| Switch D+/D- | PI3USB4002A | EN (OE_N) dal MCU, alto = scollegato; 1 µF 25 V sul pin REF |
 | Misura corrente | INA3221 (3 canali) × 2 | shunt 20 mΩ tra l'uscita del load switch e il connettore |
 | ESD dati | USBLC6-2SC6 | tra switch e connettore |
 | Protezione VBUS | pin VBUS dell'USBLC6-2SC6 | TVS dedicata (SMAJ5.0A) solo sull'ingresso |
@@ -273,14 +282,33 @@ ripiego se la rifusione dell'hub dà problemi. La D è il ripiego se non si vuol
 - PCB fissato alla scatola con viti su boccole filettate o inserti; i pulsanti tattili con
   estensori stampati o pulsanti ad asta lunga.
 
+## Protezioni (uso in laboratorio)
+
+Il dispositivo vive su un banco: si attaccano e staccano spesso schede, alimentatori, cavi e host,
+le schede in prova possono essere montate male, ci sono scariche elettrostatiche. Quadro per rischio:
+
+| Rischio | Protezione |
+|---|---|
+| Alimentatore sbagliato (> 5,84 V, fino a 28 V) all'ingresso | eFuse U13: stacca la 5V_SYS; il firmware lo vede da FLT e dalla tensione misurata sullo shunt |
+| Picco all'inserzione dell'alimentatore | avvio dolce dell'eFuse (~5 ms) |
+| Corto o sovraccarico su una porta | TPS2561A: limite ~2,3 A, protezione termica, FAULT al MCU e agli OCS del hub; il firmware spegne la porta |
+| Corto o sovraccarico sulla 5V_SYS (prima delle porte) | limite 3,5 A dell'eFuse |
+| D+/D- in corto con VBUS (o fino a 24 V) su una scheda o un cavo | PI3USB4002A: si apre sopra 4,75 V |
+| D+/D- in corto con GND o tra loro | innocuo (richiesto dalla specifica USB 2.0) |
+| CC in corto con VBUS sulle porte USB-C | innocuo: c'è solo la Rp da 22 kΩ |
+| Scheda che rimanda tensione sulla VBUS di una porta | a porta spenta il TPS2561A blocca fino a 7 V; a porta accesa il firmware legge la VBUS dall'INA3221 e spegne la porta sopra ~5,5 V; oltre 7 V non c'è protezione (servirebbe un integrato per porta) |
+| Scariche elettrostatiche su D+/D- e VBUS | USBLC6-2SC6 su ogni connettore (±8 kV a contatto); PI3USB4002A 10 kV IEC sul lato connettore; in layout la protezione va vicinissima al connettore con ritorno corto a GND |
+| Scariche elettrostatiche su CC, pulsanti, LED, boccole | nessun integrato esposto sulle CC (solo resistenze; verso l'ADC filtro 1 kΩ + 100 nF); prolunghe dei pulsanti in plastica; boccole sui contatti dei relè, isolati dalla scheda |
+| Corto o sovracorrente sulle boccole | contatti da 3 A: va protetto il circuito esterno (fusibile); snubber RC previsti |
+| Anelli di massa (sonda dell'oscilloscopio, schede con massa a un altro potenziale) | non risolti a bordo: la massa USB unisce PC, hub e schede. Isolare a 480 Mbit/s costa e toglie l'alimentazione dal PC (RF-16); per lavori a rischio si usa un isolatore USB commerciale tra PC e hub |
+| Corrente dal hub verso il PC | diodo D3 nell'ORing |
+
 ## Rischi / punti aperti tecnici
 
 - Integrità del segnale Hi-Speed attraverso lo switch analogico: tracce corte, 90 Ω differenziali,
   nessun via inutile, ESD subito al connettore.
 - Inrush sulla 5V_SYS con 5 porte accese insieme: il firmware accende le porte sfalsate di qualche
   decina di ms.
-- Inrush all'inserzione dell'alimentatore: 2 × 220 µF + 2 × 10 µF sull'ingresso senza limitazione;
-  qualche alimentatore potrebbe andare in protezione. Il TPS2596 opzionale lo risolverebbe.
 - Alimentatori USB-C che pubblicizzano 3 A ma non li reggono: il budget è impostabile a mano via
   HID e il firmware reagisce al calo di 5V_SYS.
 - TPS2561A: due canali a 2,3 A nello stesso VSON-10 (RθJA 47,8 °C/W): pad termico su piano di

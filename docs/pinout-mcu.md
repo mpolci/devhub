@@ -18,7 +18,7 @@ I pin senza segnale sono liberi (no-connect nello schema).
 | 11 | PF1 | — |  |
 | 12 | PF2 | NRST | reset (SWD J4 pin 10, C46) |
 | 13 | PC0 | EN_P1 | uscita: EN load switch porta 1 (alto = VBUS on; pull-down) |
-| 14 | PC1 | OE_N_P1 | uscita: OE del TS3USB30E porta 1 (basso = dati collegati; pull-up) |
+| 14 | PC1 | OE_N_P1 | uscita: EN del PI3USB4002A porta 1 (basso = dati collegati; pull-up) |
 | 15 | PC2 | DIS_P1 | uscita: scarica VBUS porta 1 (alto = scarica; pull-down) |
 | 16 | PC3 | FAULT_P1 | ingresso: FAULT load switch porta 1 (basso = sovracorrente; anche OCS1_N del hub) |
 | 17 | PA0 | CC1_ADC | ADC: tensione CC1 ingresso alimentazione |
@@ -30,9 +30,9 @@ I pin senza segnale sono liberi (no-connect nello schema).
 | 23 | PA6 | — |  |
 | 24 | PA7 | — |  |
 | 25 | PC4 | EN_P2 | uscita: EN load switch porta 2 (alto = VBUS on; pull-down) |
-| 26 | PC5 | OE_N_P2 | uscita: OE del TS3USB30E porta 2 (basso = dati collegati; pull-up) |
+| 26 | PC5 | OE_N_P2 | uscita: EN del PI3USB4002A porta 2 (basso = dati collegati; pull-up) |
 | 27 | PB0 | INA_ALERT | ingresso: CRITICAL dei due INA3221 (open-drain, pull-up R47) |
-| 28 | PB1 | — |  |
+| 28 | PB1 | EFUSE_FLT_N | ingresso: guasto dell'eFuse d'ingresso U13 (basso = guasto; pull-up R34) |
 | 29 | PB2 | — |  |
 | 30 | PB10 | RLY1 | uscita: relè 1 (alto = linea staccata) |
 | 31 | PB11 | RLY2 | uscita: relè 2 |
@@ -53,14 +53,14 @@ I pin senza segnale sono liberi (no-connect nello schema).
 | 46 | PA14 | SWCLK | SWD (anche BOOT0 via nBOOT_SEL) |
 | 47 | PA15 | HUB_CFG_SEL2 | uscita: CFG_SEL2 del hub, campionato al rilascio del reset (0 = SMBus, 1 = default interni) |
 | 48 | PC8 | EN_P3 | uscita: EN load switch porta 3 (alto = VBUS on; pull-down) |
-| 49 | PC9 | OE_N_P3 | uscita: OE del TS3USB30E porta 3 (basso = dati collegati; pull-up) |
+| 49 | PC9 | OE_N_P3 | uscita: EN del PI3USB4002A porta 3 (basso = dati collegati; pull-up) |
 | 50 | PD0 | EN_P4 | uscita: EN load switch porta 4 (alto = VBUS on; pull-down) |
-| 51 | PD1 | OE_N_P4 | uscita: OE del TS3USB30E porta 4 (basso = dati collegati; pull-up) |
+| 51 | PD1 | OE_N_P4 | uscita: EN del PI3USB4002A porta 4 (basso = dati collegati; pull-up) |
 | 52 | PD2 | DIS_P4 | uscita: scarica VBUS porta 4 (alto = scarica; pull-down) |
 | 53 | PD3 | FAULT_P4 | ingresso: FAULT load switch porta 4 (basso = sovracorrente; anche OCS4_N del hub) |
 | 54 | PD4 | BTN_P4 | ingresso: pulsante porta 4 (basso = premuto; pull-up interno) |
 | 55 | PD5 | EN_P5 | uscita: EN load switch porta 5 (alto = VBUS on; pull-down) |
-| 56 | PD6 | OE_N_P5 | uscita: OE del TS3USB30E porta 5 (basso = dati collegati; pull-up) |
+| 56 | PD6 | OE_N_P5 | uscita: EN del PI3USB4002A porta 5 (basso = dati collegati; pull-up) |
 | 57 | PB3 | LED_SCK | SPI1 SCK → 74HC595 SRCLK |
 | 58 | PB4 | LED_LATCH | uscita: 74HC595 RCLK |
 | 59 | PB5 | LED_DATA | SPI1 MOSI → 74HC595 SER |
@@ -82,4 +82,6 @@ I pin senza segnale sono liberi (no-connect nello schema).
 - FAULT_P1-P5: abilitare il pull-up interno. Il pull-up degli OCS_N del hub potrebbe mancare mentre il hub è in reset.
 - SCL è anche CFG_SEL0 del hub, campionato al rilascio di HUB_RST_N: in quel momento il bus I2C dev'essere fermo (SCL alto).
 - PA8, PD0 e PD2 sono anche pin CC dell'UCPD, con pull-down "dead battery" all'avvio: probabilmente vanno rilasciati con i bit UCPD1_STROBE / UCPD2_STROBE di SYSCFG_CFGR1 (da verificare su RM0444).
+- Ingresso alimentazione: EFUSE_FLT_N (PB1) basso = eFuse in guasto (sovratensione, sovracorrente, temperatura). La tensione e la corrente d'ingresso si leggono dal canale 3 di U8 (shunt R5, prima dell'eFuse): con l'eFuse staccato e tensione alta segnalare "ingresso fuori tensione"; quando il guasto sparisce l'eFuse riparte da solo.
+- Porte: l'INA3221 misura anche la tensione di ogni VBUS. Se una porta accesa supera ~5,5 V (scheda in prova che rimanda tensione) spegnerla e segnalarlo (PORT_FAULT, causa "tensione inversa").
 - I nomi dei pin 43/44 sono quelli del simbolo KiCad: sono PA11/PA12 (USB), rimappabili su PA9/PA10.

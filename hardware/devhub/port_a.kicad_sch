@@ -1024,282 +1024,6 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Interface_USB:TS3USB30EDGSR"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(in_pos_files yes)
-			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "U"
-				(at -6.35 8.89 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "TS3USB30EDGSR"
-				(at 8.89 8.89 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" "Package_SO:TSSOP-10_3x3mm_P0.5mm"
-				(at 20.32 -8.89 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Datasheet" "https://www.ti.com/lit/ds/symlink/ts3usb30e.pdf"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Description" "ESD-Protected, High-Speed USB 2.0 (480-Mbps) 1:2 Multiplexer/Demultiplexer Switch With Single Enable, TSSOP-10 (Texas DGS0010A / VSSOP)"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_keywords" "usb mux"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_fp_filters" "*TSSOP*3x3mm?P0.5mm*"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "TS3USB30EDGSR_1_1"
-				(rectangle
-					(start -7.62 7.62)
-					(end 7.62 -7.62)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(pin input line
-					(at -10.16 -5.08 0)
-					(length 2.54)
-					(name "S"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin bidirectional line
-					(at 10.16 5.08 180)
-					(length 2.54)
-					(name "D1+"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin bidirectional line
-					(at 10.16 -2.54 180)
-					(length 2.54)
-					(name "D2+"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin bidirectional line
-					(at -10.16 5.08 0)
-					(length 2.54)
-					(name "D+"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "4"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin power_in line
-					(at 0 -10.16 90)
-					(length 2.54)
-					(name "GND"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "5"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin bidirectional line
-					(at -10.16 2.54 0)
-					(length 2.54)
-					(name "D-"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "6"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin bidirectional line
-					(at 10.16 -5.08 180)
-					(length 2.54)
-					(name "D2-"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "7"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin bidirectional line
-					(at 10.16 2.54 180)
-					(length 2.54)
-					(name "D1-"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "8"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin input line
-					(at -10.16 -2.54 0)
-					(length 2.54)
-					(name "~{OE}"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "9"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin power_in line
-					(at 0 10.16 270)
-					(length 2.54)
-					(name "VCC"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "10"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "Power_Protection:USBLC6-2SC6"
 			(pin_names
 				(hide yes)
@@ -2242,6 +1966,286 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "devhub:PI3USB4002A"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "U"
+				(at -7.62 10.16 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "PI3USB4002A"
+				(at -7.62 7.62 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" "https://www.diodes.com/part/view/PI3USB4002A"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "USB 2.0 SPST switch with 24 V tolerant port side and 4.75 V OVP, UQFN-10 1.5x2 mm (ZUA)"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "usb switch ovp protection"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "*QFN*1.5x2*P0.5mm*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "PI3USB4002A_0_1"
+				(rectangle
+					(start -7.62 7.62)
+					(end 7.62 -7.62)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+			)
+			(symbol "PI3USB4002A_1_1"
+				(pin bidirectional line
+					(at -10.16 5.08 0)
+					(length 2.54)
+					(name "L0+"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at -10.16 2.54 0)
+					(length 2.54)
+					(name "L0-"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin no_connect line
+					(at -10.16 -5.08 0)
+					(length 2.54)
+					(name "NC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin no_connect line
+					(at 10.16 -5.08 180)
+					(length 2.54)
+					(name "NC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 0 -10.16 90)
+					(length 2.54)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 10.16 -2.54 180)
+					(length 2.54)
+					(name "REF"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 10.16 2.54 180)
+					(length 2.54)
+					(name "C0-"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "7"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 10.16 5.08 180)
+					(length 2.54)
+					(name "C0+"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "8"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -10.16 -2.54 0)
+					(length 2.54)
+					(name "EN"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "9"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 0 10.16 270)
+					(length 2.54)
+					(name "VDD"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "10"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "power:+3V3"
 			(power global)
 			(pin_numbers
@@ -2499,7 +2503,7 @@
 	)
 	(text "DIS: scarica VBUS con Q1/R1 per ~100 ms dopo lo spegnimento."
 		(exclude_from_sim no)
-		(at 14.986 20.32 0)
+		(at 10.16 20.32 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -2508,16 +2512,16 @@
 		)
 		(uuid "63a1e9fa-6c51-5bee-a161-b4cae109602f")
 	)
-	(text "VBUS dal load switch (foglio switches). Dati: TS3USB30E tra hub e connettore, OE_N alto = scollegato (pull-up: scollegato al reset)."
+	(text "VBUS dal load switch (foglio switches). Dati: PI3USB4002A tra hub e connettore, OE_N (EN) alto = scollegato (pull-up: scollegato al reset); lato connettore tollera 24 V e si apre da solo sopra 4,75 V."
 		(exclude_from_sim no)
-		(at 14.986 16.51 0)
+		(at 10.16 16.51 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left bottom)
 		)
-		(uuid "940a6fc3-224a-51ab-b53d-8bb315fc059d")
+		(uuid "7742ae3e-1c09-5b6e-9d34-2940fad3481b")
 	)
 	(text "C2 + C5 >= 120 uF (USB 2.0, porta tipo A)"
 		(exclude_from_sim no)
@@ -2577,8 +2581,8 @@
 		(uuid "83d400a5-0a9f-5ed6-859f-10bf8b9768bc")
 	)
 	(no_connect
-		(at 86.36 78.74)
-		(uuid "d51a9eac-725e-53c2-8db2-28eeafd7b00e")
+		(at 66.04 81.28)
+		(uuid "bc5d2a8f-1eac-5876-8b0c-440132f5e043")
 	)
 	(wire
 		(pts
@@ -2612,6 +2616,16 @@
 	)
 	(wire
 		(pts
+			(xy 86.36 78.74) (xy 96.52 78.74)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2cb77c55-1b7d-5eac-894d-26d929126071")
+	)
+	(wire
+		(pts
 			(xy 193.04 142.24) (xy 193.04 144.78)
 		)
 		(stroke
@@ -2639,16 +2653,6 @@
 			(type default)
 		)
 		(uuid "3be00e21-ae92-58a5-9154-e9a5accdf5c1")
-	)
-	(wire
-		(pts
-			(xy 66.04 81.28) (xy 63.5 81.28)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3c6359b4-b434-5e4c-970a-e5b21ecf28a1")
 	)
 	(wire
 		(pts
@@ -2830,16 +2834,6 @@
 		)
 		(uuid "f9e7e481-5cac-5255-baa2-9df8c4b03198")
 	)
-	(wire
-		(pts
-			(xy 63.5 81.28) (xy 63.5 83.82)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "fc0a9ab4-e186-5b59-9e94-4a6314a0f1ea")
-	)
 	(label "VBUS"
 		(at 116.84 63.5 90)
 		(effects
@@ -2909,6 +2903,16 @@
 			(justify left bottom)
 		)
 		(uuid "81a90fc8-5f39-51e9-b903-851b50e34ffc")
+	)
+	(label "SW_REF"
+		(at 87.63 78.74 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "97688c72-7488-53b8-9fb8-7099f91a52dd")
 	)
 	(label "DP_C"
 		(at 121.92 71.12 0)
@@ -3047,6 +3051,83 @@
 			(justify right)
 		)
 		(uuid "f3642073-5386-5f55-a866-40a0f04efc96")
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 96.52 86.36 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "0188df4f-3f9e-547b-861a-b1d94fa6d06d")
+		(property "Reference" "#PWR5005"
+			(at 96.52 86.36 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 96.52 90.76 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 96.52 86.36 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 96.52 86.36 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 96.52 86.36 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "7f373cc0-4900-5016-9eac-cdd116d89813")
+		)
+		(instances
+			(project "devhub"
+				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630/0c5617cc-af51-5b03-9838-7bc06ac23dd1"
+					(reference "#PWR5005")
+					(unit 1)
+				)
+			)
+		)
 	)
 	(symbol
 		(lib_id "Device:R")
@@ -3209,7 +3290,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Interface_USB:TS3USB30EDGSR")
+		(lib_id "devhub:PI3USB4002A")
 		(at 76.2 76.2 0)
 		(unit 1)
 		(body_style 1)
@@ -3230,7 +3311,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "TS3USB30E"
+		(property "Value" "PI3USB4002A"
 			(at 80.01 90.17 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3241,7 +3322,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_SO:TSSOP-10_3x3mm_P0.5mm"
+		(property "Footprint" ""
 			(at 76.2 76.2 0)
 			(hide yes)
 			(show_name no)
@@ -3252,7 +3333,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/ts3usb30e.pdf"
+		(property "Datasheet" "https://www.diodes.com/part/view/PI3USB4002A"
 			(at 76.2 76.2 0)
 			(hide yes)
 			(show_name no)
@@ -3263,7 +3344,7 @@
 				)
 			)
 		)
-		(property "Description" "ESD-Protected, High-Speed USB 2.0 (480-Mbps) 1:2 Multiplexer/Demultiplexer Switch With Single Enable, TSSOP-10 (Texas DGS0010A / VSSOP)"
+		(property "Description" "USB 2.0 SPST switch with 24 V tolerant port side and 4.75 V OVP, UQFN-10 1.5x2 mm (ZUA)"
 			(at 76.2 76.2 0)
 			(hide yes)
 			(show_name no)
@@ -3280,29 +3361,29 @@
 		(pin "2"
 			(uuid "22525632-0450-5315-98bc-3635d83de6a0")
 		)
+		(pin "9"
+			(uuid "90f07af2-6d16-5ac2-b00b-a4ea4b8eab14")
+		)
 		(pin "3"
 			(uuid "f8e27436-5ebc-5763-a600-2eb769c91342")
-		)
-		(pin "4"
-			(uuid "7639c288-0608-50a1-8dc4-d9613776e320")
-		)
-		(pin "5"
-			(uuid "ea7c01ab-8efa-5192-b969-7af70a7a0833")
-		)
-		(pin "6"
-			(uuid "5b64231b-3bf6-5c81-a1d8-24bac53beaaf")
-		)
-		(pin "7"
-			(uuid "c5bb31e1-01c5-52a2-b848-a705622fecf1")
 		)
 		(pin "8"
 			(uuid "223e9e81-b338-50c9-92fa-a3ae4c8e5ebc")
 		)
-		(pin "9"
-			(uuid "90f07af2-6d16-5ac2-b00b-a4ea4b8eab14")
+		(pin "7"
+			(uuid "c5bb31e1-01c5-52a2-b848-a705622fecf1")
+		)
+		(pin "6"
+			(uuid "5b64231b-3bf6-5c81-a1d8-24bac53beaaf")
+		)
+		(pin "4"
+			(uuid "7639c288-0608-50a1-8dc4-d9613776e320")
 		)
 		(pin "10"
 			(uuid "b3d611c2-58cb-5227-86ea-98dad1a65014")
+		)
+		(pin "5"
+			(uuid "ea7c01ab-8efa-5192-b969-7af70a7a0833")
 		)
 		(instances
 			(project "devhub"
@@ -3324,7 +3405,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "2dfe0fe1-efc4-594e-9385-2db13c1dbfe6")
-		(property "Reference" "#PWR5002"
+		(property "Reference" "#PWR5001"
 			(at 76.2 66.04 0)
 			(hide yes)
 			(show_name no)
@@ -3384,7 +3465,7 @@
 		(instances
 			(project "devhub"
 				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630/0c5617cc-af51-5b03-9838-7bc06ac23dd1"
-					(reference "#PWR5002")
+					(reference "#PWR5001")
 					(unit 1)
 				)
 			)
@@ -3401,7 +3482,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "31e202ba-6117-5b48-ae55-30d3fc52fdc2")
-		(property "Reference" "#PWR5001"
+		(property "Reference" "#PWR5002"
 			(at 76.2 86.36 0)
 			(hide yes)
 			(show_name no)
@@ -3461,7 +3542,7 @@
 		(instances
 			(project "devhub"
 				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630/0c5617cc-af51-5b03-9838-7bc06ac23dd1"
-					(reference "#PWR5001")
+					(reference "#PWR5002")
 					(unit 1)
 				)
 			)
@@ -4258,83 +4339,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 63.5 83.82 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "9044b0ab-dbb8-5be9-bd53-4b9eb385f090")
-		(property "Reference" "#PWR5005"
-			(at 63.5 83.82 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 63.5 88.22 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 63.5 83.82 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 63.5 83.82 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 63.5 83.82 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "fa77f730-66a5-5406-907f-b67e0856298c")
-		)
-		(instances
-			(project "devhub"
-				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630/0c5617cc-af51-5b03-9838-7bc06ac23dd1"
-					(reference "#PWR5005")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Power_Protection:USBLC6-2SC6")
 		(at 116.84 71.12 0)
 		(unit 1)
@@ -5070,6 +5074,87 @@
 			(project "devhub"
 				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630/0c5617cc-af51-5b03-9838-7bc06ac23dd1"
 					(reference "#PWR5006")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 96.52 82.55 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "d28c264a-9e75-561b-947d-ccb1f1a0798a")
+		(property "Reference" "C506"
+			(at 99.06 81.28 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "1u 25V"
+			(at 99.06 83.82 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+			(at 96.52 82.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 96.52 82.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 96.52 82.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "62a22c5f-3d92-5cda-9a4a-47cd438cb401")
+		)
+		(pin "2"
+			(uuid "ba9018b8-f21f-5471-9a8b-05fca554eaee")
+		)
+		(instances
+			(project "devhub"
+				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630/0c5617cc-af51-5b03-9838-7bc06ac23dd1"
+					(reference "C506")
 					(unit 1)
 				)
 			)

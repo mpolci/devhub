@@ -1806,7 +1806,7 @@
 	)
 	(text "Bobina G5Q-1 senza polarità: pin 5 a +5V, pin 1 al ULN2003 (diodi di ricircolo nel ULN, COM a +5V)."
 		(exclude_from_sim no)
-		(at 17.272 153.67 0)
+		(at 10.16 152.4 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1817,7 +1817,7 @@
 	)
 	(text "JP2/JP3 (default 1-2 = NC) portano NO sulla seconda boccola se serve un canale normalmente aperto. Snubber R/C opzionali (DNP)."
 		(exclude_from_sim no)
-		(at 17.272 21.59 0)
+		(at 10.16 20.32 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1828,7 +1828,7 @@
 	)
 	(text "Boccole Cliff FCR7350 (4 mm da pannello, montaggio su PCB): nera = COM, rossa = NC (o NO con JP)."
 		(exclude_from_sim no)
-		(at 17.272 148.59 0)
+		(at 10.16 147.32 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1839,7 +1839,7 @@
 	)
 	(text "Contatti max 16 V / 3 A. Sul pannello COM e NC: linea normalmente collegata, bobina eccitata solo per staccare."
 		(exclude_from_sim no)
-		(at 17.272 17.78 0)
+		(at 10.16 16.51 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -2361,7 +2361,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "13df10a7-40ad-5b3a-b116-c4a89c4469cb")
-		(property "Reference" "#PWR130"
+		(property "Reference" "#PWR137"
 			(at 101.6 68.58 0)
 			(hide yes)
 			(show_name no)
@@ -2421,7 +2421,7 @@
 		(instances
 			(project "devhub"
 				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630/754ef4c0-187b-5738-814a-57c901f66789"
-					(reference "#PWR130")
+					(reference "#PWR137")
 					(unit 1)
 				)
 			)
@@ -2519,7 +2519,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "1bffaf47-fd67-53bf-bf13-7f2ebc611821")
-		(property "Reference" "#PWR131"
+		(property "Reference" "#PWR138"
 			(at 187.96 68.58 0)
 			(hide yes)
 			(show_name no)
@@ -2579,7 +2579,7 @@
 		(instances
 			(project "devhub"
 				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630/754ef4c0-187b-5738-814a-57c901f66789"
-					(reference "#PWR131")
+					(reference "#PWR138")
 					(unit 1)
 				)
 			)
@@ -2678,7 +2678,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "74b19185-7ca3-5fe0-bbbb-9ee2306c85a8")
-		(property "Reference" "#PWR128"
+		(property "Reference" "#PWR135"
 			(at 45.72 127 0)
 			(hide yes)
 			(show_name no)
@@ -2738,7 +2738,7 @@
 		(instances
 			(project "devhub"
 				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630/754ef4c0-187b-5738-814a-57c901f66789"
-					(reference "#PWR128")
+					(reference "#PWR135")
 					(unit 1)
 				)
 			)
@@ -2833,7 +2833,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "90abfe3a-9f14-519e-b0ba-46c433fdf401")
-		(property "Reference" "#PWR129"
+		(property "Reference" "#PWR136"
 			(at 58.42 99.06 0)
 			(hide yes)
 			(show_name no)
@@ -2893,7 +2893,7 @@
 		(instances
 			(project "devhub"
 				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630/754ef4c0-187b-5738-814a-57c901f66789"
-					(reference "#PWR129")
+					(reference "#PWR136")
 					(unit 1)
 				)
 			)

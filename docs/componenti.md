@@ -25,10 +25,11 @@ parte della v1.
 | Load switch VBUS (×3, doppio canale) | TI **TPS2561A** | VSON-10 3×3 | aria calda / piastra | extended | sì | 2,5 A continui per canale, limite regolabile 0,25–2,8 A (accurato 2,1–2,5 A), FAULT per canale, 44 mΩ; nessuna scarica dell'uscita (verificato): MOSFET di scarica esterno; R_ILIM 24,3 kΩ |
 | Load switch, alternativa a pin | TI **TPS25221DBV** | SOT-23-6 | sì | extended | sì | 2 A continui (al limite del requisito), limite 0,275–2,7 A, FAULT, nessuna scarica dell'uscita |
 | Scarica VBUS porta (×5) | MOSFET N **AO3400** + R 100 Ω 1206 | SOT-23 | sì | basic | sì | pilotato dal MCU per ~100 ms dopo lo spegnimento |
-| Switch dati D+/D- (×5) | TI **TS3USB30E DGS** | VSSOP-10 | sì | extended | sì | banda 1 400 MHz, Ron 10 Ω, OE, ESD 15 kV su I/O; si usa solo un lato del mux |
+| Switch dati D+/D- (×5) | Diodes **PI3USB4002AZUAEX** | UQFN-10 1,5×2 mm, passo 0,5 mm | aria calda | — | no (DigiKey) | interruttore USB 2.0, 1 GHz, 5 Ω, EN alto = scollegato; lato connettore tollerante 24 V con OVP a 4,75 V, ESD 10 kV IEC; REF con 1 µF 25 V (D22) |
 | Misura corrente | TI **INA3221** ×2 | VQFN-16 | aria calda | extended | sì | 3 canali, I2C: 5 porte + corrente totale d'ingresso |
 | Misura corrente, alternativa a mano | TI **INA219** ×5 | SOT-23-8 | sì | extended | sì | 1 canale, 16 indirizzi I2C |
-| Protezione / ORing ingresso 5 V (opzionale) | TI **TPS2596** eFuse 3 A o diodo Schottky | SOT-23-8 / SMA | sì | extended / basic | sì | blocco corrente inversa, limite 3 A; in v1 basta la TVS più l'ORing |
+| eFuse d'ingresso | TI **TPS259470ARPWR** | VQFN-HR-10 2×2 mm (RPW) | aria calda | extended | C3662799 | 2,7–23 V, 5,5 A, 28 mΩ; OVLO/UVLO regolabili, limite attivo, ripartenza automatica, FLT, blocco corrente inversa (D21) |
+| Zener su EN dell'eFuse | **BZT52C5V1** | SOD-123 | sì | basic | sì | tiene EN sotto 6,5 V con ingresso fino a 28 V |
 | LDO 3,3 V | Diodes **AP7361C-33E** | SOT-223 | sì | extended | sì | 1 A, dropout 90 mV tipici a 300 mA (serve per funzionare dalla sola VBUS upstream), θJA 110 °C/W con piazzola minima: regge 0,3–0,6 W. Sostituisce l'AP2112K (SOT-23-5), troppo caldo con il carico del hub |
 | Supervisore reset hub | Microchip **MCP120T-300I/TT** | SOT-23 | sì | extended | sì | open-drain, soglia 2,85–3,0 V, ritardo 150–700 ms; in wired-OR con PA8 del MCU su RESET_N (errata USB2517: POR interno non funzionante) |
 | ORing 3V3 (RF-16) | 2× Schottky **SS34** | SMA | sì | basic | sì | tra 5V_SYS e VBUS upstream, prima dell'LDO |
@@ -46,7 +47,7 @@ Con il montaggio a mano e un fornitore unico il catalogo si allarga. Per blocco:
 |---|---|---|---|
 | Hub 7 porte | USB2517I (QFN-64) | 2 × Microchip **USB2514B** (QFN-36, 4 porte, cascata 4+3); 2 × Infineon/Cypress **CY7C65642** (QFN-56) | Non esiste un hub Hi-Speed a 7 porte in package a pin da nessun fornitore. Gli hub a 4 porte in SSOP-28 (GL850G, FE1.1s) sono solo su LCSC. La cascata aggiunge un quarzo e un hop. USB2517 resta la scelta. |
 | Load switch | TPS2561A | TPS25221 (SOT-23-6, 2 A); Diodes **AP22814** (SOT-25, limite fisso 3,45 A, troppo alto per il budget) | TPS2561A è il migliore sui 2 A: 2,5 A continui e limite accurato. Un canale resta libero. |
-| Switch dati | TS3USB30E (VSSOP-10) | TI TS3USB221 (QFN); Nexperia NX3DV221 (XSON, minuscolo); Diodes PI3USB102 (package da verificare); onsemi FSUSB42 (segnalato obsoleto) | TS3USB30E resta: a pin, banda 1,4 GHz, ESD integrata. |
+| Switch dati | PI3USB4002A (UQFN-10) | vedi "Alternative già valutate" | Unico trovato con protezione dai corti su VBUS, package saldabile e disponibilità |
 | Misura corrente | INA3221 ×2 (VQFN-16) | TI **INA260** ×5 (TSSOP-16, shunt 2 mΩ integrato, ~4,7 € cad., lead time lungo segnalato); TI **INA226** ×5 (MSOP-10, shunt esterno); TI **INA219** ×5 (SOT-23-8) | INA3221 è il più compatto e il più economico (2 chip). INA260 elimina gli shunt ma costa 5 volte tanto e la disponibilità è incerta. |
 | Relè | Omron G5Q-1 / Songle SRD | Omron **G5LE-1**, TE **OJE-SH-105LM** (5 A, slim), Panasonic **JS1-5V** | Tutti equivalenti per 16 V / 3 A; scelta per ingombro e prezzo. |
 | Connettori USB-C 16 pin | — | GCT **USB4105-GF-A**, Würth **632723300011**, Amphenol **12401610E4#2A** | Tutti a catalogo Mouser/DigiKey, footprint KiCad disponibili. |
@@ -69,3 +70,15 @@ Con il montaggio a mano e un fornitore unico il catalogo si allarga. Per blocco:
 Se JLCPCB montasse tutto: hub, MCU, load switch, switch dati, INA3221, più eventuali connettori e
 il quarzo se non basic: **circa 8–11 tipi extended**, cioè ~25–35 € di sovrapprezzo per ordine. Vedi la strategia in
 [architettura.md](architettura.md#produzione-e-assemblaggio).
+
+## Alternative già valutate (per fornitore)
+
+Ricerche fatte durante le scelte, da riusare se si cambia fornitore. Prezzi e scorte sono quelli
+visti a ottobre 2026 e vanno ricontrollati.
+
+| Funzione | Scelta | Alternative | Note |
+|---|---|---|---|
+| Quarzo 24 MHz 3225 | YXC **X322524MOB4SI** (LCSC C70590, C_L 12 pF, ~0,07 $, scorte ampie) | YXC X322524MRB4SI (LCSC C70571, C_L 18 pF, ~0,06 $, scorte scarse); Abracon ABM8-24.000MHZ-B2-T (C_L 18 pF, ~0,5–1 $, DigiKey esaurito, lead time 10 settimane); su DigiKey/Mouser va bene qualunque 3225 da 12 pF (es. serie Abracon ABM8 con C_L 12 pF, da verificare) | Con C_L 12 pF: C22/C23 = 15 pF; con 18 pF: 33 pF. Il hub tollera ±350 ppm |
+| Switch dati D+/D- protetto | Diodes **PI3USB4002AZUAEX** (DigiKey, ~1,2 $, >3 000 pezzi) | TI **TS5USBC410YFFR** (20 V OVP, LCSC C2150855 e DigiKey ~1,1 $; ma DSBGA-12 1,2×1,6 mm passo 0,4 mm: sconsigliato a mano); TI TS5USBC402 (DigiKey, DSBGA); Renesas ISL54226 / ISL54225 (obsoleti); ADI MAX4907 (sconsigliato per nuovi progetti); ADI MAX20046 (automotive, 18 V, più costoso); TI TPD3S714-Q1 (limite VBUS fisso 550 mA, troppo basso, un solo enable per dati e VBUS) | Il TS3USB30E di prima non ha protezione: sui pin dati regge solo VCC + 0,3 V |
+| eFuse d'ingresso | TI **TPS259470ARPWR** (DigiKey ~1,3 $, Mouser, LCSC C3662799) | TPS259474ARPWR (LCSC C3662807: interviene a circuit breaker invece di limitare); TPS2595 con clamp 5,7 V e ST STEF05S (limitano la tensione invece di staccare: con 12 V in ingresso scaldano fino alla protezione termica) | — |
+| USB-C 16 pin | GCT **USB4105-GF-A** (DigiKey, 5 A) | Würth 632723300011, Amphenol 12401610E4#2A | Modelli ruotati di 90° scartati (D18) |

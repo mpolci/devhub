@@ -23,6 +23,10 @@
 | D17 | Regolatore 3,3 V | LDO **AP7361C-33E** (1 A, SOT-223) al posto dell'AP2112K in SOT-23-5 |
 | D18 | Connettori USB | orizzontali (angolo retto, montati sopra il PCB): **GCT USB4105-GF-A** per tutti e sei gli USB-C (16 pin USB 2.0, 5 A, guscio con linguette passanti), **Kycon KUSBX-AS1N-B** passante per l'USB-A; scartati i modelli ruotati di 90° (rari e meno robusti) |
 | D19 | Quarzo del hub | YXC **X322524MOB4SI** (24 MHz, 3225, C_L 12 pF, il più economico e con più disponibilità), C22/C23 = 15 pF C0G |
+| D20 | Condensatori d'ingresso | invariati (2 × 220 µF + 2 × 10 µF): il picco all'inserzione lo elimina l'avvio dolce dell'eFuse |
+| D21 | Protezione d'ingresso | eFuse **TPS259470A**: stacca sopra 5,84 V e sotto 4,0 V, limite 3,5 A, avvio dolce ~5 ms, FLT al MCU (PB1) |
+| D22 | Switch dati delle porte | **PI3USB4002A** al posto del TS3USB30E: il lato connettore regge 24 V e si apre sopra 4,75 V (corti D+/D- su VBUS) |
+| D23 | Fornitore | orientamento verso DigiKey (non ancora definitivo, vedi D11); le alternative trovate sono in `componenti.md` |
 
 ## Aperte
 
