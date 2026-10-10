@@ -11,7 +11,7 @@
 | D5 | Pulsanti fisici per porta | sì, uno per porta, più LED |
 | D6 | MCU | STM32: **STM32G0B1RET6** (LQFP-64, USB FS + UCPD) |
 | D7 | PCB e assemblaggio | JLCPCB 4 strati; **strategia C**: montaggio tutto a mano con piastra riscaldante e aria calda (stencil per i QFN), componenti da un unico fornitore; nessun tipo extended |
-| D8 | Alimentazione | USB-C a **5 V / 3 A senza PD**; ~2,5 A totali per le porte, 2 A su una singola porta; budget letto da CC e gestito dal firmware con le misure di corrente |
+| D8 | Alimentazione | USB-C a **5 V / 3 A senza PD**; ~2,3 A totali per le porte, 2 A su una singola porta; budget letto da CC e gestito dal firmware con le misure di corrente |
 | D9 | Upstream verso il PC | connettore USB-C |
 | D10 | Strumento host | libreria Python generica (multipiattaforma via `hidapi`) + CLI per macOS costruita sopra |
 | D11 | Fornitore | si decide alla fine, a componenti finalizzati |
@@ -19,6 +19,10 @@
 | D13 | VID/PID USB | VID 0x1209 (pid.codes) con PID di test durante lo sviluppo; PID definitivo da richiedere a pid.codes alla pubblicazione |
 | D14 | Porta hub di scorta (DS7) | su header interno a 4 pin (VBUS, D-, D+, GND), non sezionata |
 | D15 | Scatola | stampata in 3D su misura; tutti i connettori saldati sul PCB, boccole a banana in versione da PCB; connettori sui due lati corti (banco: porte, pulsanti, boccole; retro: upstream e alimentazione) |
+| D16 | Reset del hub | supervisore **MCP120T-300** open-drain su RESET_N con pull-up, in wired-OR con il MCU (PA8 open-drain): il hub non dipende dal firmware e resta acceso durante reset e DFU del MCU |
+| D17 | Regolatore 3,3 V | LDO **AP7361C-33E** (1 A, SOT-223) al posto dell'AP2112K in SOT-23-5 |
+| D18 | Connettori USB | orizzontali (angolo retto, montati sopra il PCB): **GCT USB4105-GF-A** per tutti e sei gli USB-C (16 pin USB 2.0, 5 A, guscio con linguette passanti), **Kycon KUSBX-AS1N-B** passante per l'USB-A; scartati i modelli ruotati di 90° (rari e meno robusti) |
+| D19 | Quarzo del hub | YXC **X322524MOB4SI** (24 MHz, 3225, C_L 12 pF, il più economico e con più disponibilità), C22/C23 = 15 pF C0G |
 
 ## Aperte
 

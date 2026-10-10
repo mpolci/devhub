@@ -44,7 +44,7 @@ il cavo. Si vuole poterlo fare **dal PC**, in modo scriptabile, senza toccare il
 
 - **RF-13** Ingresso di alimentazione su connettore USB-C dedicato, a **5 V senza negoziazione
   PD**: funziona con qualunque alimentatore USB-C da 5 V / 3 A (compresi quelli PD, che erogano
-  5 V / 3 A di default). Totale disponibile per le porte: ~2,5 A.
+  5 V / 3 A di default). Totale disponibile per le porte: ~2,3 A.
 - **RF-14** Il MCU legge la corrente pubblicizzata dall'alimentatore sulle linee CC (0,5 / 1,5 /
   3 A) e ne ricava il budget di potenza.
 - **RF-15** Il MCU misura la corrente totale e per porta; non accende una porta se il budget non
@@ -54,12 +54,13 @@ il cavo. Si vuole poterlo fare **dal PC**, in modo scriptabile, senza toccare il
 
 ## Requisiti non funzionali
 
-- **RNF-1** PCB realizzabile con servizio di prototipazione standard (4 strati, assemblaggio SMT
-  dal produttore per i componenti fini).
+- **RNF-1** PCB realizzabile con servizio di prototipazione standard (4 strati); componenti
+  montabili a mano con piastra riscaldante e aria calda (strategia C in `architettura.md`).
 - **RNF-2** Componenti reperibili presso distributori comuni (LCSC/JLCPCB, Mouser, DigiKey).
-- **RNF-3** Protezione ESD su tutte le linee dati esposte e TVS su VBUS.
+- **RNF-3** Protezione ESD su tutte le linee dati esposte, TVS sulla VBUS d'ingresso e clamp sulle
+  VBUS delle porte.
 - **RNF-4** Firmware e strumento host open source e documentati; protocollo stabile e versionato.
-- **RNF-5** LED di stato per porta (alimentata / dati / fault).
+- **RNF-5** LED di stato per porta (alimentata / fault).
 
 ## Fuori ambito (v1)
 

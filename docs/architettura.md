@@ -43,7 +43,7 @@ Scelta: **USB 2.0 Hi-Speed** per la v1. Motivi:
   due lati sono in parallelo nel connettore e basta una resistenza di pull-up Rp su CC1 e CC2.
 
 Il PCB sarà comunque a **4 strati** (costa poco, semplifica il routing delle coppie differenziali
-Hi-Speed e dà piani solidi per i 10 A a 5 V). Un'eventuale variante USB 3 resta un progetto
+Hi-Speed e dà piani solidi per i 3 A a 5 V). Un'eventuale variante USB 3 resta un progetto
 separato: non si cerca di renderla "predisposta".
 
 ### Cosa si seziona: VBUS e D+/D-, non GND
@@ -85,7 +85,7 @@ I relè restano per le due linee ausiliarie su banana.
 
 Decisione: l'ingresso è un USB-C a **5 V senza negoziazione PD**. Su USB-C un alimentatore eroga
 al massimo 5 V / 3 A (15 W) senza PD; per avere di più bisogna negoziare una tensione più alta e
-abbassarla con un buck. Si è scelto di **non** farlo, accettando un totale di ~2,5 A per le porte,
+abbassarla con un buck. Si è scelto di **non** farlo, accettando un totale di ~2,3 A per le porte,
 perché:
 
 - le schede a microcontrollore assorbono in genere 50–500 mA; una porta da sola arriva comunque a
@@ -100,17 +100,24 @@ Bilancio (alimentatore 5 V / 3 A):
 
 | Voce | Valore |
 |---|---|
-| Hub + MCU + switch + LED | ~0,25 A |
-| 2 relè eccitati (bobine 5 V) | ~0,15 A |
-| Disponibile per le porte | ~2,5 A |
+| Hub USB2517 (3,3 V tramite LDO) | 0,23–0,46 A (datasheet: da 1 a 7 porte Hi-Speed attive) |
+| MCU, switch dati, INA3221, LED | ~0,05 A |
+| 2 relè eccitati (G5Q-1 SPDT, 80 mA per bobina) | ~0,16 A |
+| Disponibile per le porte | ~2,3 A nel caso peggiore |
+
+La logica è alimentata dall'ORing tra 5V_SYS e VBUS upstream: quando la VBUS del PC è più alta
+della 5V_SYS la logica assorbe in parte dal PC e quella corrente non passa dallo shunt d'ingresso.
 
 **Lettura del budget.** Sulle CC dell'ingresso il MCU ha Rd da 5,1 kΩ e legge con l'ADC la
 tensione imposta dall'Rp dell'alimentatore: ~0,4 V → 0,5 A, ~0,9 V → 1,5 A, ~1,7 V → 3 A
-(soglie USB Type-C: 0,66 V e 1,23 V). Budget per le porte = corrente pubblicizzata − 0,4 A.
+(soglie USB Type-C: 0,66 V e 1,23 V). Il budget è la corrente pubblicizzata dall'alimentatore,
+oppure quella impostata a mano.
 La periferica UCPD dello STM32G0B1 può fare la stessa lettura senza stack PD, ma l'ADC basta.
 
 **Gestione del budget (firmware).** Il sesto canale dell'INA3221 misura la corrente totale
-d'ingresso. Regole:
+d'ingresso (`I_totale`), che comprende già logica e relè quando sono alimentati dalla 5V_SYS: per
+questo si confronta direttamente con il budget, senza sottrarre una quota fissa per la logica.
+Regole:
 1. una porta si accende solo se `I_totale + 200 mA < budget`;
 2. le porte si accendono sfalsate di ~30 ms (inrush);
 3. se `I_totale > budget` per più di 50 ms, oppure 5V_SYS scende sotto 4,5 V (ADC), si spegne
@@ -120,12 +127,16 @@ d'ingresso. Regole:
 Il limite di corrente dell'alimentatore resta la protezione di ultima istanza.
 
 **Protezione d'ingresso.** TVS 5 V (SMAJ5.0A) e, opzionale, un eFuse / load switch da 3 A con
-blocco della corrente inversa (es. TPS2596) al posto del semplice diodo di ORing.
+blocco della corrente inversa (es. TPS2596) al posto del semplice diodo di ORing. La TVS c'è
+solo sull'ingresso: sulle VBUS delle porte la protezione è il pin VBUS dell'USBLC6-2SC6.
 
-**Logica (RF-16).** 3V3 da LDO a basso dropout (AP2112K-3.3, 600 mA) alimentato da un ORing a diodi
+**Logica (RF-16).** 3V3 da LDO a basso dropout (**AP7361C-33E**, 1 A, SOT-223) alimentato da un ORing a diodi
 Schottky tra 5V_SYS e la VBUS upstream: con alimentatore assente hub e MCU enumerano e riportano "alimentatore assente"; le
 porte downstream si attivano solo se 5V_SYS è presente. Il diodo impedisce di iniettare 5V_SYS
-verso l'host.
+verso l'host. Con 4,6 V in ingresso e 0,25–0,48 A di carico l'LDO dissipa 0,3–0,6 W: il SOT-223
+(θJA 110 °C/W con la piazzola minima, meno con un'area di rame sul tab) resta sotto i 70 °C di
+sovratemperatura nel caso peggiore. Dropout 90 mV tipici a 300 mA: funziona anche dalla sola VBUS
+upstream. Scartato l'AP2112K in SOT-23-5, che con lo stesso carico rischiava la protezione termica (D17).
 
 #### Variante ad alta potenza (non in v1)
 
@@ -154,12 +165,16 @@ Dettagli verificati sul datasheet (DS00001598C) e sull'errata (DS80000628A):
   il pin SCL (alto per il pull-up I2C), CFG_SEL1 è a massa, **CFG_SEL2 lo pilota il MCU** prima di
   rilasciare il reset: basso = SMBus (001), alto = default interni con dynamic power (101), che è
   anche lo stato del pull-up per il bring-up senza firmware.
-- **Reset**: l'errata dice che il POR interno non funziona; RESET_N è pilotato dal MCU (pull-down,
-  hub in reset finché il firmware non lo rilascia), con ponticello verso un pull-up RC per il
-  bring-up. Questo dà anche il comando "reset hub" via HID.
+- **Reset** (D16): l'errata dice che il POR interno non funziona e suggerisce un supervisore
+  esterno. RESET_N ha un pull-up da 10 kΩ e due sorgenti in wired-OR: il supervisore **MCP120T-300**
+  (open-drain, soglia 2,85–3,0 V, ritardo 150–700 ms), che tiene il hub in reset finché la 3,3 V non
+  è stabile, e PA8 del MCU in open-drain, che può forzare il reset (comando `RESET_HUB`). Un reset del
+  MCU (watchdog, `REBOOT`, debugger, bootloader) lascia PA8 in alta impedenza e **non resetta il
+  hub**. All'accensione il MCU parte prima che il supervisore rilasci, tiene basso il reset, sceglie
+  CFG_SEL2 e lo rilascia; senza firmware il hub parte comunque con i default interni (101).
 - **VBUS_DET** dalla VBUS upstream con partitore 100 k / 100 k; **LOCAL_PWR** da un partitore su
   5V_SYS (alto = alimentatore presente).
-- RBIAS 12,0 kΩ 1 %; quarzo 24 MHz con condensatori da adattare al C_L del quarzo; 1,8 V dal
+- RBIAS 12,0 kΩ 1 %; quarzo 24 MHz YXC X322524MOB4SI (C_L 12 pF) con 15 pF C0G (D19; il hub tollera ±350 ppm); 1,8 V dal
   regolatore interno (VDD18, VDD18PLL con 1 µF ciascuno); TEST a massa; slug a massa.
 - Mappa porte: 1–4 → USB-C, 5 → USB-A, 6 → MCU, 7 → header interno. Le porte 1–5 sono sul lato
   inferiore del QFN, da orientare verso il pannello frontale.
@@ -173,9 +188,9 @@ Scelto tra gli STM32 per questi motivi:
 - **USB FS device senza quarzo** (HSI48 + CRS). Ha anche la periferica **UCPD**: non serve in v1
   (nessuna negoziazione PD) ma lascia aperta la variante ad alta potenza senza cambiare MCU.
 - **LQFP-64**, saldabile a mano, ~60 GPIO: bastano per pilotare tutto senza expander. Conteggio:
-  5 porte × (EN, FAULT, OE, DIS, pulsante) = 25, 74HC595 per i LED = 3, 2 relè, I2C condiviso = 2,
+  5 porte × (EN, FAULT, OE, DIS, pulsante) = 25, 74HC595 per i LED = 4 (SER, SCK, latch, /OE), 2 relè, I2C condiviso = 2,
   USB = 2, ADC (CC1, CC2, 5V_SYS) = 3, reset hub = 1, SWD = 2, UART debug = 2:
-  totale ~42 sui 60 disponibili.
+  totale ~43 sui 60 disponibili.
 - 512 kB flash / 144 kB RAM: largo per stack USB + logica, e per uno stack PD futuro.
 - Disponibile su LCSC (C2829307, ~2,7 $) e su Mouser/DigiKey.
 
@@ -184,7 +199,10 @@ Il modello **STM32G0B1RCT6** (256 kB) è equivalente se più disponibile.
 Interfacce USB esposte:
 - **HID** con usage page vendor: il canale di controllo, senza driver.
 - **CDC** (opzionale): console di debug e log.
-- Bootloader di sistema ST via DFU (USB) per l'aggiornamento del firmware, oppure SWD.
+- Bootloader di sistema ST via DFU (USB) per l'aggiornamento del firmware: `ENTER_BOOTLOADER`, poi
+  `dfu-util` attraverso il hub, che resta acceso. Con la flash vuota il G0 avvia da solo il
+  bootloader (empty check), quindi anche la prima programmazione può passare dall'USB. SWD (J4) per
+  debug e recupero.
 
 Stack software: STM32CubeG0 HAL; per l'USB device TinyUSB o la libreria USB device di ST. Build con CMake e arm-none-eabi-gcc (già presenti sulla macchina di sviluppo).
 
@@ -198,14 +216,15 @@ Per ogni porta:
 | Funzione | Componente | Note |
 |---|---|---|
 | Load switch VBUS | TPS2561A (½ chip) | R_ILIM 24,3 kΩ 1 % → 2,1–2,5 A per canale |
-| Scarica VBUS | AO3400 + 100 Ω | pilotato dal MCU |
+| Scarica VBUS | AO3400 + 100 Ω 1206 | pilotato dal MCU |
 | Switch D+/D- | TS3USB30E DGS | OE dal MCU, S fisso |
-| Misura corrente | INA3221 (3 canali) × 2 | shunt 20 mΩ sul lato 5V_SYS, prima del load switch |
+| Misura corrente | INA3221 (3 canali) × 2 | shunt 20 mΩ tra l'uscita del load switch e il connettore |
 | ESD dati | USBLC6-2SC6 | tra switch e connettore |
-| TVS VBUS | SMAJ5.0A | |
+| Protezione VBUS | pin VBUS dell'USBLC6-2SC6 | TVS dedicata (SMAJ5.0A) solo sull'ingresso |
 | USB-C: CC1, CC2 | Rp **22 kΩ** a VBUS commutata (pubblicizza 1,5 A) | la VBUS commutata fa cadere anche CC quando la porta è spenta |
 | LED | 2 (alimentata / fault) via 74HC595 | |
 | Pulsante | tattile, toggle della porta | debounce in firmware |
+| Condensatori VBUS | 22 µF + 100 nF; sulla USB-A anche 100 µF | USB 2.0 chiede ≥ 120 µF sulle porte di tipo A |
 
 Sul valore di Rp: con limite hardware a ~2,2 A si pubblicizza 1,5 A (22 kΩ); 3 A (10 kΩ) sarebbe
 scorretto. Le schede di sviluppo in genere ignorano CC.
@@ -224,8 +243,7 @@ bobina. LED per canale, acceso quando la linea è staccata.
 
 ### Upstream
 
-Connettore **USB-C** con Rd 5,1 kΩ su CC1 e CC2 (dispositivo), solo D+/D-. In alternativa USB-B,
-più robusto meccanicamente. Vedi domande aperte.
+Connettore **USB-C** con Rd 5,1 kΩ su CC1 e CC2 (dispositivo), solo D+/D- (decisione D9).
 
 ## Produzione e assemblaggio
 
@@ -243,8 +261,7 @@ stencil**, non con il solo saldatore.
 
 Attrezzatura disponibile: piastra riscaldante e stazione ad aria calda, quindi la **C è la
 strategia scelta**: nessun tipo extended, tutti i componenti da un unico fornitore. La B resta il
-ripiego se la rifusione dell'hub dà problemi. La D è il ripiego se non si vuole toccare i QFN: il FE2.1 è poco documentato. La A costa ~30 € in più per ordine ma consente il TPS2561A (più margine sui 2 A)
-senza pensieri.
+ripiego se la rifusione dell'hub dà problemi. La D è il ripiego se non si vuole toccare i QFN: il FE2.1 è poco documentato. La A costa ~30 € in più per ordine ma evita di saldare a mano i QFN.
 
 ## Meccanica
 
@@ -262,6 +279,8 @@ senza pensieri.
   nessun via inutile, ESD subito al connettore.
 - Inrush sulla 5V_SYS con 5 porte accese insieme: il firmware accende le porte sfalsate di qualche
   decina di ms.
+- Inrush all'inserzione dell'alimentatore: 2 × 220 µF + 2 × 10 µF sull'ingresso senza limitazione;
+  qualche alimentatore potrebbe andare in protezione. Il TPS2596 opzionale lo risolverebbe.
 - Alimentatori USB-C che pubblicizzano 3 A ma non li reggono: il budget è impostabile a mano via
   HID e il firmware reagisce al calo di 5V_SYS.
 - TPS2561A: due canali a 2,3 A nello stesso VSON-10 (RθJA 47,8 °C/W): pad termico su piano di

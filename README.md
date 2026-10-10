@@ -16,7 +16,7 @@ il PC può:
 |---|---|
 | Porte downstream | 4 × USB-C + 1 × USB-A |
 | Velocità | USB 2.0 Hi-Speed (480 Mbit/s) |
-| Alimentazione per porta | 5 V, fino a 2 A sulla singola porta, ~2,5 A totali, con limitazione di corrente e sezionamento per porta |
+| Alimentazione per porta | 5 V, fino a 2 A sulla singola porta, ~2,3 A totali, con limitazione di corrente e sezionamento per porta |
 | Sezionamento | VBUS (load switch) **e** D+/D- (switch analogico), comandati separatamente |
 | Alimentazione hub | ingresso USB-C a 5 V / 3 A, senza USB-PD: va bene qualunque alimentatore USB-C |
 | Upstream (verso il PC) | USB-C (USB 2.0) |
@@ -41,6 +41,7 @@ host/        strumento da riga di comando per il PC
 - [docs/architettura.md](docs/architettura.md) — schema a blocchi, scelte progettuali, componenti candidati, bilancio di potenza
 - [docs/componenti.md](docs/componenti.md) — componenti candidati, package, fornitori, classe JLCPCB
 - [docs/protocollo-controllo.md](docs/protocollo-controllo.md) — bozza del protocollo HID tra PC e hub
+- [docs/pinout-mcu.md](docs/pinout-mcu.md) — piedinatura del MCU e note per il firmware
 - [docs/domande-aperte.md](docs/domande-aperte.md) — decisioni ancora da prendere
 
 ## Licenze
@@ -50,5 +51,5 @@ host/        strumento da riga di comando per il PC
 
 ## Stato
 
-Requisiti, architettura e decisioni di base chiuse (vedi `docs/domande-aperte.md`), componenti
-scelti in prima battuta. Prossimo passo: schema elettrico in KiCad.
+Requisiti, architettura e componenti definiti; schema elettrico v0.1 in KiCad (vedi
+[hardware/README.md](hardware/README.md)). Prossimo passo: rifinitura dello schema e PCB.

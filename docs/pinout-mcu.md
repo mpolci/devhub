@@ -40,7 +40,7 @@ I pin senza segnale sono liberi (no-connect nello schema).
 | 33 | PB13 | — |  |
 | 34 | PB14 | — |  |
 | 35 | PB15 | — |  |
-| 36 | PA8 | HUB_RST_N | uscita: RESET_N del hub (basso = reset) |
+| 36 | PA8 | HUB_RST_N | uscita open-drain: RESET_N del hub (basso = reset), in wired-OR con il supervisore U12 |
 | 37 | PA9/UCPD1_DBCC1 | — |  |
 | 38 | PC6 | DIS_P2 | uscita: scarica VBUS porta 2 (alto = scarica; pull-down) |
 | 39 | PC7 | FAULT_P2 | ingresso: FAULT load switch porta 2 (basso = sovracorrente; anche OCS2_N del hub) |
@@ -64,7 +64,7 @@ I pin senza segnale sono liberi (no-connect nello schema).
 | 57 | PB3 | LED_SCK | SPI1 SCK → 74HC595 SRCLK |
 | 58 | PB4 | LED_LATCH | uscita: 74HC595 RCLK |
 | 59 | PB5 | LED_DATA | SPI1 MOSI → 74HC595 SER |
-| 60 | PB6 | — |  |
+| 60 | PB6 | LED_OE_N | uscita: /OE dei 74HC595 (basso = LED abilitati; pull-up R94) |
 | 61 | PB7 | — |  |
 | 62 | PB8 | SCL | I2C1: INA3221 (0x40, 0x41), hub SMBus (0x2C) |
 | 63 | PB9 | SDA | I2C1 |
@@ -74,6 +74,12 @@ I pin senza segnale sono liberi (no-connect nello schema).
 
 - USB FS senza quarzo: HSI48 + CRS sincronizzato sul SOF.
 - I2C1 su PB8/PB9: INA3221 a 0x40 (A0 = GND, porte 1-3) e 0x41 (A0 = VS, porte 4-5 e corrente d'ingresso); hub USB2517 a 0x2C in modalità SMBus.
-- Sequenza di avvio del hub: tenere HUB_RST_N basso, impostare HUB_CFG_SEL2, rilasciare il reset; se CFG_SEL2 = 0 scrivere i registri del hub via SMBus e poi il comando di attach (registro FFh).
-- 74HC595 ×2 in cascata (16 bit): U10 = LED porte 1-4 (PWR/FLT), U11 = LED porta 5, relè 1-2, alimentatore presente, host collegato.
-- Pulsanti e FAULT sono su PC13/PC14/PC15 e altri pin a bassa capacità di pilotaggio: solo ingressi.
+- PA8 va sempre configurato open-drain (mai push-pull alto): RESET_N è condiviso con il supervisore U12 e ha il pull-up R27.
+- Sequenza di avvio del hub, solo dopo un'accensione o un calo di tensione (flag di RCC_CSR, oppure un flag in un registro di backup): tirare basso HUB_RST_N, impostare HUB_CFG_SEL2, rilasciare il reset; se CFG_SEL2 = 0 scrivere i registri del hub via SMBus e poi il comando di attach (registro FFh). Il MCU parte prima che U12 rilasci il reset (150-700 ms), quindi il hub enumera una volta sola.
+- Dopo un reset software, un watchdog o il ritorno dal bootloader non toccare HUB_RST_N: il hub è già configurato e il MCU si ricollega da solo sulla porta 6.
+- 74HC595 ×2 in cascata (16 bit): U10 = LED porte 1-4 (PWR/FLT), U11 = LED porta 5, relè 1-2, alimentatore presente, host collegato. LED_OE_N (PB6) ha un pull-up: i LED restano spenti finché il firmware non carica i registri e porta PB6 basso.
+- I pulsanti delle porte 1-3 sono su PC13/PC14/PC15, pin a bassa capacità di pilotaggio: vanno usati solo come ingressi.
+- FAULT_P1-P5: abilitare il pull-up interno. Il pull-up degli OCS_N del hub potrebbe mancare mentre il hub è in reset.
+- SCL è anche CFG_SEL0 del hub, campionato al rilascio di HUB_RST_N: in quel momento il bus I2C dev'essere fermo (SCL alto).
+- PA8, PD0 e PD2 sono anche pin CC dell'UCPD, con pull-down "dead battery" all'avvio: probabilmente vanno rilasciati con i bit UCPD1_STROBE / UCPD2_STROBE di SYSCFG_CFGR1 (da verificare su RM0444).
+- I nomi dei pin 43/44 sono quelli del simbolo KiCad: sono PA11/PA12 (USB), rimappabili su PA9/PA10.

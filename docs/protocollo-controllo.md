@@ -26,9 +26,11 @@ maggiori che non conosce.
 | 0x12 | SET_ALL | power, data | status |
 | 0x20 | SET_RELAY | relay, line (connected / disconnected) | status |
 | 0x21 | PULSE_RELAY | relay, ms (u16): stacca la linea per ms, poi la ricollega | status |
-| 0x30 | GET_DEFAULTS / 0x31 SET_DEFAULTS | stato all'accensione delle porte, limite budget (i relè all'accensione sono sempre "linea collegata") | status |
+| 0x30 | GET_DEFAULTS | — | stato all'accensione delle porte, limite budget |
+| 0x31 | SET_DEFAULTS | stato all'accensione delle porte, limite budget (i relè all'accensione sono sempre "linea collegata") | status |
 | 0x32 | SAVE_DEFAULTS | — | status (scrive in flash) |
 | 0x40 | CLEAR_FAULT | port | status |
+| 0x50 | RESET_HUB | — | status, inviato prima del reset (il hub e tutto ciò che ha a valle, compreso il dispositivo di controllo, ri-enumerano) |
 | 0x7E | REBOOT | — | — |
 | 0x7F | ENTER_BOOTLOADER | magic | — |
 
@@ -48,11 +50,12 @@ devhub status [--json]
 devhub port <n> on|off
 devhub port <n> power on|off
 devhub port <n> data on|off
-devhub port <n> cycle [--ms 500] [--power-only|--data-only]
+devhub port <n> cycle [--ms 500] [--on-delay 50] [--power-only|--data-only]
 devhub all on|off
 devhub relay <n> connect|disconnect
 devhub relay <n> cycle [--ms 500]   # stacca la linea per N ms
 devhub defaults show|set ...|save
+devhub hub reset
 devhub watch            # stampa gli eventi
 ```
 

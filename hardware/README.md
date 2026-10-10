@@ -8,30 +8,33 @@ hardware/lib/           devhub.kicad_sym: simboli non presenti nelle librerie st
 hardware/bom/           BOM e file per l'assemblaggio (da fare)
 ```
 
-## Stato: schema v0.1
+## Stato: schema v0.2
 
-Lo schema iniziale è stato generato da script (poi rimossi): simboli delle librerie standard di
-KiCad più il simbolo USB2517, collegamenti con etichette globali e gerarchiche su ogni pin, fogli
-gerarchici riusati per le porte. Passa l'ERC di `kicad-cli` con zero violazioni. È un punto di
-partenza da rifinire in KiCad (disposizione, fili al posto delle etichette dove utile).
+Simboli delle librerie standard di KiCad più il simbolo USB2517; fogli gerarchici riusati per le
+porte. Componenti vicini collegati a filo, ma ogni rete ha comunque un nome esplicito: etichette
+locali per le reti interne a un foglio, globali per quelle che passano tra fogli, gerarchiche per
+le porte. Passa l'ERC di `kicad-cli` con zero violazioni.
 
 Fogli:
 
 | Foglio | Contenuto |
 |---|---|
-| `power_in` | USB-C di alimentazione a 5 V, Rd e partitori CC, TVS, shunt d'ingresso, bulk, ORing Schottky, LDO 3,3 V (AP2112K) |
-| `hub` | USB2517, USB-C upstream con ESD, quarzo, RBIAS, reset dal MCU, strap di configurazione, header porta 7 |
-| `mcu` | STM32G0B1RET6, decoupling, SWD, UART, pull-up I2C, pull-down EN, pull-up INA_ALERT |
+| `power_in` | USB-C di alimentazione a 5 V, Rd e partitori CC, TVS, shunt d'ingresso, bulk, ORing Schottky, LDO 3,3 V (AP7361C-33E, SOT-223) |
+| `hub` | USB2517, USB-C upstream con ESD, quarzo, RBIAS, supervisore di reset (U12) in wired-OR con il MCU, strap di configurazione, header porta 7 |
+| `mcu` | STM32G0B1RET6, decoupling, SWD (J4) e UART (J9) collegati a filo, pull-up I2C, INA_ALERT e LED_OE_N, pull-down EN |
 | `switches` | 3 × TPS2561A con R_ILIM, shunt 20 mΩ per porta, 2 × INA3221 |
-| `port_c` ×4, `port_a` ×1 | connettore, USBLC6-2, TS3USB30E, scarica VBUS, condensatori, LED, pulsante |
-| `relays` | ULN2003A, 2 × G5Q-1, ponticelli NC/NO, boccole, snubber DNP |
-| `ui` | 2 × 74HC595, LED relè / alimentatore / host |
+| `port_c` ×4, `port_a` ×1 | connettore, USBLC6-2, TS3USB30E, scarica VBUS, condensatori (sulla USB-A anche 100 µF), LED, pulsante |
+| `relays` | ULN2003A, 2 × G5Q-1, ponticelli NC/NO, boccole Cliff FCR7350, snubber DNP |
+| `ui` | 2 × 74HC595 (/OE dal MCU, pull-up), LED relè / alimentatore / host |
 
 Piedinatura del MCU: [../docs/pinout-mcu.md](../docs/pinout-mcu.md).
 
-Da fare prima del PCB: footprint delle boccole a banana (J5-J8), scelta definitiva dei
-connettori USB-C e USB-A (footprint GCT USB4105 e Kycon KUSBX come segnaposto), verifica dei
-valori dei condensatori del quarzo, BOM.
+Connettori USB decisi (D18): GCT USB4105-GF-A per tutti gli USB-C, Kycon KUSBX-AS1N-B per
+l'USB-A; i footprint nello schema sono già questi.
+
+Quarzo deciso (D19): YXC X322524MOB4SI, C_L 12 pF, C22/C23 da 15 pF.
+
+Da fare prima del PCB: BOM.
 
 Per l'ERC da riga di comando:
 
