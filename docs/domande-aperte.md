@@ -32,6 +32,7 @@
 | D26 | Pulsanti | uno per porta e uno per relè (SW1/SW2 aggiunti); ogni pressione alterna lo stato: porta accesa/spenta con alimentazione e dati sempre insieme, linea del relè collegata/staccata (RF-17) |
 | D27 | ESD delle porte downstream | tolte le USBLC6-2SC6 (D101-D501): il loro pin VBUS sulla VBUS commutata faceva passare corrente dai dati all'alimentazione della porta e portava le sovratensioni dei dati verso la 5 V; la protezione ESD è quella integrata nel PI3USB4002A (10 kV IEC, invece dei 15 kV dell'USBLC6). Revisione 02, rilievo R02-01 |
 | D28 | Comando delle porte | alimentazione e dati sempre insieme (RF-3 cambiato): niente comandi separati per VBUS e dati né da PC né da pulsante; restano due interruttori distinti per poter rispettare la sequenza |
+| D29 | Rilevamento dell'inserimento sulle porte USB-C | non fatto (opzione C, revisione 02, R02-02): VBUS presente appena la porta è accesa; il firmware non accende una porta con tensione già presente e spegne una porta che riceve corrente, con LED rosso e avviso al PC. Scartati un controller USB-C per porta (TPS25810) e la lettura delle CC dal MCU (richiedeva tutti i pin liberi e lasciava senza alimentazione le schede prive di resistenze CC) |
 
 ## Aperte
 

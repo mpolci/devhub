@@ -245,6 +245,12 @@ Per ogni porta:
 | Pulsante | tattile: ogni pressione alterna la porta (alimentazione e dati insieme) | debounce in firmware; rispetta il budget (RF-17) |
 | Condensatori VBUS | 22 µF + 100 nF; sulla USB-A anche 100 µF | USB 2.0 chiede ≥ 120 µF sulle porte di tipo A |
 
+Le porte USB-C **non rilevano l'inserimento** sulle CC (D29): appena il MCU accende una porta la
+VBUS è presente anche senza dispositivo, come su una presa USB-A. La specifica Type-C vorrebbe VBUS
+accesa solo dopo aver visto la Rd del dispositivo; si è scelto di non farlo per semplicità e per
+continuare ad alimentare schede e cavi privi delle resistenze CC. I rischi (un'altra sorgente
+collegata alla porta) sono coperti dai controlli del firmware descritti in "Protezioni".
+
 Sul valore di Rp: con limite hardware a ~2,2 A si pubblicizza 1,5 A (22 kΩ); 3 A (10 kΩ) sarebbe
 scorretto. Le schede di sviluppo in genere ignorano CC.
 
@@ -308,6 +314,7 @@ le schede in prova possono essere montate male, ci sono scariche elettrostatiche
 | D+/D- in corto con GND o tra loro | innocuo (richiesto dalla specifica USB 2.0) |
 | CC in corto con VBUS sulle porte USB-C | innocuo: c'è solo la Rp da 22 kΩ |
 | Scheda che rimanda tensione sulla VBUS di una porta | a porta spenta il TPS2561A blocca fino a 7 V; a porta accesa il firmware legge la VBUS dall'INA3221 e spegne la porta sopra ~5,5 V; oltre 7 V non c'è protezione (servirebbe un integrato per porta) |
+| Altra sorgente di 5 V su una porta (cavo A-to-C verso un PC o un caricatore, sorgente USB-C non conforme) | le porte non rilevano l'inserimento (D29): il firmware non accende una porta che ha già tensione sulla VBUS e spegne una porta accesa che riceve corrente invece di erogarla (INA3221); in entrambi i casi LED rosso della porta e avviso al PC. Resta scoperto il caso con la nostra VBUS più alta di quella esterna: la corrente esce verso l'altra sorgente come verso un carico, limitata a ~2,3 A dal TPS2561A |
 | Scariche elettrostatiche su D+/D- e VBUS | sulle porte: protezione integrata nel PI3USB4002A (10 kV IEC) e condensatori sulla VBUS; sulla porta upstream: USBLC6-2SC6 (15 kV); in layout le protezioni vanno vicino al connettore con ritorno corto a GND |
 | Scariche elettrostatiche su CC, pulsanti, LED, boccole | nessun integrato esposto sulle CC (solo resistenze; verso l'ADC filtro 1 kΩ + 100 nF); prolunghe dei pulsanti in plastica; boccole sui contatti dei relè, isolati dalla scheda |
 | Corto o sovracorrente sulle boccole | contatti da 3 A: va protetto il circuito esterno (fusibile); snubber RC previsti |
