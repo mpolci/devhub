@@ -1,0 +1,2173 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "af6ea7d8-d1ba-5fc6-aec8-abf514847630")
+	(paper "A3")
+	(title_block
+		(title "devhub - hub USB per lo sviluppo hardware")
+		(date "2026-10-10")
+		(rev "0.1")
+		(company "devhub")
+	)
+	(lib_symbols)
+	(text "devhub: hub USB 2.0 a 5 porte con sezionamento VBUS e dati per porta, misura di corrente, dispositivo di controllo HID (STM32G0B1) e 2 relè ausiliari. Vedi docs/architettura.md."
+		(exclude_from_sim no)
+		(at 10.16 15.24 0)
+		(effects
+			(font
+				(size 1.8 1.8)
+			)
+			(justify left bottom)
+		)
+		(uuid "1df39109-aabe-594e-8de7-ebdcaeae89cf")
+	)
+	(wire
+		(pts
+			(xy 142.24 33.02)
+			(xy 134.62 33.02)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7e14ed20-f60b-5b98-95d4-dfc552011366")
+	)
+	(global_label "VBUS_P1"
+		(shape bidirectional)
+		(at 134.62 33.02 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "450a87b7-f9ab-5110-86ed-56c43c291792")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 35.56)
+			(xy 134.62 35.56)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cfb5a2ad-03f3-58b4-827b-5b786512b424")
+	)
+	(global_label "HUB_DP1"
+		(shape bidirectional)
+		(at 134.62 35.56 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "bc511be8-fc16-59df-afc1-d2ff0235e932")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 38.1)
+			(xy 134.62 38.1)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2304274f-dd1f-5f7e-9e27-3a7625e0e531")
+	)
+	(global_label "HUB_DM1"
+		(shape bidirectional)
+		(at 134.62 38.1 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "f0b92d1a-09b9-5d1a-97ef-99494de79f62")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 38.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 40.64)
+			(xy 134.62 40.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "313a8975-c8bd-5277-bb0c-5ad567db2313")
+	)
+	(global_label "OE_N_P1"
+		(shape bidirectional)
+		(at 134.62 40.64 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "4987e55d-6ca7-5aa6-a7e6-02a84215930f")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 43.18)
+			(xy 134.62 43.18)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9c15b3b3-f120-5b9a-853a-21233af85ff9")
+	)
+	(global_label "DIS_P1"
+		(shape bidirectional)
+		(at 134.62 43.18 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "f20db03a-3398-50f1-8f27-3b2470f58a3b")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 43.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 228.6 33.02)
+			(xy 236.22 33.02)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "696573b1-aaac-5612-8013-023535c68f36")
+	)
+	(global_label "LED_PWR_P1"
+		(shape bidirectional)
+		(at 236.22 33.02 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "aa866b9c-fd36-5a5a-89e2-3403841dc354")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 236.22 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 228.6 35.56)
+			(xy 236.22 35.56)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d1dda99e-ff8c-56c8-b158-6ac76d2fff5a")
+	)
+	(global_label "LED_FLT_P1"
+		(shape bidirectional)
+		(at 236.22 35.56 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "0a414665-5640-5e5f-9a20-1e7d8aae4f4e")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 236.22 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 228.6 38.1)
+			(xy 236.22 38.1)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "414f3cbe-3250-5d23-9a12-a1667708d48c")
+	)
+	(global_label "BTN_P1"
+		(shape bidirectional)
+		(at 236.22 38.1 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "e90876db-f7c2-572a-ab81-36849d2e2eb9")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 236.22 38.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 68.58)
+			(xy 134.62 68.58)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "558eaf4a-2c04-5744-a9f4-f46e45385f8b")
+	)
+	(global_label "VBUS_P2"
+		(shape bidirectional)
+		(at 134.62 68.58 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "b0aaa6ea-3b4f-5acb-8711-2210c377298a")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 71.12)
+			(xy 134.62 71.12)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a924414c-3ae6-5769-aef8-be7116e7805d")
+	)
+	(global_label "HUB_DP2"
+		(shape bidirectional)
+		(at 134.62 71.12 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "77d88d74-c5e7-5158-82cb-4195657ab690")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 71.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 73.66)
+			(xy 134.62 73.66)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b64fa58e-3cf9-51d1-8544-0addfd72aa4e")
+	)
+	(global_label "HUB_DM2"
+		(shape bidirectional)
+		(at 134.62 73.66 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "04a5b218-10d2-58a0-b853-a024f6bfbfad")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 73.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 76.2)
+			(xy 134.62 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cbb23cf0-4b78-5353-9de6-ba843ee464d0")
+	)
+	(global_label "OE_N_P2"
+		(shape bidirectional)
+		(at 134.62 76.2 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "4a1bec01-20c3-5968-b179-280ca44102d4")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 78.74)
+			(xy 134.62 78.74)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c52ca406-cb8b-5bad-8732-868c4da524b2")
+	)
+	(global_label "DIS_P2"
+		(shape bidirectional)
+		(at 134.62 78.74 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "f42d37f3-043f-5c92-a954-857feb2df0b8")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 78.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 228.6 68.58)
+			(xy 236.22 68.58)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4b9801a4-6c63-595b-b524-f64a20cc41d3")
+	)
+	(global_label "LED_PWR_P2"
+		(shape bidirectional)
+		(at 236.22 68.58 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "84c11876-3671-5562-a567-6932f11c5c77")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 236.22 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 228.6 71.12)
+			(xy 236.22 71.12)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7f355773-e1fb-5b87-b303-d2fa874b49fb")
+	)
+	(global_label "LED_FLT_P2"
+		(shape bidirectional)
+		(at 236.22 71.12 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "7d1c0970-42b1-54f6-976e-369c8823a4cc")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 236.22 71.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 228.6 73.66)
+			(xy 236.22 73.66)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "73a1778b-4530-50fd-8550-cefabb5fc603")
+	)
+	(global_label "BTN_P2"
+		(shape bidirectional)
+		(at 236.22 73.66 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "d24f893e-b86b-5186-9802-8853432dec4b")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 236.22 73.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 104.14)
+			(xy 134.62 104.14)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5899d8ca-1b8c-5faa-be50-1381003344c3")
+	)
+	(global_label "VBUS_P3"
+		(shape bidirectional)
+		(at 134.62 104.14 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "b2964f04-c5cb-5812-909a-6a02a7dd9366")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 106.68)
+			(xy 134.62 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "03d2f47e-f84e-5f5d-afe4-99a83380d619")
+	)
+	(global_label "HUB_DP3"
+		(shape bidirectional)
+		(at 134.62 106.68 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "5bb93a42-3271-5a8b-8b2f-cb665e584061")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 109.22)
+			(xy 134.62 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "298cc4a5-2cc0-5438-a938-a63b94e4e79b")
+	)
+	(global_label "HUB_DM3"
+		(shape bidirectional)
+		(at 134.62 109.22 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "73694862-2836-5d2c-9b98-b9cdb3ff7939")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 111.76)
+			(xy 134.62 111.76)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a0ffca77-fa04-5037-84c9-ddb15542dc02")
+	)
+	(global_label "OE_N_P3"
+		(shape bidirectional)
+		(at 134.62 111.76 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "fe95a4ee-0ed7-5314-802d-fabfac3070fb")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 114.3)
+			(xy 134.62 114.3)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "41a75d9c-698e-5cea-bc70-37955fbd900b")
+	)
+	(global_label "DIS_P3"
+		(shape bidirectional)
+		(at 134.62 114.3 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "a25a6879-d118-5262-8dfe-f39954afbeae")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 228.6 104.14)
+			(xy 236.22 104.14)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "32b485f0-3d65-558d-875c-76f1c26c5809")
+	)
+	(global_label "LED_PWR_P3"
+		(shape bidirectional)
+		(at 236.22 104.14 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "eb0b8c9f-7604-5699-8cde-e9c103745957")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 236.22 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 228.6 106.68)
+			(xy 236.22 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "67d318e7-09da-5f3d-b4b4-ab0e62ce5576")
+	)
+	(global_label "LED_FLT_P3"
+		(shape bidirectional)
+		(at 236.22 106.68 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "2c482824-1134-5f96-a46e-0c7c4a7f88ef")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 236.22 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 228.6 109.22)
+			(xy 236.22 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "643b7a81-55ef-57f2-8fa1-e2d8dbc4c8ee")
+	)
+	(global_label "BTN_P3"
+		(shape bidirectional)
+		(at 236.22 109.22 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "66bd6c42-c0df-50f2-b889-0177f4d1066c")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 236.22 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 139.7)
+			(xy 134.62 139.7)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "87cad677-1aba-5552-af0e-faff092dce2e")
+	)
+	(global_label "VBUS_P4"
+		(shape bidirectional)
+		(at 134.62 139.7 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "4b8a41cc-677b-5ab5-8617-3a5050041b23")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 139.7 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 142.24)
+			(xy 134.62 142.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "49adf72a-bdf5-5cb7-ab21-1c975eb4b022")
+	)
+	(global_label "HUB_DP4"
+		(shape bidirectional)
+		(at 134.62 142.24 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "3155e554-1014-5886-ba66-969b9dfe383d")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 144.78)
+			(xy 134.62 144.78)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5a0e745c-3830-5e8e-bdff-e0f9dc78a318")
+	)
+	(global_label "HUB_DM4"
+		(shape bidirectional)
+		(at 134.62 144.78 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "c69ae9bb-6102-50c5-b26e-d270ed2d4d78")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 144.78 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 147.32)
+			(xy 134.62 147.32)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d95e75b0-9db5-5222-894f-290d45f74187")
+	)
+	(global_label "OE_N_P4"
+		(shape bidirectional)
+		(at 134.62 147.32 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "b62f9128-4b88-58e8-a295-9514151dac6e")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 147.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 149.86)
+			(xy 134.62 149.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4a975afd-d564-504a-a824-08d981055844")
+	)
+	(global_label "DIS_P4"
+		(shape bidirectional)
+		(at 134.62 149.86 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "a9784f19-b9b8-5086-a70c-8943181f86eb")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 149.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 228.6 139.7)
+			(xy 236.22 139.7)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c7eb7441-bf15-5b1a-be33-f99afa1632b3")
+	)
+	(global_label "LED_PWR_P4"
+		(shape bidirectional)
+		(at 236.22 139.7 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "26ccaddc-0ef9-5cfa-b28d-6102671c143d")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 236.22 139.7 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 228.6 142.24)
+			(xy 236.22 142.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7f99d9a2-3028-5d7c-8ffa-3cc3852e4e70")
+	)
+	(global_label "LED_FLT_P4"
+		(shape bidirectional)
+		(at 236.22 142.24 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "12ff26a5-5404-5a40-a24f-8cdc80f81783")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 236.22 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 228.6 144.78)
+			(xy 236.22 144.78)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e47c5e4e-e8bb-5192-ad30-6b9cf69ecad2")
+	)
+	(global_label "BTN_P4"
+		(shape bidirectional)
+		(at 236.22 144.78 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "05626f8b-d364-5383-b484-9e8f5575c2d1")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 236.22 144.78 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 175.26)
+			(xy 134.62 175.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f389ac46-8cb4-5bdb-b68d-9c5b46d0a9f2")
+	)
+	(global_label "VBUS_P5"
+		(shape bidirectional)
+		(at 134.62 175.26 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "b763e2ed-e7d6-5300-8f01-fe2bb757e9cf")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 175.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 177.8)
+			(xy 134.62 177.8)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "471c31d1-ee1e-548a-bc4d-b901510ba9b2")
+	)
+	(global_label "HUB_DP5"
+		(shape bidirectional)
+		(at 134.62 177.8 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "4130417d-8159-51b3-9102-c5460d7a78ba")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 177.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 180.34)
+			(xy 134.62 180.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2918c5c2-d63e-5f8c-8436-f3b63170c133")
+	)
+	(global_label "HUB_DM5"
+		(shape bidirectional)
+		(at 134.62 180.34 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "1c383f4b-cf3c-5be4-8294-47d8a0922cf3")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 182.88)
+			(xy 134.62 182.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "176a3865-78f4-55f2-8c38-d8050a3390f5")
+	)
+	(global_label "OE_N_P5"
+		(shape bidirectional)
+		(at 134.62 182.88 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "a8390e99-4ada-5e25-8c65-7939f0d22ec2")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 182.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 185.42)
+			(xy 134.62 185.42)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f8d71bcb-3ee1-5f3f-9357-803ef76e8b92")
+	)
+	(global_label "DIS_P5"
+		(shape bidirectional)
+		(at 134.62 185.42 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "15a5af59-3552-5d0c-9ee1-1afec4c09af8")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 228.6 175.26)
+			(xy 236.22 175.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8a693b70-58ba-5070-ad81-37e5474a885b")
+	)
+	(global_label "LED_PWR_P5"
+		(shape bidirectional)
+		(at 236.22 175.26 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "a2881fe3-26f6-526d-873b-065572e2570f")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 236.22 175.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 228.6 177.8)
+			(xy 236.22 177.8)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "49392d72-3de8-57da-9e41-1e1414fe72b8")
+	)
+	(global_label "LED_FLT_P5"
+		(shape bidirectional)
+		(at 236.22 177.8 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "0298e957-7e2f-5ebf-bd9a-955944a58310")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 236.22 177.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 228.6 180.34)
+			(xy 236.22 180.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0c535121-a324-594b-9f43-3e65c52a1af7")
+	)
+	(global_label "BTN_P5"
+		(shape bidirectional)
+		(at 236.22 180.34 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "dc45009a-e3da-5cd2-9b83-139988066e91")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 236.22 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(sheet
+		(at 15.24 30.48)
+		(size 76.2 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0)
+		)
+		(uuid "b7f46cfa-45c0-5dbb-a84a-cdf89b878306")
+		(property "Sheetname" "Alimentazione"
+			(at 15.24 29.78 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "power_in.kicad_sch"
+			(at 15.24 51.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "devhub"
+				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 15.24 60.96)
+		(size 76.2 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0)
+		)
+		(uuid "af081a2b-4668-5eab-8d09-70b13e5ee477")
+		(property "Sheetname" "Hub USB2517"
+			(at 15.24 60.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "hub.kicad_sch"
+			(at 15.24 81.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "devhub"
+				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 15.24 91.44)
+		(size 76.2 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0)
+		)
+		(uuid "357eb134-3b36-5717-b194-1b0e8ceb4547")
+		(property "Sheetname" "MCU STM32G0B1"
+			(at 15.24 90.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "mcu.kicad_sch"
+			(at 15.24 112.35999999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "devhub"
+				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630"
+					(page "4")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 15.24 121.92)
+		(size 76.2 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0)
+		)
+		(uuid "1e0a4864-e5d3-5f33-ba41-65dd2f29348f")
+		(property "Sheetname" "Load switch e misura corrente"
+			(at 15.24 121.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "switches.kicad_sch"
+			(at 15.24 142.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "devhub"
+				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630"
+					(page "5")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 15.24 152.4)
+		(size 76.2 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0)
+		)
+		(uuid "754ef4c0-187b-5738-814a-57c901f66789")
+		(property "Sheetname" "Relè ausiliari"
+			(at 15.24 151.70000000000002 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "relays.kicad_sch"
+			(at 15.24 173.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "devhub"
+				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630"
+					(page "6")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 15.24 182.88)
+		(size 76.2 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0)
+		)
+		(uuid "c82dde94-3a77-5cb6-9c61-f280daabce7c")
+		(property "Sheetname" "LED di stato"
+			(at 15.24 182.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "ui.kicad_sch"
+			(at 15.24 203.79999999999998 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "devhub"
+				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630"
+					(page "7")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 142.24 30.48)
+		(size 86.36 17.78)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0)
+		)
+		(uuid "8fa65214-18b0-5d08-bb37-cbf5f7730b77")
+		(property "Sheetname" "Porta 1 (USB-C)"
+			(at 142.24 29.78 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "port_c.kicad_sch"
+			(at 142.24 48.86000000000001 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "VBUS" input
+			(at 142.24 33.02 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "1774fcf4-db81-5c2e-8aae-f9c9264ac502")
+		)
+		(pin "HUB_DP" bidirectional
+			(at 142.24 35.56 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "0a65bcff-2331-578e-bec3-0578aecde723")
+		)
+		(pin "HUB_DM" bidirectional
+			(at 142.24 38.1 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "082c694e-3c0a-516a-8a26-0f926533b7f9")
+		)
+		(pin "OE_N" input
+			(at 142.24 40.64 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "e18b4e6c-df53-59d1-af59-16985cbede15")
+		)
+		(pin "DIS" input
+			(at 142.24 43.18 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "638213b8-8afd-5494-94d4-60d79aadbe76")
+		)
+		(pin "LED_PWR" input
+			(at 228.6 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "da9b9ef8-e5d0-584f-b237-7485c44b5ced")
+		)
+		(pin "LED_FLT" input
+			(at 228.6 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "e0ec02aa-d5d3-5dd9-af12-51708b03c499")
+		)
+		(pin "BTN" output
+			(at 228.6 38.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "a9dd96ae-1f0b-5b16-aeb4-a2d7195c075f")
+		)
+		(instances
+			(project "devhub"
+				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630"
+					(page "8")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 142.24 66.04)
+		(size 86.36 17.78)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0)
+		)
+		(uuid "ba1682d4-60b7-5c55-978d-7c8e62460e69")
+		(property "Sheetname" "Porta 2 (USB-C)"
+			(at 142.24 65.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "port_c.kicad_sch"
+			(at 142.24 84.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "VBUS" input
+			(at 142.24 68.58 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "3679c6a8-4ea3-5cae-83ec-5e1846512623")
+		)
+		(pin "HUB_DP" bidirectional
+			(at 142.24 71.12 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "79283618-1071-58fa-97c4-0756c85042c2")
+		)
+		(pin "HUB_DM" bidirectional
+			(at 142.24 73.66 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "916152e1-183a-5a1f-9fae-9ca3702e1580")
+		)
+		(pin "OE_N" input
+			(at 142.24 76.2 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "5b3f9cf2-8d29-52c7-ad78-e1c964d3b850")
+		)
+		(pin "DIS" input
+			(at 142.24 78.74 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "f3480ad0-6526-5e8e-bc8d-ec8f856df7d1")
+		)
+		(pin "LED_PWR" input
+			(at 228.6 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "ace231fa-73db-5f2c-b1f6-c08588431abb")
+		)
+		(pin "LED_FLT" input
+			(at 228.6 71.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "dd5f025f-2d3a-5ed0-b270-eeb1938279c7")
+		)
+		(pin "BTN" output
+			(at 228.6 73.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "85c4f13f-938e-5742-9184-8504aee7c1c5")
+		)
+		(instances
+			(project "devhub"
+				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630"
+					(page "8")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 142.24 101.6)
+		(size 86.36 17.78)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0)
+		)
+		(uuid "dc5a11f0-6d53-54ad-a59a-d93c35141960")
+		(property "Sheetname" "Porta 3 (USB-C)"
+			(at 142.24 100.89999999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "port_c.kicad_sch"
+			(at 142.24 119.97999999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "VBUS" input
+			(at 142.24 104.14 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "47cdfd9b-ef13-50c2-90e7-6217dd76b2b8")
+		)
+		(pin "HUB_DP" bidirectional
+			(at 142.24 106.68 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "73b20e4c-bce8-5d73-8aa6-96fb670d76a1")
+		)
+		(pin "HUB_DM" bidirectional
+			(at 142.24 109.22 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "f296258c-5312-5c10-b9f0-b3846dd3959f")
+		)
+		(pin "OE_N" input
+			(at 142.24 111.76 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "929662ff-29de-5282-be60-c4434173e7cd")
+		)
+		(pin "DIS" input
+			(at 142.24 114.3 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "8bb65cca-10fd-53f5-9f85-15e5a5519e29")
+		)
+		(pin "LED_PWR" input
+			(at 228.6 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "06396105-167c-5ce9-bd23-fa85f9d7736e")
+		)
+		(pin "LED_FLT" input
+			(at 228.6 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "16a3bd57-10d9-5364-a683-3160456cacc8")
+		)
+		(pin "BTN" output
+			(at 228.6 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "745a1254-6119-53c5-b4d7-706a8523fe3e")
+		)
+		(instances
+			(project "devhub"
+				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630"
+					(page "8")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 142.24 137.16)
+		(size 86.36 17.78)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0)
+		)
+		(uuid "ac9618ab-6be7-5849-9695-cfee880af1b2")
+		(property "Sheetname" "Porta 4 (USB-C)"
+			(at 142.24 136.46 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "port_c.kicad_sch"
+			(at 142.24 155.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "VBUS" input
+			(at 142.24 139.7 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "1632e253-1534-5b08-bd1f-73153a4701df")
+		)
+		(pin "HUB_DP" bidirectional
+			(at 142.24 142.24 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "7a705b10-7b7d-505e-87e7-7151f83e0700")
+		)
+		(pin "HUB_DM" bidirectional
+			(at 142.24 144.78 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "3cafc97e-3a62-50bb-9aa1-db28f54fdce0")
+		)
+		(pin "OE_N" input
+			(at 142.24 147.32 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "08a94cbc-5197-58b9-8831-196c583438ed")
+		)
+		(pin "DIS" input
+			(at 142.24 149.86 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "ac90d35c-1dd0-59da-8858-8bee61cf510d")
+		)
+		(pin "LED_PWR" input
+			(at 228.6 139.7 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "fa309598-76b8-548b-a79d-a0231c5dc4c1")
+		)
+		(pin "LED_FLT" input
+			(at 228.6 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "9903638f-2880-570b-aea8-9763b22303d1")
+		)
+		(pin "BTN" output
+			(at 228.6 144.78 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "0641ff46-d0d3-5dae-9fed-552983b1d219")
+		)
+		(instances
+			(project "devhub"
+				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630"
+					(page "8")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 142.24 172.72)
+		(size 86.36 17.78)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0)
+		)
+		(uuid "0c5617cc-af51-5b03-9838-7bc06ac23dd1")
+		(property "Sheetname" "Porta 5 (USB-A)"
+			(at 142.24 172.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "port_a.kicad_sch"
+			(at 142.24 191.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "VBUS" input
+			(at 142.24 175.26 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "6cdad691-8c80-5c08-9432-0c7147539dae")
+		)
+		(pin "HUB_DP" bidirectional
+			(at 142.24 177.8 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "9c127ebb-fb71-5197-92be-0bdf02138dba")
+		)
+		(pin "HUB_DM" bidirectional
+			(at 142.24 180.34 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "fe0072f4-7320-5a3b-8468-cbe8c571a5c3")
+		)
+		(pin "OE_N" input
+			(at 142.24 182.88 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "812224c9-5be5-5f4d-9036-09f46ceb6c49")
+		)
+		(pin "DIS" input
+			(at 142.24 185.42 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "6a223c17-4ec5-5060-a5a8-45bcaba402c6")
+		)
+		(pin "LED_PWR" input
+			(at 228.6 175.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "d95e4d64-bd6a-5f5d-94cf-4ca2d74a4719")
+		)
+		(pin "LED_FLT" input
+			(at 228.6 177.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "4a4d259f-94d3-50f6-9e04-d5bf4115f20d")
+		)
+		(pin "BTN" output
+			(at 228.6 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "714411d0-47e1-5836-a270-94b597480798")
+		)
+		(instances
+			(project "devhub"
+				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630"
+					(page "9")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)

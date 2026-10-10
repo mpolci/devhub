@@ -122,8 +122,8 @@ Il limite di corrente dell'alimentatore resta la protezione di ultima istanza.
 **Protezione d'ingresso.** TVS 5 V (SMAJ5.0A) e, opzionale, un eFuse / load switch da 3 A con
 blocco della corrente inversa (es. TPS2596) al posto del semplice diodo di ORing.
 
-**Logica (RF-16).** 3V3 da LDO alimentato da un ORing a diodi Schottky tra 5V_SYS e la VBUS
-upstream: con alimentatore assente hub e MCU enumerano e riportano "alimentatore assente"; le
+**Logica (RF-16).** 3V3 da LDO a basso dropout (AP2112K-3.3, 600 mA) alimentato da un ORing a diodi
+Schottky tra 5V_SYS e la VBUS upstream: con alimentatore assente hub e MCU enumerano e riportano "alimentatore assente"; le
 porte downstream si attivano solo se 5V_SYS è presente. Il diodo impedisce di iniettare 5V_SYS
 verso l'host.
 
@@ -150,9 +150,10 @@ Dettagli verificati sul datasheet (DS00001598C) e sull'errata (DS80000628A):
   (open-drain) vanno sia al MCU sia agli ingressi **OCS_N** del hub, che hanno pull-up interno:
   l'host riceve così la notifica standard di sovracorrente senza componenti in più.
 - **Configurazione via SMBus** (CFG_SEL = 001, indirizzo 0x2C): il MCU scrive VID/PID, stringhe,
-  porta 6 "non rimovibile" (il MCU stesso), corrente massima, e poi comanda l'attach. Ponticelli a
-  saldare sui CFG_SEL permettono di tornare ai default interni (000) per il bring-up senza
-  firmware.
+  porta 6 "non rimovibile" (il MCU stesso), corrente massima, e poi comanda l'attach. CFG_SEL0 è
+  il pin SCL (alto per il pull-up I2C), CFG_SEL1 è a massa, **CFG_SEL2 lo pilota il MCU** prima di
+  rilasciare il reset: basso = SMBus (001), alto = default interni con dynamic power (101), che è
+  anche lo stato del pull-up per il bring-up senza firmware.
 - **Reset**: l'errata dice che il POR interno non funziona; RESET_N è pilotato dal MCU (pull-down,
   hub in reset finché il firmware non lo rilascia), con ponticello verso un pull-up RC per il
   bring-up. Questo dà anche il comando "reset hub" via HID.

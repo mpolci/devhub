@@ -29,7 +29,7 @@ parte della v1.
 | Misura corrente | TI **INA3221** ×2 | VQFN-16 | aria calda | extended | sì | 3 canali, I2C: 5 porte + corrente totale d'ingresso |
 | Misura corrente, alternativa a mano | TI **INA219** ×5 | SOT-23-8 | sì | extended | sì | 1 canale, 16 indirizzi I2C |
 | Protezione / ORing ingresso 5 V (opzionale) | TI **TPS2596** eFuse 3 A o diodo Schottky | SOT-23-8 / SMA | sì | extended / basic | sì | blocco corrente inversa, limite 3 A; in v1 basta la TVS più l'ORing |
-| LDO 3,3 V | **AMS1117-3.3** o TLV1117LV33 | SOT-223 | sì | basic | sì | hub + MCU + switch, ~300 mA |
+| LDO 3,3 V | Diodes **AP2112K-3.3** | SOT-23-5 | sì | extended | sì | 600 mA, dropout 250 mV: necessario per funzionare dalla sola VBUS upstream (5 V − Schottky) |
 | ORing 3V3 (RF-16) | 2× Schottky **SS34** | SMA | sì | basic | sì | tra 5V_SYS e VBUS upstream, prima dell'LDO |
 | Driver LED | **74HC595** | SOIC-16 | sì | basic | sì | 10 LED porte + 2 LED relè con 3 GPIO |
 | Driver relè | **ULN2003** o 2× 2N7002 + 1N4148 | SOIC-16 / SOT-23 | sì | basic | sì | |
@@ -54,7 +54,7 @@ Con il montaggio a mano e un fornitore unico il catalogo si allarga. Per blocco:
 
 | Funzione | Candidato | Note |
 |---|---|---|
-| Relè ausiliari (×2) | SPDT 5–10 A, bobina 5 V: Omron **G5Q-1** DC5, Songle **SRD-05VDC-SL-C**, Hongfa **HF32F** | specifica contatti: 16 V / 3 A max; usati su COM/NC; snubber RC opzionale sui contatti |
+| Relè ausiliari (×2) | SPDT 5–10 A, bobina 5 V: Omron **G5Q-1** DC5, Songle **SRD-05VDC-SL-C**, Hongfa **HF32F** | specifica contatti: 16 V / 3 A max; usati su COM/NC; il contatto NC del G5Q-1 è tarato 3 A a 30 V DC, accettato senza margine; snubber RC opzionale sui contatti |
 | Boccole a banana 4 mm (×4) | **da PCB** (es. Keystone 575-4, Cliff FCR7350), passo 19 mm | COM e NC per canale; NO su ponticello interno |
 | USB-C downstream (×4) | ricettacolo 16 pin (solo USB 2.0), mid-mount o top-mount | es. GCT USB4105 o equivalente LCSC; sui 16 pin bastano D+/D-, CC1, CC2, VBUS, GND |
 | USB-C upstream (×1) | ricettacolo 16 pin | Rd 5,1 kΩ su CC1 e CC2 |
