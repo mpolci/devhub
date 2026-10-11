@@ -36,7 +36,7 @@ parte della v1.
 | Driver LED | **74HC595** ×2 | SOIC-16 | sì | basic | sì | 14 LED (10 porte, 2 relè, alimentatore, host) con 4 GPIO; /OE dal MCU con pull-up (LED spenti all'accensione) |
 | Driver relè | **ULN2003** o 2× 2N7002 + 1N4148 | SOIC-16 / SOT-23 | sì | basic | sì | |
 | ESD dati upstream (×1) | **USBLC6-2SC6** | SOT-23-6 | sì | basic | sì | solo sulla porta upstream; sulle porte downstream la protezione è nel PI3USB4002A (D27) |
-| TVS VBUS d'ingresso (×1) | **SMAJ20A** | SMA | sì | basic | sì | 20 V senza condurre, rottura ~22 V: lascia lavorare l'eFuse fino a 20 V d'ingresso; nessuna TVS sulle porte (D25) |
+| TVS VBUS d'ingresso (×1) | **SMAJ20A**: ST SMAJ20A-TR o Littelfuse SMAJ20A (famiglia JEDEC, valori equivalenti, da confermare col fornitore) | SMA | sì | basic | sì | non conduce fino a 20 V, rottura 22,2–23,4 V, clamp ~25 V a 1 A e 32,4 V a 12,3 A; lascia lavorare l'eFuse fino a 20 V; nessuna TVS sulle porte (D25, D31) |
 | Quarzo hub | YXC **X322524MOB4SI**: 24 MHz, 3225 4 pad, C_L 12 pF, ±20 ppm | SMD | aria calda | basic | C70590, ~0,07 $ | C22/C23 = 15 pF C0G; il USB2517 tollera ±350 ppm, quindi va bene qualunque 24 MHz fondamentale (su Mouser/DigiKey: un 3225 da 12 pF equivalente, con gli stessi condensatori); il MCU non ha bisogno di quarzo (HSI48 + CRS) |
 
 ## Alternative sugli altri fornitori (Mouser / DigiKey)

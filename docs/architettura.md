@@ -141,6 +141,13 @@ Il limite di corrente dell'alimentatore resta la protezione di ultima istanza.
   ha staccato e il firmware può segnalare "ingresso fuori tensione".
 Caduta aggiuntiva: ~28 mΩ, cioè ~0,1 V a 3 A.
 
+**Limiti della catena d'ingresso (D31).** Massimi assoluti: INA3221 (canale 3 sullo shunt R5)
+26 V, eFuse 28 V. La SMAJ20A non conduce fino a 20 V, inizia a 22,2–23,4 V e limita a ~25 V con
+1 A, ~26 V con 2 A, ~28 V con 5 A, 32,4 V alla corrente di prova di 12,3 A (10/1000 µs). La
+protezione è quindi **garantita in continuo fino a 20 V**; sopra ~23 V la TVS si sacrifica e
+l'INA3221 non è più garantito. Le prove impulsive da 10/1000 µs riguardano linee lunghe o di rete,
+non un ingresso USB; i picchi all'inserzione hanno poca energia e restano entro ~23–25 V.
+
 **TVS (D25).** La TVS d'ingresso è una **SMAJ20A**: non conduce fino a 20 V (il massimo di un
 alimentatore USB-C) e limita i picchi oltre ~22 V. Una TVS da 5 V (la SMAJ5.0A di prima) entrerebbe
 in conduzione già a ~6,4 V e con un alimentatore da 12–20 V collegato per errore brucerebbe prima
@@ -312,7 +319,8 @@ le schede in prova possono essere montate male, ci sono scariche elettrostatiche
 
 | Rischio | Protezione |
 |---|---|
-| Alimentatore sbagliato (> 5,84 V, fino a 28 V) all'ingresso | eFuse U13: stacca la 5V_SYS; il firmware lo vede da FLT e dalla tensione misurata sullo shunt |
+| Alimentatore sbagliato, da 5,84 a 20 V in continuo | eFuse U13: stacca la 5V_SYS; la TVS non conduce e l'INA3221 resta nei limiti: nessun danno. Il firmware lo vede da FLT e dalla tensione misurata sullo shunt |
+| Alimentatore sbagliato sopra ~23 V | la TVS conduce: con un alimentatore limitato in corrente tiene la linea sotto i 26 V e non succede nulla; con uno potente si brucia (di solito in corto) e protegge l'eFuse, ma l'INA3221 può superare per un attimo i suoi 26 V (D31) |
 | Picco all'inserzione dell'alimentatore | avvio dolce dell'eFuse (~5 ms) |
 | Corto o sovraccarico su una porta | TPS2561A: limite ~2,3 A, protezione termica, FAULT al MCU e agli OCS del hub; il firmware spegne la porta |
 | Corto o sovraccarico sulla 5V_SYS (prima delle porte) | limite 3,5 A dell'eFuse |
