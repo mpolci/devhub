@@ -123,7 +123,9 @@ Regole:
 1. una porta si accende solo se `I_totale + 200 mA < budget`;
 2. le porte si accendono sfalsate di ~30 ms (inrush);
 3. se `I_totale > budget` per più di 50 ms, oppure 5V_SYS scende sotto 4,5 V (ADC), si spegne
-   la porta che assorbe di più e si manda l'evento `PORT_FAULT` con causa "budget";
+   la porta che assorbe di più e si manda l'evento `PORT_FAULT` con causa "budget". I 50 ms vanno
+   verificati al primo montaggio con gli alimentatori reali: se un alimentatore va in protezione
+   prima, il tempo va accorciato (revisione 02, R02-03);
 4. il budget è anche impostabile a mano via HID (`SET_DEFAULTS`), per alimentatori che non
    pubblicizzano correttamente.
 Il limite di corrente dell'alimentatore resta la protezione di ultima istanza.
@@ -240,7 +242,7 @@ Per ogni porta:
 | Misura corrente | INA3221 (3 canali) × 2 | shunt 20 mΩ tra l'uscita del load switch e il connettore |
 | ESD dati | integrata nel PI3USB4002A (10 kV IEC 61000-4-2 sul lato connettore) | nessuna protezione esterna sulle porte (D27): una USBLC6 con il pin VBUS sulla VBUS commutata accoppiava dati e alimentazione e aggirava la tolleranza a 24 V dello switch. Layout: Diodes consiglia di non accorciare troppo la pista tra connettore e switch |
 | Protezione VBUS | i 22 µF + 100 nF della porta | TVS dedicata (SMAJ20A) solo sull'ingresso (D25) |
-| USB-C: CC1, CC2 | Rp **22 kΩ** a VBUS commutata (pubblicizza 1,5 A) | la VBUS commutata fa cadere anche CC quando la porta è spenta |
+| USB-C: CC1, CC2 | Rp **56 kΩ** a VBUS commutata (annuncio standard USB, 500 mA) | la VBUS commutata fa cadere anche CC quando la porta è spenta |
 | LED | 2 (alimentata / fault) via 74HC595 | |
 | Pulsante | tattile: ogni pressione alterna la porta (alimentazione e dati insieme) | debounce in firmware; rispetta il budget (RF-17) |
 | Condensatori VBUS | 22 µF + 100 nF; sulla USB-A anche 100 µF | USB 2.0 chiede ≥ 120 µF sulle porte di tipo A |
@@ -251,8 +253,12 @@ accesa solo dopo aver visto la Rd del dispositivo; si è scelto di non farlo per
 continuare ad alimentare schede e cavi privi delle resistenze CC. I rischi (un'altra sorgente
 collegata alla porta) sono coperti dai controlli del firmware descritti in "Protezioni".
 
-Sul valore di Rp: con limite hardware a ~2,2 A si pubblicizza 1,5 A (22 kΩ); 3 A (10 kΩ) sarebbe
-scorretto. Le schede di sviluppo in genere ignorano CC.
+Sul valore di Rp (D30): si annuncia la corrente standard USB (56 kΩ, 500 mA), così le cinque porte
+promettono in tutto ~2,5 A, in linea con il budget di ~2,3 A. Annunciare 1,5 A (22 kΩ) avrebbe
+promesso 6 A sulle sole USB-C: due dispositivi conformi scarichi possono salire insieme a 1,5 A e
+mandare in protezione l'alimentatore prima che il firmware intervenga. L'annuncio non è un limite:
+la porta eroga fino a ~2,3 A (TPS2561A) a chi lo ignora, come la maggior parte delle schede di
+sviluppo; telefoni e computer conformi si limitano a 500 mA.
 
 ### Relè ausiliari
 

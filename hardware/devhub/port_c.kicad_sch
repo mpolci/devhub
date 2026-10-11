@@ -2256,7 +2256,7 @@
 		)
 		(uuid "5a823a38-ec7b-52e5-9fc8-2317b31a4031")
 	)
-	(text "Rp 22 k = 1,5 A pubblicizzati (limite hw ~2,3 A)"
+	(text "Rp 56 k: annuncio standard USB (500 mA);"
 		(exclude_from_sim no)
 		(at 223.52 50.8 0)
 		(effects
@@ -2266,6 +2266,17 @@
 			(justify left bottom)
 		)
 		(uuid "a1ea157e-ca8c-51ab-858f-f1db9fadf34a")
+	)
+	(text "la porta non lo impone: limite hw ~2,3 A"
+		(exclude_from_sim no)
+		(at 223.52 53.34 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "9df75140-100b-44fd-bc7d-5ae33f05e0f1")
 	)
 	(junction
 		(at 243.84 58.42)
@@ -4001,7 +4012,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "22k"
+		(property "Value" "56k"
 			(at 246.38 68.58 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5843,7 +5854,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "22k"
+		(property "Value" "56k"
 			(at 256.54 71.12 0)
 			(show_name no)
 			(do_not_autoplace no)

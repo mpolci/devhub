@@ -19,9 +19,13 @@ il cavo. Si vuole poterlo fare **dal PC**, in modo scriptabile, senza toccare il
   ritardo (`on_delay_ms`), così il dispositivo si enumera già alimentato stabilmente.
 - **RF-4** Comando di "ciclo" (stacca, attendi N ms, riattacca) eseguito in autonomia dal MCU, così
   che un singolo comando dal PC sia sufficiente anche se l'host perde il dispositivo nel frattempo.
-- **RF-5** Ogni porta fornisce 5 V con almeno 2 A disponibili per la singola porta, con
+- **RF-5** Ogni porta fornisce 5 V con almeno 2 A erogabili sulla singola porta, con
   **limitazione di corrente** e segnalazione di sovracorrente per porta. Il totale disponibile per
   tutte le porte insieme è limitato dall'alimentatore (vedi RF-13) e gestito dal firmware (RF-15).
+  Sulle porte USB-C la corrente **annunciata** sulle CC è quella standard USB (500 mA), ma la porta
+  non la impone: qualunque dispositivo che ignora l'annuncio (tipico delle schede di sviluppo) può
+  assorbire fino al limite hardware della porta (~2,3 A). I dispositivi USB-C conformi si limitano
+  da soli a quanto annunciato (D30).
 - **RF-6** Lettura della corrente assorbita da ogni porta (risoluzione dell'ordine dei mA).
 
 ### Dispositivo di controllo
