@@ -33,7 +33,7 @@ I pin senza segnale sono liberi (no-connect nello schema).
 | 26 | PC5 | OE_N_P2 | uscita: EN del PI3USB4002A porta 2 (basso = dati collegati; pull-up) |
 | 27 | PB0 | — |  |
 | 28 | PB1 | EFUSE_FLT_N | ingresso: guasto dell'eFuse d'ingresso U13 (basso = guasto; pull-up R34) |
-| 29 | PB2 | VBUS_DET | ADC: VBUS upstream / 2 (anche VBUS_DET del hub); pin FT, regge ~2,5 V a MCU spento |
+| 29 | PB2 | VBUS_DET | ADC: VBUS upstream / 2 (anche VBUS_DET del hub); pin FT; a MCU spento il nodo è limitato da D21 (D53) |
 | 30 | PB10 | — |  |
 | 31 | PB11 | — |  |
 | 32 | PB12 | BTN_RLY1 | ingresso: pulsante relè 1 (basso = premuto; pull-up interno) |
@@ -89,5 +89,5 @@ I pin senza segnale sono liberi (no-connect nello schema).
 - Scarica della VBUS (D37): dopo EN off accendere DIS e leggere la VBUS della porta dall'INA3221; sotto 0,8 V tenere DIS ancora ~50 ms e poi spegnerla. Timeout 1 s: DIS off comunque (la 100 Ω in 1206 a 5 V è al suo massimo di 0,25 W), porta spenta, LED rosso, PORT_FAULT "sorgente esterna". Nel CYCLE_PORT `off_ms` parte quando la VBUS è sotto 0,8 V. Il tempo di conversione dell'INA3221 va scelto in modo che ogni canale si aggiorni almeno ogni ~5 ms durante la scarica.
 - Porte: l'INA3221 misura anche la tensione di ogni VBUS. Se una porta accesa supera ~5,5 V (scheda in prova che rimanda tensione) spegnerla e segnalarlo (PORT_FAULT, causa "tensione inversa").
 - Porte, sorgente esterna (D29): prima di accendere una porta leggere la sua VBUS dall'INA3221; se a porta spenta c'è già tensione (soglia 0,8 V, la stessa della scarica: D37) non accenderla. A porta accesa, se la corrente misurata è entrante (shunt negativo) spegnerla. In entrambi i casi LED rosso della porta acceso e PORT_FAULT con causa "sorgente esterna".
-- VBUS_DET è su un pin FT (PB2), non TT: può avere tensione con il MCU spento (alimentatore staccato, PC collegato), e i pin TT non ammettono corrente iniettata verso VDD.
+- VBUS_DET è su un pin FT (PB2), non TT: può avere tensione con il MCU spento (alimentatore staccato, PC collegato), e i pin TT non ammettono corrente iniettata verso VDD. Il nodo è anche limitato a 3,3 V + Vf da D21 per il pin 44 del hub (D53).
 - I nomi dei pin 43/44 sono quelli del simbolo KiCad: sono PA11/PA12 (USB), rimappabili su PA9/PA10.

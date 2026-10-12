@@ -39,6 +39,15 @@
    (condition "A.hasNetclass('USB_DIFF') && A.Type == 'Track' && (B.Type == 'Track' || B.Type == 'Zone') && !A.isCoupledDiffPair()")
 )
 
+# Fanout del USB2517: pad a passo 0,5 e coppie adiacenti a 1 mm di passo, la
+# distanza di 0,75 non è ottenibile all'uscita dai pad. Vale solo fra tratti USB
+# interamente dentro le aree di regola USB_FANOUT_U2, a ridosso dei pin.
+
+(rule "USB fanout USB2517"
+   (constraint clearance (min 0.15mm))
+   (condition "A.hasNetclass('USB_DIFF') && B.hasNetclass('USB_DIFF') && A.insideArea('USB_FANOUT_U2') && B.insideArea('USB_FANOUT_U2')")
+)
+
 # -----------------------------------------------------------------------------
 # Alimentazione: larghezze iniziali di netclass. Un tratto più stretto è un
 # restringimento da controllare localmente (pad, fanout): segnalato come avviso.

@@ -149,7 +149,14 @@ Le derivazioni Kelvin non hanno una classe propria: sono le stesse reti di poten
 - contatti relè a ≥ 1,0 dalle altre reti e fra i due canali; fra le reti dello stesso canale
   0,20, secondo il land pattern;
 - eccezioni circoscritte alle impronte: 0,15 fra i pad di U13 (passo 0,45) e 0,19 fra pad GND
-  e fori di centraggio dei GCT USB4105.
+  e fori di centraggio dei GCT USB4105;
+- fanout del USB2517: fra tratti USB interamente dentro le aree di regola `USB_FANOUT_U2`
+  (a ridosso dei pin delle porte e dei pin 53–56) la distanza minima è 0,15 invece di 0,75,
+  perché le coppie adiacenti escono da pad a 1 mm di passo.
+
+**Zone e aree di regola** nel PCB: piano GND `GND_In2` su tutto In2.Cu; aree
+`RELAY1_CONTACTS` e `RELAY2_CONTACTS` senza riempimenti su tutti i layer, sotto contatti dei
+relè, ponticelli, snubber e boccole; aree `USB_FANOUT_U2` usate solo dalla regola sopra.
 
 Nelle condizioni dei file `.kicad_dru` di KiCad 10 i caratteri jolly si usano con `==`;
 `matches` e `Parent.Reference` non funzionano e un errore fa scartare l'intero file senza
@@ -159,7 +166,10 @@ Le regole coprono solo ciò che il DRC può misurare: il resto è nella sezione
 [Verifiche manuali](#verifiche-manuali).
 
 **Avvisi aperti nel DRC**: serigrafia di J501 tagliata dal bordo e sovrapposta al riferimento,
-dovuta all'impronta del connettore a filo del bordo; da sistemare con la serigrafia definitiva.
+dovuta all'impronta del connettore a filo del bordo; testi di serigrafia sovrapposti fra loro e
+ai pad dopo il piazzamento; due via GND di ritorno vicino all'incrocio della coppia del MCU
+collegate per ora solo al piano In2.Cu; skew oltre 0,5 su USB_MCU, SPARE e USBUP (D20 → hub),
+da correggere con l'accordo di lunghezza. Da sistemare con lo sbroglio e la serigrafia definitiva.
 
 ## Coppie USB
 
@@ -223,6 +233,19 @@ La lunghezza totale va minimizzata con il piazzamento e registrata per ogni port
 fissato un massimo arbitrario che sostituisca la verifica dell'intero canale a 480 Mbit/s.
 Non aggiungere resistenze serie, choke o condensatori non presenti nello schema.
 
+Realizzazione nel PCB, tutte le coppie su B.Cu sopra il piano GND di In2.Cu:
+
+- USB-C (porte e upstream): una coppia di pad adiacenti esce verso l'interno della scheda; il
+  secondo pad della stessa rete si collega con un anello sotto il corpo del connettore, attorno
+  all'estremità del pad centrale, e l'altro pin doppio raggiunge la propria pista passando
+  sopra il pad lasciato libero. Niente via, monconi corti, lunghezze dei due raccordi pari.
+- Lato connettore: PI3USB4002A a 12 mm dal connettore, coppia diritta dai pad ai pin.
+- Upstream: USBLC6 D20 in linea fra J2 e il hub, canali secondo D52.
+- Porta 6 (MCU, Full-Speed): incrocio di D+ e D− con due via su USB_MCU_DN (D52); il DRC
+  conta anche la lunghezza delle via.
+- Coppie parallele con la geometria nominale, senza compensazione di lunghezza: l'accordo
+  D+/D− si fa con lo strumento di KiCad per le coppie differenziali.
+
 ## Alimentazione e caduta di tensione
 
 Dimensionare la dorsale per **3 A continui**, verificando anche l'intervento del limite
@@ -256,7 +279,7 @@ non devono trasportare corrente di carico. VBUS upstream è una rete separata da
 ## Piazzamento e dissipazione
 
 Rispettare profilo **169 × 85 mm, R3**, quattro fori M3 a 4,5 mm dai bordi e posizioni bloccate
-in D42/D43. F.Cu ospita solo LED e pulsanti come componenti; tutto il resto è su B.Cu.
+in D42/D43 e D51. F.Cu ospita solo LED e pulsanti come componenti; tutto il resto è su B.Cu.
 Verificare ingombri 3D, corsa dei pulsanti, accesso dei cavi, boccole e utensili di montaggio.
 Prevedere keepout su tutti i layer intorno a viti e distanziali, dimensionati sul loro ingombro
 reale, non solo sul foro. Conservare i vincoli già presenti nel PCB.
@@ -367,9 +390,14 @@ via termiche e apertura della pasta. Il pad esposto di U2 ha 16 via 0,60/0,30 a 
 1,35–1,40, aperte su entrambi i lati, con apertura della maschera 1:1 sul lato opposto (D50):
 verificare nei Gerber che le 16 aperture restino e, sul prototipo, saldatura e temperatura
 di U2. Per la produzione le via diventano "encroached" (punto 7 delle
-[verifiche prima della produzione](#verifiche-prima-della-produzione)). Il tab dell'AP7361C
-va collegato alla net prevista dal suo pinout: non assumerlo a GND. Verificare nel case chiuso il caso peggiore: LDO circa 0,3–0,6 W secondo il bilancio
-di progetto, Schottky, eFuse, TPS2561A, shunt e relè eccitati.
+[verifiche prima della produzione](#verifiche-prima-della-produzione)). Il tab dell'AP7361C-33E
+(U1) è il pin 2, GND, e fa da dissipatore: l'LDO dissipa fino a 0,8–0,9 W nel caso peggiore
+(D56). Zona GND `U1_HEATSINK` sul tab, sul lato del componente (B.Cu), collegamento pieno al
+pad, ~1,4 cm² (lo spazio fra C8/C9, D2 e R1/R2), con 10 via 0,60/0,30 ai lati e sopra/sotto il
+tab verso il piano GND In2.Cu: obiettivo θJA ≤ ~60 °C/W. Il rame non va interrotto da piste di
+segnale; il pin 2 centrale va collegato al tab con una pista corta. Verificare nel case chiuso il caso peggiore: LDO, Schottky,
+eFuse, TPS2561A, shunt e relè eccitati; sul prototipo misurare la temperatura di U1 con 7 porte
+Hi-Speed attive.
 Dimensionare i thermal relief dei pad di potenza per la corrente; verificare il compromesso
 con la saldatura manuale. La dimensione del pad da sola non garantisce dissipazione sufficiente.
 
@@ -419,7 +447,7 @@ Non creare una separazione della massa logica per imitare l'isolamento dei conta
 I sette condensatori da **100 nF** delle linee dei pulsanti vanno sulla faccia inferiore
 **vicino ai rispettivi GPIO dell'MCU** (D46), con il tratto condensatore → pin il più corto
 possibile e una via GND accanto al pad di massa. I pulsanti restano sulla faccia superiore,
-nelle posizioni definite da D42/D43.
+nelle posizioni definite da D42/D43 e D51.
 
 La posizione presso l'ingresso permette di filtrare anche i disturbi raccolti lungo la pista
 pulsante → MCU. Instradare queste linee sopra un piano GND continuo, lontano dai percorsi

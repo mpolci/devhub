@@ -4,13 +4,13 @@ Progetto KiCad 10 (schema, PCB, BOM) dell'hub.
 
 ```
 hardware/devhub/        progetto KiCad: devhub.kicad_pro, devhub.kicad_sch (radice), i fogli e devhub.kicad_pcb
-hardware/lib/           devhub.kicad_sym: simboli non presenti nelle librerie standard (USB2517, PI3USB4002A, TPS259470A)
+hardware/lib/           devhub.kicad_sym: simboli non presenti nelle librerie standard (USB2517, PI3USB4002A, TPS259470A) e SMAJ20A con pin K/A espliciti
 hardware/bom/           BOM e file per l'assemblaggio (da fare)
 ```
 
 ## Stato: schema v0.2
 
-Simboli delle librerie standard di KiCad più il simbolo USB2517; fogli gerarchici riusati per le
+Simboli delle librerie standard di KiCad più quelli di progetto in `lib/`; fogli gerarchici riusati per le
 porte. Componenti vicini collegati a filo, ma ogni rete ha comunque un nome esplicito: etichette
 locali per le reti interne a un foglio, globali per quelle che passano tra fogli, gerarchiche per
 le porte. Passa l'ERC di `kicad-cli` con zero violazioni.
@@ -38,6 +38,17 @@ Footprint locali assegnati dalla libreria `lcsc_footprints` (`devhub/libs/footpr
 - U13 TPS259470A: `C3662799_VQFN-10_L2_0-W2_0-P0_45-TL`;
 - U101–U501 PI3USB4002A: `C3657361_UQFN-10_L2_0-W1_5-P0_50-TL`.
 
+Le piazzole sono quelle generate da LCSC, non copiate dai land pattern dei costruttori: nel
+PI3USB4002A le laterali sono 0,665 × 0,28 mm invece di 0,53 × 0,25 (più lunghe verso l'esterno,
+stesso bordo interno), nel TPS259470A le coordinate coincidono con l'esempio TI RPW0010A entro
+~0,05 mm. Differenze accettate: il bordo esterno più lungo aiuta la saldatura ad aria calda.
+Courtyard ridisegnati a 0,25 mm dalle piazzole (quelli importati erano più piccoli del rame).
+
+J4 (SWD, Samtec FTSH-105-01-L-DV-K) usa l'impronta generica
+`PinHeader_2x05_P1.27mm_Vertical_SMD`: KiCad non ha quella Samtec, e rispetto al land pattern
+Samtec le piazzole sono più corte (2,40 invece di 2,79 mm, ingombro 6,30 invece di 6,86 mm), con
+stesso passo e stessa larghezza. Accettata: è un connettore di debug saldato a mano.
+
 I footprint usano i modelli in `devhub/libs/3dmodels` con percorsi relativi al progetto.
 Il modello C3657361 è un segnaposto dell’importatore, non una rappresentazione del package.
 
@@ -52,24 +63,37 @@ nel progetto: stackup nel PCB, vincoli e netclass in `devhub.kicad_pro`, regole 
 `devhub.kicad_dru`.
 
 `devhub.kicad_pcb`: 4 strati, profilo 169 × 85 mm con angoli R3 e piazzati, bloccati, i
-componenti che vincolano la scatola (D42, D43), con il profilo al centro del foglio A4. Vista
-dall'alto, fronte (lato banco) in basso. Il bordo
+componenti che vincolano la scatola (D42, D43, disposizione del fronte e del retro secondo D51),
+con il profilo al centro del foglio A4. Vista dall'alto, fronte (lato banco) in basso. Il bordo
 del PCB sta sulla faccia interna delle pareti (spessore previsto 2,5 mm).
 
 | Cosa | Faccia | Posizione (u dal bordo sinistro, v dal bordo frontale) |
 |---|---|---|
-| J101-J401 USB-C, J501 USB-A | inferiore | u = 16, 31, 46, 61, 81 mm; faccia d'innesto a filo del bordo frontale |
-| J5-J8 boccole (COM1, NC1, COM2, NC2) | inferiore | u = 101, 118, 138, 155 mm; corpo a v = 11,85 mm, manicotto Ø 11 × 14,35 mm fino a v = -2,5 mm (a filo della faccia esterna della parete) |
+| J5-J8 boccole (COM1, NC1, COM2, NC2) | inferiore | u = 14, 31, 51, 68 mm; corpo a v = 11,85 mm, manicotto Ø 11 × 14,35 mm fino a v = -2,5 mm (a filo della faccia esterna della parete) |
+| J501 USB-A, J401-J101 USB-C (porte 4…1) | inferiore | u = 88 (USB-A), 108, 123, 138, 153 mm; faccia d'innesto a filo del bordo frontale |
 | LED delle porte (verde D*02, rosso D*03) | superiore | in colonna sull'asse della porta: verde a v = 2 mm, rosso a v = 6 mm |
-| D90, D91 LED dei relè (verdi) | superiore | v = 2 mm, al centro della coppia di boccole (u = 109,5 e 146,5 mm) |
-| SW101-SW501, SW1, SW2 pulsanti SMD PTS645 (6×6, attuatore 7 mm) | superiore | v = 36 mm (centro), in asse con porte e coppie di boccole |
+| D90, D91 LED dei relè (verdi) | superiore | v = 2 mm, al centro della coppia di boccole (u = 22,5 e 59,5 mm) |
+| SW1, SW2, SW501-SW101 pulsanti SMD PTS645 (6×6, attuatore 7 mm) | superiore | v = 36 mm (centro), in asse con coppie di boccole e porte |
 | D92 acceso, D93 host | superiore | in colonna a u = 162 mm, v = 34 e 38 mm (centrati sulla fila dei pulsanti) |
 | K1, K2 relè (il componente più alto sotto) | inferiore | dietro i pulsanti dei relè, v = 40-52 mm |
-| J2 upstream, J1 alimentazione | inferiore | u = 40 e 110 mm, a filo del bordo posteriore |
+| J1 alimentazione, J2 upstream | inferiore | u = 50 e 135 mm, a filo del bordo posteriore |
 | H1-H4 fori M3 (solo PCB, non nello schema) | — | a 4,5 mm dai bordi |
 
-Gli altri componenti sono già sulla faccia inferiore, fuori dal profilo a destra, raggruppati per
-foglio. Il PCB è allineato allo schema (controllo di parità senza differenze), con i footprint
+Componenti piazzati tutti sulla faccia inferiore, salvo LED e pulsanti:
+
+| Zona | Contenuto |
+|---|---|
+| Retro, a sinistra | J1, D1, eFuse U13 con le reti di regolazione, C7, R5, C3-C6; LDO U1 con D2 e C8-C10 |
+| Retro, al centro | MCU U3 con disaccoppiamenti, filtri CC, pull-up/pull-down e condensatori dei pulsanti (D46); J4 SWD, J9 UART |
+| Retro, a destra | hub U2 con quarzo, RBIAS e disaccoppiamenti; U12; J2, D20 e reti CC/VBUS_DET con D21; J3 porta 7 con F1 |
+| Fra le coppie USB, dietro le porte | U6, R69 e U8 (fra porta 5 e 4); U5, R67, R68 (fra 4 e 3); U4, R65, R66 e U7 (fra 2 e 1) |
+| Davanti, per ogni porta | PI3USB4002A a 12 mm dal connettore con REF e VDD, VBUS e CC, scarica, resistenze dei LED |
+| Relè | U9 fra K1 e K2; ponticelli JP2/JP3 e snubber verso le boccole |
+
+Sbrogliate solo le coppie USB, su B.Cu (vedi [regole](../docs/regole-pcb.md#coppie-usb));
+piano GND su In2.Cu e aree senza rame sotto i contatti dei relè. Il resto delle piste è da fare.
+
+Il PCB è allineato allo schema (controllo di parità senza differenze), con i footprint
 di U2 (via termiche da 0,30, D50), U13 e U101-U501 dalla libreria di progetto
 `libs/footprints.pretty` e i package da magazzino di C3, C4, C505, F1 e C106-C506 (D45). Il PCB va modificato in KiCad dallo stato corrente,
 non rigenerato.

@@ -6026,7 +6026,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "24.3k 1%"
+		(property "Value" "33.2k 1%"
 			(at 104.14 220.98 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6081,7 +6081,7 @@
 				)
 			)
 		)
-		(property "lcsc" "C276290"
+		(property "lcsc" "C185338"
 			(at 101.6 219.71 0)
 			(hide yes)
 			(show_name no)
@@ -6092,7 +6092,7 @@
 				)
 			)
 		)
-		(property "mouser" "603-RC0603FR-0724K3L"
+		(property "mouser" "603-RC0603FR-0733K2L"
 			(at 101.6 219.71 0)
 			(hide yes)
 			(show_name no)
@@ -6103,7 +6103,7 @@
 				)
 			)
 		)
-		(property "digikey" "311-24.3KHRCT-ND"
+		(property "digikey" "311-33.2KHRCT-ND"
 			(at 101.6 219.71 0)
 			(hide yes)
 			(show_name no)

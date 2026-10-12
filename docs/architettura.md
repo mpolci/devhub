@@ -66,7 +66,9 @@ lascia GND sempre collegata:
   FAULT per canale (open-drain, deglitch 9 ms), soft-start, 44 mΩ, blocco della corrente inversa.
   Una **sola resistenza ILIM per chip** imposta il limite di entrambi i canali, indipendenti tra
   loro: I_OS(nom) = 56000 / R_ILIM(kΩ) mA. Con **R_ILIM = 24,3 kΩ 1 %** il limite è 2,1–2,5 A
-  (2,3 A tipico) per canale, verificato sul datasheet (SLVSB28, tabella EC). Tre chip coprono le
+  (2,3 A tipico) per canale, verificato sul datasheet (SLVSB28, tabella EC). Su U6, che serve solo
+  la USB-A (secondo canale disabilitato), **R62 = 33,2 kΩ 1 %**: 1,52–1,85 A dalle formule
+  I_OS(min/max) del datasheet, perché il connettore USB-A è da 1,5 A (D54). Tre chip coprono le
   5 porte con un canale di scorta. Il TPS2561A **non ha la scarica dell'uscita**: per porta un
   MOSFET N (AO3400) con 100 Ω verso GND, pilotato dal MCU dopo lo spegnimento finché la VBUS
   non è scesa (pin DIS, D37); senza scarica un dispositivo con grossi condensatori resta "acceso" per secondi e
@@ -82,8 +84,11 @@ letta dall'INA3221 non scende sotto **0,8 V** (vSafe0V del Type-C), poi altri ~5
 Il tempo dipende dalla capacità totale, compresa quella del dispositivo: ~6 ms con 22 µF + 10 µF,
 ~185 ms con 1000 µF (τ = 100 Ω × C). Un tempo fisso non basta, perché la capacità di una scheda
 in prova non è nota. Timeout di 1 s (fino a ~5000 µF): se la VBUS non scende c'è una sorgente
-esterna; la scarica si spegne comunque, perché la resistenza da 100 Ω in 1206 a 5 V dissipa
-0,25 W, il suo massimo continuo, e la porta resta spenta con PORT_FAULT "sorgente esterna" (D29).
+esterna; la scarica si spegne comunque, perché la resistenza da 100 Ω in 1206 a 5,25 V dissipa
+~0,28 W, poco sopra gli 0,25 W continui: per 1 s è ampiamente nel sovraccarico breve ammesso
+(Yageo RC, IEC 60115-1 8.1: 2,5 volte la tensione nominale per 5 s), e la porta resta spenta con
+PORT_FAULT "sorgente esterna" (D29), quindi non si ripete in ciclo. Con la sola capacità della
+porta e del dispositivo l'energia è trascurabile (½CV², ~2 mJ con 120 µF).
 In un ciclo, `off_ms` si conta da quando la VBUS è sotto 0,8 V.
 Riattacco: EN VBUS on → dopo `on_delay_ms` (default 50 ms) OE dati on, così il dispositivo si
 enumera già alimentato stabilmente.
@@ -98,7 +103,7 @@ abbassarla con un buck. Si è scelto di **non** farlo, accettando un totale di ~
 perché:
 
 - le schede a microcontrollore assorbono in genere 50–500 mA; una porta da sola arriva comunque a
-  2 A grazie al limite per porta (RF-5);
+  2 A (1,5 A la USB-A) grazie al limite per porta (RF-5);
 - spariscono il TCPP01, il buck LM61495 con induttore e condensatori da 20 V, il rail 20 V e,
   soprattutto, lo **stack USB-PD nel firmware**, che era il rischio maggiore del progetto;
 - qualunque alimentatore USB-C funziona, anche quelli PD: tutti danno 5 V / 3 A di default;
@@ -173,9 +178,17 @@ comunque sopra i 7 V massimi del TPS2561A.
 **Logica (D32).** 3V3 da LDO a basso dropout (**AP7361C-33E**, 1 A, SOT-223) alimentato dalla
 5V_SYS tramite lo Schottky D2: la logica si alimenta solo dall'alimentatore e senza alimentatore
 l'hub non si vede dal PC. D2 resta per abbassare la tensione sull'LDO e quindi la dissipazione
-(senza, ~0,17 W in più a 0,48 A). Con 4,6 V in ingresso e 0,25–0,48 A di carico l'LDO dissipa 0,3–0,6 W: il SOT-223
-(θJA 110 °C/W con la piazzola minima, meno con un'area di rame sul tab) resta sotto i 70 °C di
-sovratemperatura nel caso peggiore. Scartato l'AP2112K in SOT-23-5, che con lo stesso carico rischiava la protezione termica (D17).
+(senza, ~0,17 W in più a 0,48 A). Carico 3,3 V fino a ~0,5 A (USB2517 460 mA max con 7 porte
+Hi-Speed, più il resto della logica), ~0,35 A nell'uso tipico. Nel caso peggiore l'alimentatore
+è al massimo (5,25 V, fino a 5,5 V per il Type-C), le porte assorbono poco e all'LDO arrivano
+~4,9–5,15 V: dissipa **0,8–0,9 W**, ~0,45 W nell'uso tipico. Con i 110 °C/W della piazzola
+minima la giunzione arriverebbe a ~140 °C a 40 °C ambiente, vicino alla protezione termica
+(150 °C): il tab (GND) va usato come dissipatore, con rame e via verso i piani GND, per avere
+θJA ≤ ~60 °C/W, cioè ≤ ~95 °C di giunzione nel caso peggiore (D56,
+[regole-pcb.md](regole-pcb.md)). Scartato l'AP2112K in SOT-23-5, che con lo stesso carico
+rischiava la protezione termica (D17). Scartato anche un buck: dalla 5 V prenderebbe ~0,1 A in
+meno (~0,37 A invece di 0,5 A nel caso peggiore), non abbastanza per giustificare componenti,
+rumore di commutazione vicino al hub e rifacimento della zona di alimentazione (D56).
 Variante possibile in futuro: hub funzionante anche dal solo PC (commutazione tra le due sorgenti,
 budget e protezioni separati); scartata per ora perché complica molto l'alimentazione (D32).
 
@@ -228,9 +241,11 @@ Dettagli verificati sul datasheet (DS00001598C) e sull'errata (DS80000628A):
   riposo: dettaglio in [pinout-mcu.md](pinout-mcu.md). Non è ancora dimostrato: è la prima prova da
   fare sul prototipo (DFU con flash vuota e dopo `ENTER_BOOTLOADER`).
 - **VBUS_DET** dalla VBUS upstream con partitore 100 k / 100 k, letto anche dal MCU (PB2, ADC).
-  Con l'alimentatore staccato e il PC collegato il partitore mette ~2,5 V su hub e MCU spenti: il
-  USB2517 ammette 5,5 V su ogni I/O e PB2 è un pin FT (tollera 5 V, senza diodo verso VDD; 4 V
-  massimi a MCU spento). Su un pin TT come il PA5 di prima non si potrebbe (D32).
+  Con l'alimentatore staccato e il PC collegato il partitore porterebbe ~2,5 V su hub e MCU
+  spenti, ma il USB2517 sotto 3,0 V di alimentazione ammette sugli I/O al massimo la sua 3,3 V
+  + 0,5 V: lo Schottky D21 (BAT54WS) dal nodo verso la 3,3 V lo tiene sotto questo limite, anche
+  durante i cali della 3,3 V, e a 3,3 V presente non conduce (D53). PB2 resta comunque un pin FT
+  (D32).
 - **LOCAL_PWR** con pull-up R26 da 10 kΩ verso la 3,3 V (D40): con la logica alimentata solo
   dall'alimentatore il hub è sempre self-powered. Resistenza e non collegamento diretto, perché con
   la configurazione via SMBus il pin 45 può diventare l'uscita SUSP_IND.
@@ -275,10 +290,10 @@ Per ogni porta:
 
 | Funzione | Componente | Note |
 |---|---|---|
-| Load switch VBUS | TPS2561A (½ chip) | R_ILIM 24,3 kΩ 1 % → 2,1–2,5 A per canale |
+| Load switch VBUS | TPS2561A (½ chip) | R_ILIM 24,3 kΩ 1 % → 2,1–2,5 A per canale; USB-A 33,2 kΩ → 1,52–1,85 A (D54) |
 | Scarica VBUS | AO3400 + 100 Ω 1206 | pilotato dal MCU |
 | Switch D+/D- | PI3USB4002A | EN (OE_N) dal MCU, alto = scollegato; 1 µF 25 V sul pin REF |
-| Misura corrente | INA3221 (3 canali) × 2 | shunt 20 mΩ 1 % tra l'uscita del load switch e il connettore. Risoluzione 2 mA (40 µV); offset ±4 mA max (±80 µV), tolto dal firmware leggendo la porta spenta; guadagno 0,25 % + shunt 1 %: accuratezza ±(2 mA + 1,3 % della lettura) (D36). Collegamenti Kelvin sugli shunt nel PCB |
+| Misura corrente | INA3221 (3 canali) × 2 | shunt 20 mΩ 1 % tra l'uscita del load switch e il connettore. Risoluzione 2 mA (40 µV); offset ±4 mA max (±80 µV), tolto dal firmware leggendo la porta spenta; guadagno 0,25 % + shunt 1 % + TCR dello shunt a film spesso (±1200 ppm/°C, ~3 % su 25 °C): accuratezza ±(2 mA + 5 % della lettura) (D36, D55). Collegamenti Kelvin sugli shunt nel PCB |
 | ESD dati | integrata nel PI3USB4002A (10 kV IEC 61000-4-2 sul lato connettore) | nessuna protezione esterna sulle porte (D27): una USBLC6 con il pin VBUS sulla VBUS commutata accoppiava dati e alimentazione e aggirava la tolleranza a 24 V dello switch. Layout: Diodes consiglia di non accorciare troppo la pista tra connettore e switch |
 | Protezione VBUS | i 22 µF + 100 nF della porta | TVS dedicata (SMAJ20A) solo sull'ingresso (D25) |
 | USB-C: CC1, CC2 | Rp **56 kΩ** a VBUS commutata (annuncio standard USB, 500 mA) | la VBUS commutata fa cadere anche CC quando la porta è spenta |

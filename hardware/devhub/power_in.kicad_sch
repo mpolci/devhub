@@ -1528,7 +1528,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Diode:SMAJ20A"
+		(symbol "devhub:SMAJ20A"
 			(pin_numbers
 				(hide yes)
 			)
@@ -1583,7 +1583,7 @@
 					)
 				)
 			)
-			(property "Description" "400W unidirectional Transient Voltage Suppressor, 20.0Vr, SMA(DO-214AC)"
+			(property "Description" "400W unidirectional Transient Voltage Suppressor, 20.0Vr, SMA(DO-214AC), pin 1 cathode"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1646,7 +1646,7 @@
 				(pin passive line
 					(at -3.81 0 0)
 					(length 2.54)
-					(name "A1"
+					(name "K"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1664,7 +1664,7 @@
 				(pin passive line
 					(at 3.81 0 180)
 					(length 2.54)
-					(name "A2"
+					(name "A"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -5261,8 +5261,8 @@
 		)
 	)
 	(symbol
-		(lib_id "Diode:SMAJ20A")
-		(at 66.04 39.37 90)
+		(lib_id "devhub:SMAJ20A")
+		(at 66.04 39.37 270)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
