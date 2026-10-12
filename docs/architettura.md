@@ -68,8 +68,8 @@ lascia GND sempre collegata:
   loro: I_OS(nom) = 56000 / R_ILIM(kΩ) mA. Con **R_ILIM = 24,3 kΩ 1 %** il limite è 2,1–2,5 A
   (2,3 A tipico) per canale, verificato sul datasheet (SLVSB28, tabella EC). Tre chip coprono le
   5 porte con un canale di scorta. Il TPS2561A **non ha la scarica dell'uscita**: per porta un
-  MOSFET N (AO3400) con 100 Ω verso GND, pilotato dal MCU per ~100 ms dopo lo spegnimento
-  (pin DIS); senza scarica un dispositivo con grossi condensatori resta "acceso" per secondi e
+  MOSFET N (AO3400) con 100 Ω verso GND, pilotato dal MCU dopo lo spegnimento finché la VBUS
+  non è scesa (pin DIS, D37); senza scarica un dispositivo con grossi condensatori resta "acceso" per secondi e
   non si resetta.
   Alternativa a pin: **TPS25221** (SOT-23-6), ma 2 A continui, al limite del requisito RF-5.
 - **D+/D-**: **Diodes PI3USB4002A** (UQFN-10 1,5×2 mm): interruttore USB 2.0 (banda 1 GHz, 5 Ω)
@@ -77,7 +77,14 @@ lascia GND sempre collegata:
   24 V e si apre da solo sopra 4,75 V: un corto D+/D- su VBUS in una scheda in prova o in un cavo
   non arriva alla 3,3 V (D22). Sostituisce il TS3USB30E, che sui pin dati reggeva solo VCC + 0,3 V.
 
-Sequenza di stacco (default nel firmware): OE dati off → EN VBUS off → DIS on per 100 ms.
+Sequenza di stacco (default nel firmware, D37): OE dati off → EN VBUS off → DIS on finché la VBUS
+letta dall'INA3221 non scende sotto **0,8 V** (vSafe0V del Type-C), poi altri ~50 ms → DIS off.
+Il tempo dipende dalla capacità totale, compresa quella del dispositivo: ~6 ms con 22 µF + 10 µF,
+~185 ms con 1000 µF (τ = 100 Ω × C). Un tempo fisso non basta, perché la capacità di una scheda
+in prova non è nota. Timeout di 1 s (fino a ~5000 µF): se la VBUS non scende c'è una sorgente
+esterna; la scarica si spegne comunque, perché la resistenza da 100 Ω in 1206 a 5 V dissipa
+0,25 W, il suo massimo continuo, e la porta resta spenta con PORT_FAULT "sorgente esterna" (D29).
+In un ciclo, `off_ms` si conta da quando la VBUS è sotto 0,8 V.
 Riattacco: EN VBUS on → dopo `on_delay_ms` (default 50 ms) OE dati on, così il dispositivo si
 enumera già alimentato stabilmente.
 

@@ -40,6 +40,7 @@
 | D34 | Pin del MCU, UCPD e bootloader | HUB_RST_N da PA8 (pin CC dell'UCPD, pull-down Rd dopo ogni reset) a PF1; spostati VBUS_DET (PB2), VSYS_ADC (PB0), INA_ALERT (PC12), RLY1/RLY2 (PA4/PA5), EN_P4 (PA7) perché nel bootloader ST relè e porte restino a riposo e il hub funzioni; DBCC dell'UCPD1 a massa con 10 kΩ (R48, R49); il firmware stacca le Rd con UCPDx_STROBE; DFU da provare sul prototipo (revisione 02, R02-07) |
 | D35 | Reset del solo hub | gestito dal firmware senza modifiche hardware: lettura di HUB_RST_N ogni ≤10 ms, presa del reset con PF1, rilascio con I2C fermo e configurazione SMBus dopo il rilascio effettivo di U12; brownout reset del MCU non usato perché lascerebbe una finestra 2,8-3,0 V (revisione 02, R02-08) |
 | D36 | Accuratezza della misura di corrente | shunt 20 mΩ invariati; RF-6 specifica ±(2 mA + 1,3 % della lettura) con l'azzeramento dell'offset a porta spenta (firmware); collegamenti Kelvin sugli shunt nel PCB; 50 mΩ scartati per la caduta sulla VBUS (revisione 02, R02-09) |
+| D37 | Durata della scarica VBUS | non più 100 ms fissi: DIS on finché la VBUS misurata scende sotto 0,8 V (vSafe0V) più ~50 ms, timeout 1 s con porta spenta e PORT_FAULT "sorgente esterna" (protegge anche la 100 Ω, al massimo con 5 V); `off_ms` di CYCLE_PORT contato da VBUS sotto 0,8 V; stessa soglia per il controllo prima dell'accensione (revisione 02, R02-10) |
 
 ## Aperte
 

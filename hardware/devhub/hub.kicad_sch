@@ -4736,6 +4736,16 @@
 		)
 		(uuid "37add9ef-21c8-559e-acbb-742dbeaaea68")
 	)
+	(label "VBUS_UP"
+		(at 91.44 96.52 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "4dec956f-bf75-573a-a819-5b646523d26c")
+	)
 	(label "VDD18PLL"
 		(at 236.22 86.36 0)
 		(effects
@@ -4865,6 +4875,16 @@
 			(justify left bottom)
 		)
 		(uuid "d957c1ca-e514-5868-ac32-0cea72f21e27")
+	)
+	(label "VBUS_UP"
+		(at 142.24 213.36 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "e2ee86af-ee71-57dc-ae46-11505d8da58b")
 	)
 	(global_label "USB_MCU_DM"
 		(shape bidirectional)
@@ -5072,16 +5092,6 @@
 				)
 			)
 		)
-	)
-	(label "VBUS_UP"
-		(at 91.44 96.52 90)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "4dec956f-bf75-573a-a819-5b646523d26c")
 	)
 	(global_label "HUB_DP2"
 		(shape bidirectional)
@@ -5427,16 +5437,6 @@
 				)
 			)
 		)
-	)
-	(label "VBUS_UP"
-		(at 142.24 213.36 90)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "e2ee86af-ee71-57dc-ae46-11505d8da58b")
 	)
 	(global_label "HUB_RST_N"
 		(shape bidirectional)
