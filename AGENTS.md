@@ -16,3 +16,6 @@
 - Componenti scelti e alternative valutate per fornitore in `docs/componenti.md`.
 - Piedinatura del MCU in `docs/pinout-mcu.md`: va tenuta allineata allo schema.
 - I datasheet sono in `datasheets/` (escluso da git).
+- La documentazione deve essere scritta come fotografia dello stato attuale del progetto, non 
+  per tracciare la storia delle lavorazioni, per la quale possono essere scritti dei documenti 
+  appositi in docs/lavorazioni ma solo quando richiesto.
