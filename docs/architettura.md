@@ -9,10 +9,10 @@ La tabella dei componenti con package, fornitore e classe JLCPCB è in [componen
 ```
 USB-C PWR IN 5 V / 3 A ──► TVS + shunt + eFuse ───► 5V_SYS ────────────────────────────────┐
 (qualunque alimentatore      │                       │                                     │
- USB-C, anche PD)            │ CC1/CC2 (Rd 5,1 kΩ)    ▼ ORing Schottky + LDO 3,3 V          │
+ USB-C, anche PD)            │ CC1/CC2 (Rd 5,1 kΩ)    ▼ Schottky D2 + LDO 3,3 V            │
                              └──► ADC del MCU      3V3 (hub, MCU, switch)                  │
-                                  (0,5 / 1,5 / 3 A)    ▲                                   │
-USB-C UPSTREAM ─── VBUS ───────────────────────────────┘ (RF-16)                           │
+                                  (0,5 / 1,5 / 3 A)                                        │
+USB-C UPSTREAM ─── VBUS ──► VBUS_DET (hub, MCU)                                            │
 (verso il PC)   │                                                                          │
                 └──► HUB USB 2.0, 7 porte (USB2517)                                        │
                          ├─ DS1..DS4 ─► PI3USB4002A ► USB-C 1..4 ◄─ TPS2561A + scarica ◄───┤
@@ -107,8 +107,7 @@ Bilancio (alimentatore 5 V / 3 A):
 | 2 relè eccitati (G5Q-1 SPDT, 80 mA per bobina) | ~0,16 A |
 | Disponibile per le porte | ~2,3 A nel caso peggiore |
 
-La logica è alimentata dall'ORing tra 5V_SYS e VBUS upstream: quando la VBUS del PC è più alta
-della 5V_SYS la logica assorbe in parte dal PC e quella corrente non passa dallo shunt d'ingresso.
+La logica è alimentata solo dalla 5V_SYS (D32): tutta la sua corrente passa dallo shunt d'ingresso.
 
 **Lettura del budget.** Sulle CC dell'ingresso il MCU ha Rd da 5,1 kΩ e legge con l'ADC la
 tensione imposta dall'Rp dell'alimentatore: ~0,4 V → 0,5 A, ~0,9 V → 1,5 A, ~1,7 V → 3 A
@@ -136,9 +135,13 @@ Il limite di corrente dell'alimentatore resta la protezione di ultima istanza.
 - limite di corrente 3,5 A (R33), transitori ammessi fino a ~8 ms (C12), ripartenza automatica;
 - avvio dolce: la 5V_SYS sale in ~5 ms e i 460 µF di bulk si caricano con ~0,4 A invece di un picco
   di decine di ampere; i condensatori d'ingresso restano quelli attuali (D20);
-- blocca la corrente inversa; FLT (open-drain) va al MCU su PB1;
-- lo shunt sta prima dell'eFuse, così l'INA3221 misura la tensione d'ingresso anche quando l'eFuse
-  ha staccato e il firmware può segnalare "ingresso fuori tensione".
+- blocca la corrente inversa; FLT (open-drain) va al MCU su PB1. FLT va basso solo per
+  sovracorrente prolungata (dopo il tempo di C12), sovratemperatura, guasto del pin ILM e corrente
+  inversa; con sovratensione o sottotensione resta alto (datasheet, tabella 7-3);
+- lo shunt sta prima dell'eFuse: l'INA3221 misura tensione e corrente d'ingresso. La logica è a
+  valle dell'eFuse (D32), quindi quando l'eFuse stacca si spegne tutto e al PC non arriva nessuna
+  segnalazione: l'hub sparisce. FLT serve durante la limitazione di corrente, finché il MCU è
+  ancora acceso: può spegnere le porte prima che l'eFuse stacchi.
 Caduta aggiuntiva: ~28 mΩ, cioè ~0,1 V a 3 A.
 
 **Limiti della catena d'ingresso (D31).** Massimi assoluti: INA3221 (canale 3 sullo shunt R5)
@@ -158,13 +161,14 @@ di volt, i picchi negativi li ferma il diodo interno del MOSFET di scarica; cont
 tensione continua rimandata da una scheda una TVS non serve (brucerebbe) e una da 5 V limiterebbe
 comunque sopra i 7 V massimi del TPS2561A.
 
-**Logica (RF-16).** 3V3 da LDO a basso dropout (**AP7361C-33E**, 1 A, SOT-223) alimentato da un ORing a diodi
-Schottky tra 5V_SYS e la VBUS upstream: con alimentatore assente hub e MCU enumerano e riportano "alimentatore assente"; le
-porte downstream si attivano solo se 5V_SYS è presente. Il diodo impedisce di iniettare 5V_SYS
-verso l'host. Con 4,6 V in ingresso e 0,25–0,48 A di carico l'LDO dissipa 0,3–0,6 W: il SOT-223
+**Logica (D32).** 3V3 da LDO a basso dropout (**AP7361C-33E**, 1 A, SOT-223) alimentato dalla
+5V_SYS tramite lo Schottky D2: la logica si alimenta solo dall'alimentatore e senza alimentatore
+l'hub non si vede dal PC. D2 resta per abbassare la tensione sull'LDO e quindi la dissipazione
+(senza, ~0,17 W in più a 0,48 A). Con 4,6 V in ingresso e 0,25–0,48 A di carico l'LDO dissipa 0,3–0,6 W: il SOT-223
 (θJA 110 °C/W con la piazzola minima, meno con un'area di rame sul tab) resta sotto i 70 °C di
-sovratemperatura nel caso peggiore. Dropout 90 mV tipici a 300 mA: funziona anche dalla sola VBUS
-upstream. Scartato l'AP2112K in SOT-23-5, che con lo stesso carico rischiava la protezione termica (D17).
+sovratemperatura nel caso peggiore. Scartato l'AP2112K in SOT-23-5, che con lo stesso carico rischiava la protezione termica (D17).
+Variante possibile in futuro: hub funzionante anche dal solo PC (commutazione tra le due sorgenti,
+budget e protezioni separati); scartata per ora perché complica molto l'alimentazione (D32).
 
 #### Variante ad alta potenza (non in v1)
 
@@ -200,8 +204,12 @@ Dettagli verificati sul datasheet (DS00001598C) e sull'errata (DS80000628A):
   MCU (watchdog, `REBOOT`, debugger, bootloader) lascia PA8 in alta impedenza e **non resetta il
   hub**. All'accensione il MCU parte prima che il supervisore rilasci, tiene basso il reset, sceglie
   CFG_SEL2 e lo rilascia; senza firmware il hub parte comunque con i default interni (101).
-- **VBUS_DET** dalla VBUS upstream con partitore 100 k / 100 k; **LOCAL_PWR** da un partitore su
-  5V_SYS (alto = alimentatore presente).
+- **VBUS_DET** dalla VBUS upstream con partitore 100 k / 100 k, letto anche dal MCU (PA6, ADC).
+  Con l'alimentatore staccato e il PC collegato il partitore mette ~2,5 V su hub e MCU spenti: il
+  USB2517 ammette 5,5 V su ogni I/O e PA6 è un pin FT (tollera 5 V, senza diodo verso VDD; 4 V
+  massimi a MCU spento). Su un pin TT come il PA5 di prima non si potrebbe (D32).
+- **LOCAL_PWR** da un partitore su 5V_SYS: con la logica alimentata solo dall'alimentatore è sempre
+  alto (hub self-powered).
 - RBIAS 12,0 kΩ 1 %; quarzo 24 MHz YXC X322524MOB4SI (C_L 12 pF) con 15 pF C0G (D19; il hub tollera ±350 ppm); 1,8 V dal
   regolatore interno (VDD18, VDD18PLL con 1 µF ciascuno); TEST a massa; slug a massa.
 - Mappa porte: 1–4 → USB-C, 5 → USB-A, 6 → MCU, 7 → header interno. Le porte 1–5 sono sul lato
@@ -319,7 +327,7 @@ le schede in prova possono essere montate male, ci sono scariche elettrostatiche
 
 | Rischio | Protezione |
 |---|---|
-| Alimentatore sbagliato, da 5,84 a 20 V in continuo | eFuse U13: stacca la 5V_SYS; la TVS non conduce e l'INA3221 resta nei limiti: nessun danno. Il firmware lo vede da FLT e dalla tensione misurata sullo shunt |
+| Alimentatore sbagliato, da 5,84 a 20 V in continuo | eFuse U13: stacca la 5V_SYS; la TVS non conduce e l'INA3221 resta nei limiti: nessun danno. Si spegne anche la logica (D32): il PC vede sparire l'hub; tolto l'alimentatore sbagliato tutto riparte |
 | Alimentatore sbagliato sopra ~23 V | la TVS conduce: con un alimentatore limitato in corrente tiene la linea sotto i 26 V e non succede nulla; con uno potente si brucia (di solito in corto) e protegge l'eFuse, ma l'INA3221 può superare per un attimo i suoi 26 V (D31) |
 | Picco all'inserzione dell'alimentatore | avvio dolce dell'eFuse (~5 ms) |
 | Corto o sovraccarico su una porta | TPS2561A: limite ~2,3 A, protezione termica, FAULT al MCU e agli OCS del hub; il firmware spegne la porta |
@@ -332,8 +340,8 @@ le schede in prova possono essere montate male, ci sono scariche elettrostatiche
 | Scariche elettrostatiche su D+/D- e VBUS | sulle porte: protezione integrata nel PI3USB4002A (10 kV IEC) e condensatori sulla VBUS; sulla porta upstream: USBLC6-2SC6 (15 kV); in layout le protezioni vanno vicino al connettore con ritorno corto a GND |
 | Scariche elettrostatiche su CC, pulsanti, LED, boccole | nessun integrato esposto sulle CC (solo resistenze; verso l'ADC filtro 1 kΩ + 100 nF); prolunghe dei pulsanti in plastica; boccole sui contatti dei relè, isolati dalla scheda |
 | Corto o sovracorrente sulle boccole | contatti da 3 A: va protetto il circuito esterno (fusibile); snubber RC previsti |
-| Anelli di massa (sonda dell'oscilloscopio, schede con massa a un altro potenziale) | non risolti a bordo: la massa USB unisce PC, hub e schede. Isolare a 480 Mbit/s costa e toglie l'alimentazione dal PC (RF-16); per lavori a rischio si usa un isolatore USB commerciale tra PC e hub |
-| Corrente dal hub verso il PC | diodo D3 nell'ORing |
+| Anelli di massa (sonda dell'oscilloscopio, schede con massa a un altro potenziale) | non risolti a bordo: la massa USB unisce PC, hub e schede. Isolare a 480 Mbit/s costa; per lavori a rischio si usa un isolatore USB commerciale tra PC e hub |
+| Corrente dal hub verso il PC | nessun collegamento tra 5V_SYS e la VBUS upstream (D32) |
 
 ## Rischi / punti aperti tecnici
 

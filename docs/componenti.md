@@ -30,9 +30,9 @@ parte della v1.
 | Misura corrente, alternativa a mano | TI **INA219** ×5 | SOT-23-8 | sì | extended | sì | 1 canale, 16 indirizzi I2C |
 | eFuse d'ingresso | TI **TPS259470ARPWR** | VQFN-HR-10 2×2 mm (RPW) | aria calda | extended | C3662799 | 2,7–23 V, 5,5 A, 28 mΩ; OVLO/UVLO regolabili, limite attivo, ripartenza automatica, FLT, blocco corrente inversa (D21) |
 | Zener su EN dell'eFuse | **BZT52C5V1** | SOD-123 | sì | basic | sì | tiene EN sotto 6,5 V con ingresso fino a 28 V |
-| LDO 3,3 V | Diodes **AP7361C-33E** | SOT-223 | sì | extended | sì | 1 A, dropout 90 mV tipici a 300 mA (serve per funzionare dalla sola VBUS upstream), θJA 110 °C/W con piazzola minima: regge 0,3–0,6 W. Sostituisce l'AP2112K (SOT-23-5), troppo caldo con il carico del hub |
+| LDO 3,3 V | Diodes **AP7361C-33E** | SOT-223 | sì | extended | sì | 1 A, dropout 90 mV tipici a 300 mA, θJA 110 °C/W con piazzola minima: regge 0,3–0,6 W. Sostituisce l'AP2112K (SOT-23-5), troppo caldo con il carico del hub |
 | Supervisore reset hub | Microchip **MCP120T-300I/TT** | SOT-23 | sì | extended | sì | open-drain, soglia 2,85–3,0 V, ritardo 150–700 ms; in wired-OR con PA8 del MCU su RESET_N (errata USB2517: POR interno non funzionante) |
-| ORing 3V3 (RF-16) | 2× Schottky **SS34** | SMA | sì | basic | sì | tra 5V_SYS e VBUS upstream, prima dell'LDO |
+| Diodo davanti all'LDO | Schottky **SS34** (D2) | SMA | sì | basic | sì | tra 5V_SYS e l'LDO: abbassa la tensione sull'LDO e la sua dissipazione (D32) |
 | Driver LED | **74HC595** ×2 | SOIC-16 | sì | basic | sì | 14 LED (10 porte, 2 relè, alimentatore, host) con 4 GPIO; /OE dal MCU con pull-up (LED spenti all'accensione) |
 | Driver relè | **ULN2003** o 2× 2N7002 + 1N4148 | SOIC-16 / SOT-23 | sì | basic | sì | |
 | ESD dati upstream (×1) | **USBLC6-2SC6** | SOT-23-6 | sì | basic | sì | solo sulla porta upstream; sulle porte downstream la protezione è nel PI3USB4002A (D27) |
@@ -63,7 +63,7 @@ Con il montaggio a mano e un fornitore unico il catalogo si allarga. Per blocco:
 | USB-C alimentazione (×1) | GCT **USB4105-GF-A** | solo CC1, CC2 (Rd 5,1 kΩ, verso ADC), VBUS, GND; 5 V / 3 A (il connettore regge 5 A) |
 | USB-A downstream (×1) | Kycon **KUSBX-AS1N-B**: orizzontale, passante | |
 | Pulsanti (×7: 5 porte, 2 relè) | tattili 6×6 ad asta lunga, o con estensore stampato in 3D | ogni pressione alterna lo stato (RF-17) |
-| LED (×14) | 0805 o 3 mm | 2 per porta (alimentata / fault), 1 per relè (acceso = linea staccata), alimentatore presente, host collegato |
+| LED (×14) | 0805 o 3 mm | 2 per porta (alimentata / fault), 1 per relè (acceso = linea staccata), acceso, host collegato |
 
 ## Conteggio dei tipi "extended" per l'assemblaggio JLCPCB
 

@@ -35,6 +35,7 @@
 | D29 | Rilevamento dell'inserimento sulle porte USB-C | non fatto (opzione C, revisione 02, R02-02): VBUS presente appena la porta è accesa; il firmware non accende una porta con tensione già presente e spegne una porta che riceve corrente, con LED rosso e avviso al PC. Scartati un controller USB-C per porta (TPS25810) e la lettura delle CC dal MCU (richiedeva tutti i pin liberi e lasciava senza alimentazione le schede prive di resistenze CC) |
 | D30 | Corrente annunciata dalle porte USB-C | standard USB (Rp 56 kΩ, 500 mA) al posto di 1,5 A (revisione 02, R02-03): annuncio coerente con il budget; la porta non lo impone, chi lo ignora assorbe fino a ~2,3 A |
 | D31 | Limiti della protezione d'ingresso | protezione garantita in continuo fino a 20 V; sopra ~23 V la SMAJ20A si sacrifica e l'INA3221 (26 V) non è garantito; TVS invariata, codice fissato in `componenti.md` (revisione 02, R02-04) |
+| D32 | Alimentazione della logica | RF-16 eliminato: hub e MCU solo dall'alimentatore, tolto D3 (ORing dalla VBUS upstream), D2 resta per la dissipazione dell'LDO; VBUS_DET e VSYS_ADC su pin FT (PA6, PA7) perché il partitore VBUS_DET ha tensione anche a MCU spento; con sovratensione o sottotensione d'ingresso si spegne tutto senza segnalazione al PC; hub funzionante dal solo PC rimandato come variante futura (revisione 02, R02-05) |
 
 ## Aperte
 

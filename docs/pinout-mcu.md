@@ -25,10 +25,10 @@ I pin senza segnale sono liberi (no-connect nello schema).
 | 18 | PA1 | CC2_ADC | ADC: tensione CC2 |
 | 19 | PA2 | UART_TX | USART2 TX, J9 |
 | 20 | PA3 | UART_RX | USART2 RX, J9 |
-| 21 | PA4 | VSYS_ADC | ADC: 5V_SYS / 2 |
-| 22 | PA5 | VBUS_DET | ADC: VBUS upstream / 2 (anche VBUS_DET del hub) |
-| 23 | PA6 | — |  |
-| 24 | PA7 | — |  |
+| 21 | PA4 | — |  |
+| 22 | PA5 | — |  |
+| 23 | PA6 | VBUS_DET | ADC: VBUS upstream / 2 (anche VBUS_DET del hub); pin FT, regge ~2,5 V a MCU spento |
+| 24 | PA7 | VSYS_ADC | ADC: 5V_SYS / 2 (anche LOCAL_PWR del hub); pin FT |
 | 25 | PC4 | EN_P2 | uscita: EN load switch porta 2 (alto = VBUS on; pull-down) |
 | 26 | PC5 | OE_N_P2 | uscita: EN del PI3USB4002A porta 2 (basso = dati collegati; pull-up) |
 | 27 | PB0 | INA_ALERT | ingresso: CRITICAL dei due INA3221 (open-drain, pull-up R47) |
@@ -77,12 +77,13 @@ I pin senza segnale sono liberi (no-connect nello schema).
 - PA8 va sempre configurato open-drain (mai push-pull alto): RESET_N è condiviso con il supervisore U12 e ha il pull-up R27.
 - Sequenza di avvio del hub, solo dopo un'accensione o un calo di tensione (flag di RCC_CSR, oppure un flag in un registro di backup): tirare basso HUB_RST_N, impostare HUB_CFG_SEL2, rilasciare il reset; se CFG_SEL2 = 0 scrivere i registri del hub via SMBus e poi il comando di attach (registro FFh). Il MCU parte prima che U12 rilasci il reset (150-700 ms), quindi il hub enumera una volta sola.
 - Dopo un reset software, un watchdog o il ritorno dal bootloader non toccare HUB_RST_N: il hub è già configurato e il MCU si ricollega da solo sulla porta 6.
-- 74HC595 ×2 in cascata (16 bit): U10 = LED porte 1-4 (PWR/FLT), U11 = LED porta 5, relè 1-2, alimentatore presente, host collegato. LED_OE_N (PB6) ha un pull-up: i LED restano spenti finché il firmware non carica i registri e porta PB6 basso.
+- 74HC595 ×2 in cascata (16 bit): U10 = LED porte 1-4 (PWR/FLT), U11 = LED porta 5, relè 1-2, acceso, host collegato. LED_OE_N (PB6) ha un pull-up: i LED restano spenti finché il firmware non carica i registri e porta PB6 basso.
 - I pulsanti delle porte 1-3 sono su PC13/PC14/PC15, pin a bassa capacità di pilotaggio: vanno usati solo come ingressi.
 - FAULT_P1-P5: abilitare il pull-up interno. Il pull-up degli OCS_N del hub potrebbe mancare mentre il hub è in reset.
 - SCL è anche CFG_SEL0 del hub, campionato al rilascio di HUB_RST_N: in quel momento il bus I2C dev'essere fermo (SCL alto).
 - PA8, PD0 e PD2 sono anche pin CC dell'UCPD, con pull-down "dead battery" all'avvio: probabilmente vanno rilasciati con i bit UCPD1_STROBE / UCPD2_STROBE di SYSCFG_CFGR1 (da verificare su RM0444).
-- Ingresso alimentazione: EFUSE_FLT_N (PB1) basso = eFuse in guasto (sovratensione, sovracorrente, temperatura). La tensione e la corrente d'ingresso si leggono dal canale 3 di U8 (shunt R5, prima dell'eFuse): con l'eFuse staccato e tensione alta segnalare "ingresso fuori tensione"; quando il guasto sparisce l'eFuse riparte da solo.
+- Ingresso alimentazione: EFUSE_FLT_N (PB1) basso = eFuse in limitazione di corrente da più del tempo impostato (o sovratemperatura, guasto ILM, corrente inversa); con sovratensione o sottotensione FLT resta alto. La logica è a valle dell'eFuse (D32): quando l'eFuse stacca il MCU si spegne, quindi FLT serve solo durante la limitazione, per spegnere subito le porte. Tensione e corrente d'ingresso si leggono dal canale 3 di U8 (shunt R5).
 - Porte: l'INA3221 misura anche la tensione di ogni VBUS. Se una porta accesa supera ~5,5 V (scheda in prova che rimanda tensione) spegnerla e segnalarlo (PORT_FAULT, causa "tensione inversa").
 - Porte, sorgente esterna (D29): prima di accendere una porta leggere la sua VBUS dall'INA3221; se a porta spenta c'è già tensione (soglia indicativa ~1 V) non accenderla. A porta accesa, se la corrente misurata è entrante (shunt negativo) spegnerla. In entrambi i casi LED rosso della porta acceso e PORT_FAULT con causa "sorgente esterna".
+- VBUS_DET e VSYS_ADC sono su pin FT (PA6, PA7), non TT: VBUS_DET può avere tensione con il MCU spento (alimentatore staccato, PC collegato), e i pin TT non ammettono corrente iniettata verso VDD.
 - I nomi dei pin 43/44 sono quelli del simbolo KiCad: sono PA11/PA12 (USB), rimappabili su PA9/PA10.

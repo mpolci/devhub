@@ -5,7 +5,7 @@
 	(uuid "07cf83f4-b313-50b8-968b-0e3466e323b8")
 	(paper "A3")
 	(title_block
-		(title "Alimentazione: ingresso USB-C 5 V, eFuse, ORing e 3,3 V")
+		(title "Alimentazione: ingresso USB-C 5 V, eFuse e 3,3 V")
 		(date "2026-10-10")
 		(rev "0.2")
 		(company "devhub")
@@ -2661,7 +2661,7 @@
 		)
 		(uuid "72344c1d-a79f-54c3-af36-81b10a49e40e")
 	)
-	(text "Logica alimentata anche dalla sola VBUS upstream (RF-16): ORing Schottky, poi LDO a basso dropout (AP7361C, 1 A, SOT-223: dissipa 0,3-0,6 W, serve rame sul tab)."
+	(text "Logica alimentata solo dall'alimentatore (D32): Schottky D2, poi LDO a basso dropout (AP7361C, 1 A, SOT-223: dissipa 0,3-0,6 W, serve rame sul tab)."
 		(exclude_from_sim no)
 		(at 10.16 114.3 0)
 		(effects
@@ -2707,12 +2707,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "33148a17-dbd2-596e-b0f1-c9741b8dfa69")
-	)
-	(junction
-		(at 53.34 127)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "5e6dcc55-6464-5324-a4fe-99a0c10c20c3")
 	)
 	(junction
 		(at 58.42 127)
@@ -2916,26 +2910,6 @@
 	)
 	(wire
 		(pts
-			(xy 53.34 139.7) (xy 53.34 127)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "36df19db-a3bd-59d2-821e-139be5a95cea")
-	)
-	(wire
-		(pts
-			(xy 44.45 139.7) (xy 53.34 139.7)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "39c3100e-d249-5354-9ef6-6dfce1eaa0f7")
-	)
-	(wire
-		(pts
 			(xy 99.06 127) (xy 106.68 127)
 		)
 		(stroke
@@ -3013,16 +2987,6 @@
 			(type default)
 		)
 		(uuid "697d9236-80ac-5bb5-b5a0-9895ea06707d")
-	)
-	(wire
-		(pts
-			(xy 27.94 139.7) (xy 36.83 139.7)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "71796c81-ded8-5f6e-a5b7-98a66396604d")
 	)
 	(wire
 		(pts
@@ -3450,29 +3414,6 @@
 		(uuid "3ad9229c-dd54-58f6-b228-8a6849e85021")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 50.8 35.56 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-	)
-	(global_label "VBUS_UP"
-		(shape bidirectional)
-		(at 27.94 139.7 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "64604f1a-a9c7-5c03-9395-5da5e7444715")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 27.94 139.7 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7268,85 +7209,6 @@
 			(project "devhub"
 				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630/b7f46cfa-45c0-5dbb-a84a-cdf89b878306"
 					(reference "U1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:D_Schottky")
-		(at 40.64 139.7 180)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "b7167802-2015-5466-b1a2-e910c24c0043")
-		(property "Reference" "D3"
-			(at 40.64 137.16 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "SS34"
-			(at 40.64 142.24 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Diode_SMD:D_SMA"
-			(at 40.64 139.7 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 40.64 139.7 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Schottky diode"
-			(at 40.64 139.7 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "d7868763-87bc-5959-9c48-b200daa3cb65")
-		)
-		(pin "2"
-			(uuid "0e09f551-9e7d-508d-837d-cdf57ef70e06")
-		)
-		(instances
-			(project "devhub"
-				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630/b7f46cfa-45c0-5dbb-a84a-cdf89b878306"
-					(reference "D3")
 					(unit 1)
 				)
 			)

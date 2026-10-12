@@ -3046,7 +3046,7 @@
 		(uuid "66aeefe7-d6e2-5116-a678-55ec23e0cebc")
 	)
 	(no_connect
-		(at 231.14 134.62)
+		(at 231.14 129.54)
 		(uuid "66eecb99-3a85-5b9b-83b8-344c2dca75bc")
 	)
 	(global_label "BTN_RLY2"
@@ -3073,7 +3073,7 @@
 		)
 	)
 	(no_connect
-		(at 231.14 132.08)
+		(at 231.14 127)
 		(uuid "89ef305b-f69b-51b7-bbab-8924771d2ccd")
 	)
 	(no_connect
@@ -3521,7 +3521,7 @@
 	)
 	(global_label "VSYS_ADC"
 		(shape bidirectional)
-		(at 231.14 127 0)
+		(at 231.14 134.62 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3531,7 +3531,7 @@
 		)
 		(uuid "25664aac-5169-525c-adfb-3e3918e8446d")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 231.14 127 0)
+			(at 231.14 134.62 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3935,7 +3935,7 @@
 	)
 	(global_label "VBUS_DET"
 		(shape bidirectional)
-		(at 231.14 129.54 0)
+		(at 231.14 132.08 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3945,7 +3945,7 @@
 		)
 		(uuid "6e1d6329-c83d-5bf2-ad75-7ba655482fb2")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 231.14 129.54 0)
+			(at 231.14 132.08 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)

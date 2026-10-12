@@ -5073,28 +5073,15 @@
 			)
 		)
 	)
-	(global_label "VBUS_UP"
-		(shape bidirectional)
+	(label "VBUS_UP"
 		(at 91.44 96.52 90)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left)
+			(justify left bottom)
 		)
 		(uuid "4dec956f-bf75-573a-a819-5b646523d26c")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 91.44 96.52 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 	)
 	(global_label "HUB_DP2"
 		(shape bidirectional)
@@ -5441,28 +5428,15 @@
 			)
 		)
 	)
-	(global_label "VBUS_UP"
-		(shape bidirectional)
+	(label "VBUS_UP"
 		(at 142.24 213.36 90)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left)
+			(justify left bottom)
 		)
 		(uuid "e2ee86af-ee71-57dc-ae46-11505d8da58b")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 142.24 213.36 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 	)
 	(global_label "HUB_RST_N"
 		(shape bidirectional)

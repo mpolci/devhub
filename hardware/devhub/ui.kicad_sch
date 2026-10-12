@@ -1170,7 +1170,7 @@
 		)
 		(uuid "7ac7659b-93d3-5cbb-8e9c-e9776dfb2203")
 	)
-	(text "alimentatore presente"
+	(text "acceso"
 		(exclude_from_sim no)
 		(at 228.6 109.82 0)
 		(effects

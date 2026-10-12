@@ -54,8 +54,8 @@ il cavo. Si vuole poterlo fare **dal PC**, in modo scriptabile, senza toccare il
   3 A) e ne ricava il budget di potenza.
 - **RF-15** Il MCU misura la corrente totale e per porta; non accende una porta se il budget non
   basta, spegne una porta se il totale lo supera e lo segnala all'host (budget di potenza).
-- **RF-16** Con alimentatore assente, hub e MCU restano alimentati dalla porta upstream quanto basta
-  per enumerare e riportare "alimentatore assente" (le porte downstream restano spente).
+- ~~**RF-16**~~ Eliminato (D32): hub e MCU si alimentano solo dall'alimentatore; senza
+  alimentatore l'hub non si vede dal PC.
 
 ### Comandi sul pannello
 

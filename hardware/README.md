@@ -19,7 +19,7 @@ Fogli:
 
 | Foglio | Contenuto |
 |---|---|
-| `power_in` | USB-C di alimentazione a 5 V, Rd e partitori CC, TVS, shunt d'ingresso, eFuse TPS259470A (U13), bulk, ORing Schottky, LDO 3,3 V (AP7361C-33E, SOT-223) |
+| `power_in` | USB-C di alimentazione a 5 V, Rd e partitori CC, TVS, shunt d'ingresso, eFuse TPS259470A (U13), bulk, Schottky D2, LDO 3,3 V (AP7361C-33E, SOT-223) |
 | `hub` | USB2517, USB-C upstream con ESD, quarzo, RBIAS, supervisore di reset (U12) in wired-OR con il MCU, strap di configurazione, header porta 7 |
 | `mcu` | STM32G0B1RET6, decoupling, SWD (J4) e UART (J9) collegati a filo, pull-up I2C, INA_ALERT e LED_OE_N, pull-down EN |
 | `switches` | 3 × TPS2561A con R_ILIM, shunt 20 mΩ per porta, 2 × INA3221 |
