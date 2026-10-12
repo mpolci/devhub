@@ -38,6 +38,7 @@
 | D32 | Alimentazione della logica | RF-16 eliminato: hub e MCU solo dall'alimentatore, tolto D3 (ORing dalla VBUS upstream), D2 resta per la dissipazione dell'LDO; VBUS_DET e VSYS_ADC su pin FT (PA6, PA7; poi PB2, PB0 con D34) perché il partitore VBUS_DET ha tensione anche a MCU spento; con sovratensione o sottotensione d'ingresso si spegne tutto senza segnalazione al PC; hub funzionante dal solo PC rimandato come variante futura (revisione 02, R02-05) |
 | D33 | Driver dei relè | **ULN2003V12** al posto del ULN2003A (stessa piedinatura, uscite MOSFET), tre canali in parallelo per relè: caduta ~0,2 V invece di 0,9–1,1 V, scatto garantito fino a 5V_SYS = 4,5 V e 40 °C; alternativa 2× AO3400A (revisione 02, R02-06) |
 | D34 | Pin del MCU, UCPD e bootloader | HUB_RST_N da PA8 (pin CC dell'UCPD, pull-down Rd dopo ogni reset) a PF1; spostati VBUS_DET (PB2), VSYS_ADC (PB0), INA_ALERT (PC12), RLY1/RLY2 (PA4/PA5), EN_P4 (PA7) perché nel bootloader ST relè e porte restino a riposo e il hub funzioni; DBCC dell'UCPD1 a massa con 10 kΩ (R48, R49); il firmware stacca le Rd con UCPDx_STROBE; DFU da provare sul prototipo (revisione 02, R02-07) |
+| D35 | Reset del solo hub | gestito dal firmware senza modifiche hardware: lettura di HUB_RST_N ogni ≤10 ms, presa del reset con PF1, rilascio con I2C fermo e configurazione SMBus dopo il rilascio effettivo di U12; brownout reset del MCU non usato perché lascerebbe una finestra 2,8-3,0 V (revisione 02, R02-08) |
 
 ## Aperte
 

@@ -207,6 +207,10 @@ Dettagli verificati sul datasheet (DS00001598C) e sull'errata (DS80000628A):
   Il reset del hub non sta su PA8: è un pin CC dell'UCPD, con una pull-down da ~5,1 kΩ dopo ogni
   reset del MCU e anche nel bootloader. Con R27 da 10 kΩ avrebbe tenuto RESET_N a ~1,1 V, tra le
   soglie del hub (0,8 / 2,0 V), proprio durante il DFU (D34).
+  Un calo della 3,3 V sotto la soglia di U12 ma sopra quella del MCU (1,7 V) resetta solo il hub
+  (D35): il firmware lo rileva leggendo HUB_RST_N, prende il controllo del reset, lo rilascia con il
+  bus I2C fermo (SCL è anche CFG_SEL0) e riconfigura il hub solo dopo il rilascio effettivo di U12.
+  Procedura in [pinout-mcu.md](pinout-mcu.md).
 - **Avvio senza firmware e DFU (D34).** I pin del MCU sono scelti in modo che con il bootloader ST
   (AN2606) il hub parta con i default, veda VBUS e LOCAL_PWR corretti, e relè e porte restino a
   riposo: dettaglio in [pinout-mcu.md](pinout-mcu.md). Non è ancora dimostrato: è la prima prova da
