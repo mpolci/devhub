@@ -3,7 +3,7 @@
 Progetto KiCad 10 (schema, PCB, BOM) dell'hub.
 
 ```
-hardware/devhub/        progetto KiCad: devhub.kicad_pro, devhub.kicad_sch (radice) e i fogli
+hardware/devhub/        progetto KiCad: devhub.kicad_pro, devhub.kicad_sch (radice), i fogli e devhub.kicad_pcb
 hardware/lib/           devhub.kicad_sym: simboli non presenti nelle librerie standard (USB2517, PI3USB4002A, TPS259470A)
 hardware/bom/           BOM e file per l'assemblaggio (da fare)
 ```
@@ -34,11 +34,45 @@ l'USB-A; i footprint nello schema sono già questi.
 
 Quarzo deciso (D19): YXC X322524MOB4SI, C_L 12 pF, C22/C23 da 15 pF.
 
+Footprint locali assegnati dalla libreria `lcsc_footprints` (`devhub/libs/footprints.pretty`):
+- U13 TPS259470A: `C3662799_VQFN-10_L2_0-W2_0-P0_45-TL`;
+- U101–U501 PI3USB4002A: `C3657361_UQFN-10_L2_0-W1_5-P0_50-TL`.
+
+I footprint usano i modelli in `devhub/libs/3dmodels` con percorsi relativi al progetto.
+Il modello C3657361 è un segnaposto dell’importatore, non una rappresentazione del package.
+
 Da fare prima del PCB:
-- footprint di U13 (TPS259470A, VQFN-HR-10 RPW0010A: nella libreria KiCad non c'è, va creato dal
-  disegno del datasheet TI) e degli switch PI3USB4002A (UQFN-10 ZUA 1,5×2 mm: candidato
-  `Package_DFN_QFN:Texas_UQFN-10_1.5x2mm_P0.5mm`, da verificare sul disegno Diodes);
 - BOM.
+
+## PCB (iniziato)
+
+`devhub.kicad_pcb`: 4 strati, profilo 169 × 85 mm con angoli R3 e piazzati, bloccati, i
+componenti che vincolano la scatola (D42, D43), con il profilo al centro del foglio A4. Vista
+dall'alto, fronte (lato banco) in basso. Il bordo
+del PCB sta sulla faccia interna delle pareti (spessore previsto 2,5 mm).
+
+| Cosa | Faccia | Posizione (u dal bordo sinistro, v dal bordo frontale) |
+|---|---|---|
+| J101-J401 USB-C, J501 USB-A | inferiore | u = 16, 31, 46, 61, 81 mm; faccia d'innesto a filo del bordo frontale |
+| J5-J8 boccole (COM1, NC1, COM2, NC2) | inferiore | u = 101, 118, 138, 155 mm; corpo a v = 11,85 mm, manicotto Ø 11 × 14,35 mm fino a v = -2,5 mm (a filo della faccia esterna della parete) |
+| LED delle porte (verde D*02, rosso D*03) | superiore | in colonna sull'asse della porta: verde a v = 2 mm, rosso a v = 6 mm |
+| D90, D91 LED dei relè (verdi) | superiore | v = 2 mm, al centro della coppia di boccole (u = 109,5 e 146,5 mm) |
+| SW101-SW501, SW1, SW2 pulsanti SMD PTS645 (6×6, attuatore 7 mm) | superiore | v = 36 mm (centro), in asse con porte e coppie di boccole |
+| D92 acceso, D93 host | superiore | in colonna a u = 162 mm, v = 34 e 38 mm (centrati sulla fila dei pulsanti) |
+| K1, K2 relè (il componente più alto sotto) | inferiore | dietro i pulsanti dei relè, v = 40-52 mm |
+| J2 upstream, J1 alimentazione | inferiore | u = 40 e 110 mm, a filo del bordo posteriore |
+| H1-H4 fori M3 (solo PCB, non nello schema) | — | a 4,5 mm dai bordi |
+
+Gli altri componenti sono già sulla faccia inferiore, fuori dal profilo a destra, raggruppati per
+foglio. Mancano sul PCB i 6 componenti U13 e U101-U501, ora con footprint assegnato:
+l’aggiornamento del PCB dallo schema li aggiungerà. Il PCB va modificato in KiCad dallo stato corrente,
+non rigenerato.
+
+Per il controllo di parità con lo schema da riga di comando:
+
+```bash
+/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli pcb drc --schematic-parity --severity-all --output /tmp/drc.rpt hardware/devhub/devhub.kicad_pcb
+```
 
 Nel PCB: collegamenti Kelvin sugli shunt di misura (R5 e i 5 shunt delle porte), con le piste
 verso l'INA3221 che partono dalle piazzole dello shunt (D36).

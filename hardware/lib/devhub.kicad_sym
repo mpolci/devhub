@@ -1277,7 +1277,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "lcsc_footprints:C3657361_UQFN-10_L2_0-W1_5-P0_50-TL"
 			(at 0 0 0)
 			(effects
 				(font
@@ -1540,7 +1540,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "lcsc_footprints:C3662799_VQFN-10_L2_0-W2_0-P0_45-TL"
 			(at 0 0 0)
 			(effects
 				(font

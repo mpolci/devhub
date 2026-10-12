@@ -61,8 +61,8 @@ Con il montaggio a mano e un fornitore unico il catalogo si allarga. Per blocco:
 | USB-C upstream (×1) | GCT **USB4105-GF-A** | Rd 5,1 kΩ su CC1 e CC2 |
 | USB-C alimentazione (×1) | GCT **USB4105-GF-A** | solo CC1, CC2 (Rd 5,1 kΩ, verso ADC), VBUS, GND; 5 V / 3 A (il connettore regge 5 A) |
 | USB-A downstream (×1) | Kycon **KUSBX-AS1N-B**: orizzontale, passante | |
-| Pulsanti (×7: 5 porte, 2 relè) | tattili 6×6 ad asta lunga, o con estensore stampato in 3D | ogni pressione alterna lo stato (RF-17) |
-| LED (×14) | 0805 o 3 mm | 2 per porta (alimentata / fault), 1 per relè (acceso = linea staccata), acceso, host collegato |
+| Pulsanti (×7: 5 porte, 2 relè) | C&K **PTS645SL70SMTR92 LFS**: tattile 6×6 SMD, terminali gull-wing, attuatore 7 mm (DigiKey) | sulla faccia superiore, premuti dal coperchio con estensore stampato; footprint KiCad `Button_Switch_SMD:SW_SPST_PTS645Sx43SMTR92`, comune a tutte le altezze della serie SMD (da verificare sul disegno C&K); ogni pressione alterna lo stato (RF-17) (D43) |
+| LED (×14) | 0805 | 2 per porta (verde alimentata, rosso fault), 1 verde per relè (acceso = linea staccata), acceso (verde), host collegato (arancio) |
 
 ## Conteggio dei tipi "extended" per l'assemblaggio JLCPCB
 

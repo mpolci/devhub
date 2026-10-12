@@ -51,5 +51,6 @@ host/        strumento da riga di comando per il PC
 
 ## Stato
 
-Requisiti, architettura e componenti definiti; schema elettrico v0.1 in KiCad (vedi
-[hardware/README.md](hardware/README.md)). Prossimo passo: rifinitura dello schema e PCB.
+Requisiti, architettura e componenti definiti; schema elettrico v0.2 in KiCad e PCB iniziato
+(profilo e componenti che vincolano la scatola, vedi [hardware/README.md](hardware/README.md)).
+Prossimo passo: footprint mancanti e piazzamento del resto del PCB.

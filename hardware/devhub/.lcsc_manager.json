@@ -1,0 +1,6 @@
+{
+  "library_path": "libs/",
+  "symbol_lib_name": "imported.kicad_sym",
+  "footprint_lib_name": "footprints.pretty",
+  "model_3d_path": "3dmodels"
+}

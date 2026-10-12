@@ -346,9 +346,14 @@ ripiego se la rifusione dell'hub dà problemi. La D è il ripiego se non si vuol
 - Scatola **stampata in 3D su misura**, disegnata sulle misure reali del PCB a layout finito.
 - Tutti i connettori saldati sul PCB e affacciati alle aperture della scatola; boccole a banana
   in versione da PCB. Nessun cablaggio interno a filo.
-- Connettori sui due lati corti: lato "banco" le 5 porte downstream con i loro pulsanti e LED, le
-  4 boccole con i pulsanti e i LED dei relè; lato posteriore upstream e alimentazione.
-- PCB fissato alla scatola con viti su boccole filettate o inserti; i pulsanti tattili con
+- Connettori sui due lati corti: lato "banco" le 5 porte downstream e le 4 boccole dei relè; lato
+  posteriore upstream e alimentazione.
+- PCB 169 × 85 mm (D42): sulla faccia superiore solo LED e pulsanti, che si vedono e si premono dal
+  coperchio, ciascuno dietro la sua porta o coppia di boccole; tutto il resto, connettori compresi,
+  sulla faccia inferiore. Le boccole sono a coppie (COM e NC dello stesso relè); il loro manicotto
+  isolante (14,35 mm, senza filetto) attraversa la parete frontale, ispessita intorno alle boccole
+  perché il manicotto finisca a filo della faccia esterna.
+- PCB fissato alla scatola con 4 viti M3 su boccole filettate o inserti; i pulsanti tattili con
   estensori stampati o pulsanti ad asta lunga.
 
 ## Protezioni (uso in laboratorio)

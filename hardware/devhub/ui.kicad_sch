@@ -762,6 +762,17 @@
 			(embedded_fonts no)
 		)
 	)
+	(text "LED di stato (D38): relè dai comandi RLY1/RLY2 (acceso = linea staccata), acceso dalla 3,3 V, host collegato dal MCU (LED_HOST). I LED delle porte sono sui fogli porta: verde dall'EN della porta, rosso dal MCU."
+		(exclude_from_sim no)
+		(at 10.16 16.51 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "359191f0-0304-4614-af5f-ebd4d7e9bbfa")
+	)
 	(text "relè 1: linea staccata"
 		(exclude_from_sim no)
 		(at 101.6 36.16 0)
@@ -815,6 +826,16 @@
 			(type default)
 		)
 		(uuid "2e2e5295-171e-5ed0-8a03-76c752a0bda3")
+	)
+	(wire
+		(pts
+			(xy 48.26 35.56) (xy 55.88 35.56)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "583a4bc2-3b90-4e14-aadd-16ccdd30b00f")
 	)
 	(wire
 		(pts
@@ -878,6 +899,16 @@
 	)
 	(wire
 		(pts
+			(xy 48.26 71.12) (xy 55.88 71.12)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c4ce8269-86f4-48f3-8950-9d6e37cd31b7")
+	)
+	(wire
+		(pts
 			(xy 96.52 71.12) (xy 96.52 73.66)
 		)
 		(stroke
@@ -908,6 +939,16 @@
 	)
 	(wire
 		(pts
+			(xy 48.26 45.72) (xy 55.88 45.72)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ceb18b3b-b03e-4338-84cf-29ee365b62aa")
+	)
+	(wire
+		(pts
 			(xy 96.52 45.72) (xy 96.52 48.26)
 		)
 		(stroke
@@ -915,6 +956,26 @@
 			(type default)
 		)
 		(uuid "e468fb43-cacb-5d24-b243-5a22ed94ac85")
+	)
+	(wire
+		(pts
+			(xy 50.8 58.42) (xy 55.88 58.42)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e8feb2da-dd09-41eb-b13c-3e85e08662f6")
+	)
+	(wire
+		(pts
+			(xy 50.8 55.88) (xy 50.8 58.42)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ec46abdf-35ce-4748-9b06-6d31c58fa9a1")
 	)
 	(wire
 		(pts
@@ -966,15 +1027,28 @@
 		)
 		(uuid "aac856dc-fbd7-559a-8b87-00942a108dc3")
 	)
-	(wire
-		(pts
-			(xy 48.26 35.56) (xy 55.88 35.56)
+	(global_label "LED_HOST"
+		(shape bidirectional)
+		(at 48.26 71.12 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
 		)
-		(stroke
-			(width 0)
-			(type default)
+		(uuid "0d3afc78-3677-4a94-84e5-3e922083f66f")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 48.26 71.12 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
 		)
-		(uuid "583a4bc2-3b90-4e14-aadd-16ccdd30b00f")
 	)
 	(global_label "RLY1"
 		(shape bidirectional)
@@ -999,16 +1073,6 @@
 			)
 		)
 	)
-	(wire
-		(pts
-			(xy 48.26 45.72) (xy 55.88 45.72)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ceb18b3b-b03e-4338-84cf-29ee365b62aa")
-	)
 	(global_label "RLY2"
 		(shape bidirectional)
 		(at 48.26 45.72 180)
@@ -1032,70 +1096,6 @@
 			)
 		)
 	)
-	(wire
-		(pts
-			(xy 50.8 55.88) (xy 50.8 58.42)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ec46abdf-35ce-4748-9b06-6d31c58fa9a1")
-	)
-	(wire
-		(pts
-			(xy 50.8 58.42) (xy 55.88 58.42)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e8feb2da-dd09-41eb-b13c-3e85e08662f6")
-	)
-	(wire
-		(pts
-			(xy 48.26 71.12) (xy 55.88 71.12)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c4ce8269-86f4-48f3-8950-9d6e37cd31b7")
-	)
-	(global_label "LED_HOST"
-		(shape bidirectional)
-		(at 48.26 71.12 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "0d3afc78-3677-4a94-84e5-3e922083f66f")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 48.26 71.12 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-	)
-	(text "LED di stato (D38): relè dai comandi RLY1/RLY2 (acceso = linea staccata), acceso dalla 3,3 V, host collegato dal MCU (LED_HOST). I LED delle porte sono sui fogli porta: verde dall'EN della porta, rosso dal MCU."
-		(exclude_from_sim no)
-		(at 10.16 16.51 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "359191f0-0304-4614-af5f-ebd4d7e9bbfa")
-	)
 	(symbol
 		(lib_id "Device:LED")
 		(at 86.36 45.72 180)
@@ -1117,7 +1117,7 @@
 				)
 			)
 		)
-		(property "Value" "giallo"
+		(property "Value" "verde"
 			(at 87.63 49.53 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -1486,6 +1486,83 @@
 			(project "devhub"
 				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630/c82dde94-3a77-5cb6-9c61-f280daabce7c"
 					(reference "R92")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3V3")
+		(at 50.8 55.88 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "4368364e-ad55-44e4-8096-5eec2e0a2179")
+		(property "Reference" "#PWR159"
+			(at 50.8 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 50.8 52.48 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 50.8 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 50.8 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 50.8 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "0403a1f9-dd49-4634-ab3c-8e1a85e99437")
+		)
+		(instances
+			(project "devhub"
+				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630/c82dde94-3a77-5cb6-9c61-f280daabce7c"
+					(reference "#PWR159")
 					(unit 1)
 				)
 			)
@@ -1978,7 +2055,7 @@
 				)
 			)
 		)
-		(property "Value" "giallo"
+		(property "Value" "verde"
 			(at 87.63 39.37 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -2031,83 +2108,6 @@
 			(project "devhub"
 				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630/c82dde94-3a77-5cb6-9c61-f280daabce7c"
 					(reference "D90")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+3V3")
-		(at 50.8 55.88 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "4368364e-ad55-44e4-8096-5eec2e0a2179")
-		(property "Reference" "#PWR159"
-			(at 50.8 55.88 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "+3V3"
-			(at 50.8 52.48 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 50.8 55.88 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 50.8 55.88 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 50.8 55.88 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "0403a1f9-dd49-4634-ab3c-8e1a85e99437")
-		)
-		(instances
-			(project "devhub"
-				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630/c82dde94-3a77-5cb6-9c61-f280daabce7c"
-					(reference "#PWR159")
 					(unit 1)
 				)
 			)

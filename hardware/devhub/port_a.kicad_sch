@@ -1531,7 +1531,7 @@
 					(justify left)
 				)
 			)
-			(property "Footprint" ""
+			(property "Footprint" "lcsc_footprints:C3657361_UQFN-10_L2_0-W1_5-P0_50-TL"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -2819,7 +2819,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "lcsc_footprints:C3657361_UQFN-10_L2_0-W1_5-P0_50-TL"
 			(at 76.2 76.2 0)
 			(hide yes)
 			(show_name no)
@@ -3787,7 +3787,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Button_Switch_THT:SW_PUSH_6mm_H13mm"
+		(property "Footprint" "Button_Switch_SMD:SW_SPST_PTS645Sx43SMTR92"
 			(at 182.88 157.48 0)
 			(hide yes)
 			(show_name no)
