@@ -44,6 +44,7 @@
 | D38 | Pilotaggio dei LED | tolti i due 74HC595 (con C90, C91 e il pull-up di /OE R94): verde di ogni porta sull'EN, LED dei relè sui comandi RLY, "acceso" sulla 3,3 V, rossi e host su 6 GPIO (PB3, PB4, PB5, PD0, PB15, PA8) spenti in DFU; i verdi non lampeggiano più, i casi si distinguono con lampeggi del rosso; con il PCB a 4 strati le piste in più non pesano |
 | D39 | Condensatori dei pulsanti | tenuti i 100 nF sui 7 pulsanti: toglierli fa risparmiare solo 7 posizionamenti e riduce il margine contro disturbi e scariche sulle linee che arrivano al pannello; il debounce resta in firmware |
 | D40 | Shunt d'ingresso dopo l'eFuse | R5 tra l'uscita dell'eFuse e tutti i carichi: il canale 3 dell'INA3221 misura corrente totale e 5V_SYS e non è più esposto alla tensione dell'alimentatore; tolti R7 e C7 e il partitore VSYS_ADC (PB0 libero); LOCAL_PWR con pull-up R26 da 10 kΩ verso la 3,3 V; persa solo la tensione a monte dell'eFuse, inutile dopo D32 |
+| D41 | Condensatore sul reset del hub | C24 (100 nF su HUB_RST_N) DNP: il ritardo di 150-700 ms è interno al MCP120 e Microchip non mette condensatori sull'uscita; resta la piazzola per montarlo (anche 1 nF) se compaiono reset spuri; evita anche il picco di scarica su PF1 |
 
 ## Aperte
 

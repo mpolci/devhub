@@ -4121,7 +4121,7 @@
 		)
 		(uuid "2bcbcfc0-31ac-598b-b460-26da824a9162")
 	)
-	(text "Reset (errata USB2517: POR interno non funzionante): supervisore U12 e MCU (PF1 open-drain) in wired-OR, pull-up R27. Un reset del MCU non resetta il hub."
+	(text "Reset (errata USB2517: POR interno non funzionante): supervisore U12 e MCU (PF1 open-drain) in wired-OR, pull-up R27. Un reset del MCU non resetta il hub. C24 DNP (D41): da montare (anche 1 nF) solo se compaiono reset spuri del hub."
 		(exclude_from_sim no)
 		(at 10.16 254 0)
 		(effects
@@ -9078,7 +9078,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(in_pos_files yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "905e8909-9b53-526e-bbb4-cb20dff83d74")
 		(property "Reference" "C24"
 			(at 68.58 236.22 0)

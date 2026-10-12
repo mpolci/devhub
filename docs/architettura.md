@@ -209,7 +209,10 @@ Dettagli verificati sul datasheet (DS00001598C) e sull'errata (DS80000628A):
 - **Reset** (D16): l'errata dice che il POR interno non funziona e suggerisce un supervisore
   esterno. RESET_N ha un pull-up da 10 kΩ e due sorgenti in wired-OR: il supervisore **MCP120T-300**
   (open-drain, soglia 2,85–3,0 V, ritardo 150–700 ms), che tiene il hub in reset finché la 3,3 V non
-  è stabile, e PF1 del MCU in open-drain, che può forzare il reset (comando `RESET_HUB`). Un reset del
+  è stabile, e PF1 del MCU in open-drain, che può forzare il reset (comando `RESET_HUB`). Il ritardo lo genera
+  il MCP120 internamente; il 100 nF C24 sulla linea è DNP (D41): servirebbe solo da filtro contro
+  disturbi (il hub si resetta con 1 µs basso) e scaricarlo di colpo da PF1 supera i 15 mA per pin
+  dello STM32. Da montare, anche da 1 nF, solo se sul prototipo compaiono reset spuri del hub. Un reset del
   MCU (watchdog, `REBOOT`, debugger, bootloader) lascia PF1 in alta impedenza e **non resetta il
   hub**. All'accensione il MCU parte prima che il supervisore rilasci, tiene basso il reset, sceglie
   CFG_SEL2 e lo rilascia; senza firmware il hub parte comunque con i default interni (101).
