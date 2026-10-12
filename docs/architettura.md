@@ -265,7 +265,7 @@ Per ogni porta:
 | Load switch VBUS | TPS2561A (½ chip) | R_ILIM 24,3 kΩ 1 % → 2,1–2,5 A per canale |
 | Scarica VBUS | AO3400 + 100 Ω 1206 | pilotato dal MCU |
 | Switch D+/D- | PI3USB4002A | EN (OE_N) dal MCU, alto = scollegato; 1 µF 25 V sul pin REF |
-| Misura corrente | INA3221 (3 canali) × 2 | shunt 20 mΩ tra l'uscita del load switch e il connettore |
+| Misura corrente | INA3221 (3 canali) × 2 | shunt 20 mΩ 1 % tra l'uscita del load switch e il connettore. Risoluzione 2 mA (40 µV); offset ±4 mA max (±80 µV), tolto dal firmware leggendo la porta spenta; guadagno 0,25 % + shunt 1 %: accuratezza ±(2 mA + 1,3 % della lettura) (D36). Collegamenti Kelvin sugli shunt nel PCB |
 | ESD dati | integrata nel PI3USB4002A (10 kV IEC 61000-4-2 sul lato connettore) | nessuna protezione esterna sulle porte (D27): una USBLC6 con il pin VBUS sulla VBUS commutata accoppiava dati e alimentazione e aggirava la tolleranza a 24 V dello switch. Layout: Diodes consiglia di non accorciare troppo la pista tra connettore e switch |
 | Protezione VBUS | i 22 µF + 100 nF della porta | TVS dedicata (SMAJ20A) solo sull'ingresso (D25) |
 | USB-C: CC1, CC2 | Rp **56 kΩ** a VBUS commutata (annuncio standard USB, 500 mA) | la VBUS commutata fa cadere anche CC quando la porta è spenta |

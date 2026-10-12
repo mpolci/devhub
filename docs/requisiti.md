@@ -26,7 +26,8 @@ il cavo. Si vuole poterlo fare **dal PC**, in modo scriptabile, senza toccare il
   non la impone: qualunque dispositivo che ignora l'annuncio (tipico delle schede di sviluppo) può
   assorbire fino al limite hardware della porta (~2,3 A). I dispositivi USB-C conformi si limitano
   da soli a quanto annunciato (D30).
-- **RF-6** Lettura della corrente assorbita da ogni porta (risoluzione dell'ordine dei mA).
+- **RF-6** Lettura della corrente assorbita da ogni porta: risoluzione dell'ordine dei mA,
+  accuratezza ±(2 mA + 1,3 % della lettura) con l'azzeramento dell'offset a porta spenta (D36).
 
 ### Dispositivo di controllo
 

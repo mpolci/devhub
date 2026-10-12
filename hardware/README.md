@@ -40,6 +40,9 @@ Da fare prima del PCB:
   `Package_DFN_QFN:Texas_UQFN-10_1.5x2mm_P0.5mm`, da verificare sul disegno Diodes);
 - BOM.
 
+Nel PCB: collegamenti Kelvin sugli shunt di misura (R5 e i 5 shunt delle porte), con le piste
+verso l'INA3221 che partono dalle piazzole dello shunt (D36).
+
 Per l'ERC da riga di comando:
 
 ```bash
