@@ -7,7 +7,7 @@ La tabella dei componenti con package, fornitore e classe JLCPCB è in [componen
 ## Schema a blocchi
 
 ```
-USB-C PWR IN 5 V / 3 A ──► TVS + shunt + eFuse ───► 5V_SYS ────────────────────────────────┐
+USB-C PWR IN 5 V / 3 A ──► TVS + eFuse + shunt ───► 5V_SYS ────────────────────────────────┐
 (qualunque alimentatore      │                       │                                     │
  USB-C, anche PD)            │ CC1/CC2 (Rd 5,1 kΩ)    ▼ Schottky D2 + LDO 3,3 V            │
                              └──► ADC del MCU      3V3 (hub, MCU, switch)                  │
@@ -114,7 +114,7 @@ Bilancio (alimentatore 5 V / 3 A):
 | 2 relè eccitati (G5Q-1 SPDT, 80 mA per bobina) | ~0,16 A |
 | Disponibile per le porte | ~2,3 A nel caso peggiore |
 
-La logica è alimentata solo dalla 5V_SYS (D32): tutta la sua corrente passa dallo shunt d'ingresso.
+La logica è alimentata solo dalla 5V_SYS (D32): tutta la sua corrente passa dallo shunt R5, che sta subito dopo l'eFuse e prima di tutti i carichi (D40).
 
 **Lettura del budget.** Sulle CC dell'ingresso il MCU ha Rd da 5,1 kΩ e legge con l'ADC la
 tensione imposta dall'Rp dell'alimentatore: ~0,4 V → 0,5 A, ~0,9 V → 1,5 A, ~1,7 V → 3 A
@@ -128,7 +128,7 @@ questo si confronta direttamente con il budget, senza sottrarre una quota fissa 
 Regole:
 1. una porta si accende solo se `I_totale + 200 mA < budget`;
 2. le porte si accendono sfalsate di ~30 ms (inrush);
-3. se `I_totale > budget` per più di 50 ms, oppure 5V_SYS scende sotto 4,5 V (ADC), si spegne
+3. se `I_totale > budget` per più di 50 ms, oppure 5V_SYS scende sotto 4,5 V (tensione letta dal canale 3 dell'INA3221, D40), si spegne
    la porta che assorbe di più e si manda l'evento `PORT_FAULT` con causa "budget". I 50 ms vanno
    verificati al primo montaggio con gli alimentatori reali: se un alimentatore va in protezione
    prima, il tempo va accorciato (revisione 02, R02-03);
@@ -136,7 +136,7 @@ Regole:
    pubblicizzano correttamente.
 Il limite di corrente dell'alimentatore resta la protezione di ultima istanza.
 
-**Protezione d'ingresso.** TVS **SMAJ20A**, shunt R5 e poi l'eFuse **TPS259470A** (U13, D21):
+**Protezione d'ingresso.** TVS **SMAJ20A**, eFuse **TPS259470A** (U13, D21) e poi lo shunt R5 (D40):
 - stacca l'uscita sopra 5,84 V (riaccende sotto 5,3 V) e sotto 4,0 V, con un solo partitore
   (R30/R31/R32); lo zener D4 tiene il pin EN sotto il suo massimo (6,5 V) fino a 28 V d'ingresso;
 - limite di corrente 3,5 A (R33), transitori ammessi fino a ~8 ms (C12), ripartenza automatica;
@@ -145,17 +145,19 @@ Il limite di corrente dell'alimentatore resta la protezione di ultima istanza.
 - blocca la corrente inversa; FLT (open-drain) va al MCU su PB1. FLT va basso solo per
   sovracorrente prolungata (dopo il tempo di C12), sovratemperatura, guasto del pin ILM e corrente
   inversa; con sovratensione o sottotensione resta alto (datasheet, tabella 7-3);
-- lo shunt sta prima dell'eFuse: l'INA3221 misura tensione e corrente d'ingresso. La logica è a
-  valle dell'eFuse (D32), quindi quando l'eFuse stacca si spegne tutto e al PC non arriva nessuna
+- lo shunt sta dopo l'eFuse (D40): il canale 3 dell'INA3221 misura la corrente totale e la
+  tensione 5V_SYS, e i suoi ingressi non vedono mai la tensione dell'alimentatore. La tensione a
+  monte dell'eFuse non si misura: con l'eFuse acceso differisce solo di 28 mΩ × I, con l'eFuse
+  staccato il MCU è spento. La logica è a valle dell'eFuse (D32), quindi quando l'eFuse stacca si spegne tutto e al PC non arriva nessuna
   segnalazione: l'hub sparisce. FLT serve durante la limitazione di corrente, finché il MCU è
   ancora acceso: può spegnere le porte prima che l'eFuse stacchi.
 Caduta aggiuntiva: ~28 mΩ, cioè ~0,1 V a 3 A.
 
-**Limiti della catena d'ingresso (D31).** Massimi assoluti: INA3221 (canale 3 sullo shunt R5)
-26 V, eFuse 28 V. La SMAJ20A non conduce fino a 20 V, inizia a 22,2–23,4 V e limita a ~25 V con
+**Limiti della catena d'ingresso (D31, D40).** Massimo assoluto: eFuse 28 V. L'INA3221 (26 V)
+non è più sulla catena, perché lo shunt sta dopo l'eFuse. La SMAJ20A non conduce fino a 20 V, inizia a 22,2–23,4 V e limita a ~25 V con
 1 A, ~26 V con 2 A, ~28 V con 5 A, 32,4 V alla corrente di prova di 12,3 A (10/1000 µs). La
-protezione è quindi **garantita in continuo fino a 20 V**; sopra ~23 V la TVS si sacrifica e
-l'INA3221 non è più garantito. Le prove impulsive da 10/1000 µs riguardano linee lunghe o di rete,
+protezione è quindi **garantita in continuo fino a 20 V**; sopra ~23 V la TVS conduce: fino a ~5 A tiene
+l'ingresso sotto i 28 V dell'eFuse, con un alimentatore più potente si sacrifica. Le prove impulsive da 10/1000 µs riguardano linee lunghe o di rete,
 non un ingresso USB; i picchi all'inserzione hanno poca energia e restano entro ~23–25 V.
 
 **TVS (D25).** La TVS d'ingresso è una **SMAJ20A**: non conduce fino a 20 V (il massimo di un
@@ -226,8 +228,9 @@ Dettagli verificati sul datasheet (DS00001598C) e sull'errata (DS80000628A):
   Con l'alimentatore staccato e il PC collegato il partitore mette ~2,5 V su hub e MCU spenti: il
   USB2517 ammette 5,5 V su ogni I/O e PB2 è un pin FT (tollera 5 V, senza diodo verso VDD; 4 V
   massimi a MCU spento). Su un pin TT come il PA5 di prima non si potrebbe (D32).
-- **LOCAL_PWR** da un partitore su 5V_SYS: con la logica alimentata solo dall'alimentatore è sempre
-  alto (hub self-powered).
+- **LOCAL_PWR** con pull-up R26 da 10 kΩ verso la 3,3 V (D40): con la logica alimentata solo
+  dall'alimentatore il hub è sempre self-powered. Resistenza e non collegamento diretto, perché con
+  la configurazione via SMBus il pin 45 può diventare l'uscita SUSP_IND.
 - RBIAS 12,0 kΩ 1 %; quarzo 24 MHz YXC X322524MOB4SI (C_L 12 pF) con 15 pF C0G (D19; il hub tollera ±350 ppm); 1,8 V dal
   regolatore interno (VDD18, VDD18PLL con 1 µF ciascuno); TEST a massa; slug a massa.
 - Mappa porte: 1–4 → USB-C, 5 → USB-A, 6 → MCU, 7 → header interno. Le porte 1–5 sono sul lato
@@ -243,8 +246,8 @@ Scelto tra gli STM32 per questi motivi:
   (nessuna negoziazione PD) ma lascia aperta la variante ad alta potenza senza cambiare MCU.
 - **LQFP-64**, saldabile a mano, ~60 GPIO: bastano per pilotare tutto senza expander. Conteggio:
   5 porte × (EN, FAULT, OE, DIS, pulsante) = 25, LED rossi e host = 6, 2 relè, I2C condiviso = 2,
-  USB = 2, ADC (CC1, CC2, 5V_SYS) = 3, reset hub = 1, guasto eFuse = 1, pulsanti dei relè = 2, SWD = 2,
-  UART debug = 2: totale ~48 sui 60 disponibili.
+  USB = 2, ADC (CC1, CC2) = 2, reset hub = 1, guasto eFuse = 1, pulsanti dei relè = 2, SWD = 2,
+  UART debug = 2: totale ~47 sui 60 disponibili.
 - 512 kB flash / 144 kB RAM: largo per stack USB + logica, e per uno stack PD futuro.
 - Disponibile su LCSC (C2829307, ~2,7 $) e su Mouser/DigiKey.
 
@@ -352,8 +355,8 @@ le schede in prova possono essere montate male, ci sono scariche elettrostatiche
 
 | Rischio | Protezione |
 |---|---|
-| Alimentatore sbagliato, da 5,84 a 20 V in continuo | eFuse U13: stacca la 5V_SYS; la TVS non conduce e l'INA3221 resta nei limiti: nessun danno. Si spegne anche la logica (D32): il PC vede sparire l'hub; tolto l'alimentatore sbagliato tutto riparte |
-| Alimentatore sbagliato sopra ~23 V | la TVS conduce: con un alimentatore limitato in corrente tiene la linea sotto i 26 V e non succede nulla; con uno potente si brucia (di solito in corto) e protegge l'eFuse, ma l'INA3221 può superare per un attimo i suoi 26 V (D31) |
+| Alimentatore sbagliato, da 5,84 a 20 V in continuo | eFuse U13: stacca la 5V_SYS; la TVS non conduce e l'INA3221, a valle, non vede questa tensione: nessun danno. Si spegne anche la logica (D32): il PC vede sparire l'hub; tolto l'alimentatore sbagliato tutto riparte |
+| Alimentatore sbagliato sopra ~23 V | la TVS conduce: con un alimentatore limitato in corrente tiene la linea sotto i 26 V e non succede nulla; con uno potente si brucia (di solito in corto) e protegge l'eFuse, e l'INA3221 non è esposto (D40) |
 | Picco all'inserzione dell'alimentatore | avvio dolce dell'eFuse (~5 ms) |
 | Corto o sovraccarico su una porta | TPS2561A: limite ~2,3 A, protezione termica, FAULT al MCU e agli OCS del hub; il firmware spegne la porta |
 | Corto o sovraccarico sulla 5V_SYS (prima delle porte) | limite 3,5 A dell'eFuse |

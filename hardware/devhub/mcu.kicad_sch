@@ -3522,29 +3522,6 @@
 			)
 		)
 	)
-	(global_label "VSYS_ADC"
-		(shape bidirectional)
-		(at 231.14 160.02 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "25664aac-5169-525c-adfb-3e3918e8446d")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 231.14 160.02 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-	)
 	(global_label "CC1_ADC"
 		(shape bidirectional)
 		(at 231.14 116.84 0)
@@ -4514,6 +4491,10 @@
 	(no_connect
 		(at 231.14 175.26)
 		(uuid "b37c24d2-1614-4313-a081-0b2cc1a6781d")
+	)
+	(no_connect
+		(at 231.14 160.02)
+		(uuid "dfde1e68-c000-4102-8ac2-fe467ba3170b")
 	)
 	(global_label "LED_FLT_P4"
 		(shape bidirectional)

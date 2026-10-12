@@ -20,7 +20,7 @@ maggiori che non conosce.
 | cmd | Nome | Parametri | Risposta |
 |---|---|---|---|
 | 0x01 | GET_INFO | — | proto_version, fw_version, n_ports, n_relays, capabilities (bitmask: current_meas, pd_status, …), serial |
-| 0x02 | GET_STATUS | — | per porta: flags (power, data, fault, budget_blocked), corrente mA; relè: stato; alimentazione: tensione d'ingresso mV, stato dell'eFuse, 5V_SYS mV, corrente totale mA, corrente pubblicizzata dall'alimentatore (0,5/1,5/3 A), budget mA e usato |
+| 0x02 | GET_STATUS | — | per porta: flags (power, data, fault, budget_blocked), corrente mA; relè: stato; alimentazione: stato dell'eFuse, 5V_SYS mV, corrente totale mA, corrente pubblicizzata dall'alimentatore (0,5/1,5/3 A), budget mA e usato |
 | 0x10 | SET_PORT | port, on (0/1): alimentazione e dati insieme, in sequenza (RF-3) | status |
 | 0x11 | CYCLE_PORT | port, off_ms (u16: tempo da spenta, contato da quando la VBUS è sotto 0,8 V), on_delay_ms (u16, ritardo dati dopo VBUS) | status (il ciclo prosegue in autonomia; se la VBUS non scende entro 1 s la porta resta spenta e arriva PORT_FAULT "sorgente esterna") |
 | 0x12 | SET_ALL | on (0/1) | status |
