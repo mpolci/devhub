@@ -23,7 +23,7 @@ USB-C UPSTREAM ─── VBUS ──► VBUS_DET (hub, MCU)                     
                                              ├─ per porta: EN, FAULT, OE dati, DIS (scarica), pulsante
                                              ├─ monitor corrente: 5 porte + ingresso (INA3221 ×2, I2C)
                                              ├─ 2 relè (ULN2003V12) ► boccole a banana (COM/NO/NC)
-                                             └─ LED via 74HC595, SWD, UART di debug
+                                             └─ LED (verde dall'EN, rosso dal MCU), SWD, UART
 ```
 
 ## Scelte progettuali
@@ -242,9 +242,9 @@ Scelto tra gli STM32 per questi motivi:
 - **USB FS device senza quarzo** (HSI48 + CRS). Ha anche la periferica **UCPD**: non serve in v1
   (nessuna negoziazione PD) ma lascia aperta la variante ad alta potenza senza cambiare MCU.
 - **LQFP-64**, saldabile a mano, ~60 GPIO: bastano per pilotare tutto senza expander. Conteggio:
-  5 porte × (EN, FAULT, OE, DIS, pulsante) = 25, 74HC595 per i LED = 4 (SER, SCK, latch, /OE), 2 relè, I2C condiviso = 2,
+  5 porte × (EN, FAULT, OE, DIS, pulsante) = 25, LED rossi e host = 6, 2 relè, I2C condiviso = 2,
   USB = 2, ADC (CC1, CC2, 5V_SYS) = 3, reset hub = 1, guasto eFuse = 1, pulsanti dei relè = 2, SWD = 2,
-  UART debug = 2: totale ~46 sui 60 disponibili.
+  UART debug = 2: totale ~48 sui 60 disponibili.
 - 512 kB flash / 144 kB RAM: largo per stack USB + logica, e per uno stack PD futuro.
 - Disponibile su LCSC (C2829307, ~2,7 $) e su Mouser/DigiKey.
 
@@ -276,7 +276,7 @@ Per ogni porta:
 | ESD dati | integrata nel PI3USB4002A (10 kV IEC 61000-4-2 sul lato connettore) | nessuna protezione esterna sulle porte (D27): una USBLC6 con il pin VBUS sulla VBUS commutata accoppiava dati e alimentazione e aggirava la tolleranza a 24 V dello switch. Layout: Diodes consiglia di non accorciare troppo la pista tra connettore e switch |
 | Protezione VBUS | i 22 µF + 100 nF della porta | TVS dedicata (SMAJ20A) solo sull'ingresso (D25) |
 | USB-C: CC1, CC2 | Rp **56 kΩ** a VBUS commutata (annuncio standard USB, 500 mA) | la VBUS commutata fa cadere anche CC quando la porta è spenta |
-| LED | 2 (alimentata / fault) via 74HC595 | |
+| LED | 2: verde (alimentata) collegato all'EN della porta, rosso (guasto) su un GPIO del MCU (D38) | il verde segue il comando anche senza firmware; il rosso distingue i casi con lampeggi: fisso = sovracorrente, lento = budget, veloce = sorgente esterna / tensione inversa |
 | Pulsante | tattile: ogni pressione alterna la porta (alimentazione e dati insieme) | debounce in firmware; rispetta il budget (RF-17) |
 | Condensatori VBUS | 22 µF + 100 nF; sulla USB-A anche 100 µF | USB 2.0 chiede ≥ 120 µF sulle porte di tipo A |
 

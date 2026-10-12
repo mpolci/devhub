@@ -33,7 +33,6 @@ parte della v1.
 | LDO 3,3 V | Diodes **AP7361C-33E** | SOT-223 | sì | extended | sì | 1 A, dropout 90 mV tipici a 300 mA, θJA 110 °C/W con piazzola minima: regge 0,3–0,6 W. Sostituisce l'AP2112K (SOT-23-5), troppo caldo con il carico del hub |
 | Supervisore reset hub | Microchip **MCP120T-300I/TT** | SOT-23 | sì | extended | sì | open-drain, soglia 2,85–3,0 V, ritardo 150–700 ms; in wired-OR con PF1 del MCU su RESET_N (errata USB2517: POR interno non funzionante) |
 | Diodo davanti all'LDO | Schottky **SS34** (D2) | SMA | sì | basic | sì | tra 5V_SYS e l'LDO: abbassa la tensione sull'LDO e la sua dissipazione (D32) |
-| Driver LED | **74HC595** ×2 | SOIC-16 | sì | basic | sì | 14 LED (10 porte, 2 relè, alimentatore, host) con 4 GPIO; /OE dal MCU con pull-up (LED spenti all'accensione) |
 | Driver relè | TI **ULN2003V12** (U9) | SOIC-16 | sì | da verificare | C94916 | uscite MOSFET, stessa piedinatura del ULN2003A, diodi di ricircolo verso COM e pull-down sugli ingressi integrati; 3 canali in parallelo per relè: ~0,2 V di caduta a 80 mA (D33) |
 | ESD dati upstream (×1) | **USBLC6-2SC6** | SOT-23-6 | sì | basic | sì | solo sulla porta upstream; sulle porte downstream la protezione è nel PI3USB4002A (D27) |
 | TVS VBUS d'ingresso (×1) | **SMAJ20A**: ST SMAJ20A-TR o Littelfuse SMAJ20A (famiglia JEDEC, valori equivalenti, da confermare col fornitore) | SMA | sì | basic | sì | non conduce fino a 20 V, rottura 22,2–23,4 V, clamp ~25 V a 1 A e 32,4 V a 12,3 A; lascia lavorare l'eFuse fino a 20 V; nessuna TVS sulle porte (D25, D31) |
