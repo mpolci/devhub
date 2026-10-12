@@ -1968,7 +1968,7 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "Bobina G5Q-1 senza polarità: pin 5 a +5V, pin 1 al ULN2003 (diodi di ricircolo nel ULN, COM a +5V)."
+	(text "Bobina G5Q-1 senza polarità: pin 5 a +5V, pin 1 a tre uscite in parallelo del ULN2003V12 (diodi di ricircolo nel driver, COM a +5V)."
 		(exclude_from_sim no)
 		(at 10.16 152.4 0)
 		(effects
@@ -2049,48 +2049,16 @@
 		(uuid "f6572075-ae4d-52bc-b82f-c8b9ff00a3c4")
 	)
 	(no_connect
-		(at 55.88 111.76)
-		(uuid "02dea4f1-dc89-5220-92c8-ceb8350ed94b")
-	)
-	(no_connect
-		(at 35.56 116.84)
-		(uuid "1023e456-4d2d-5dee-955c-4c71339a3a39")
-	)
-	(no_connect
-		(at 55.88 116.84)
-		(uuid "4fb82d44-7431-51c3-9bcb-278291480ed6")
-	)
-	(no_connect
-		(at 35.56 119.38)
-		(uuid "7c4dba0f-4ff0-5775-89fc-9391b9aafbdb")
-	)
-	(no_connect
-		(at 35.56 111.76)
-		(uuid "91dc9e2d-759d-5904-8a07-4a7569c720f9")
-	)
-	(no_connect
 		(at 55.88 121.92)
 		(uuid "b13da01b-cb12-5562-a068-1594ad4d59e2")
-	)
-	(no_connect
-		(at 35.56 114.3)
-		(uuid "b6895f02-ceb5-5fef-8b38-c57196dd399f")
 	)
 	(no_connect
 		(at 35.56 121.92)
 		(uuid "dabecd75-7752-5c8c-8440-7405e419147a")
 	)
-	(no_connect
-		(at 55.88 119.38)
-		(uuid "dc71e5a8-d31e-571e-8ae4-f44ab6671c1b")
-	)
-	(no_connect
-		(at 55.88 114.3)
-		(uuid "de207819-13e6-56fc-90f7-b0adc2ed0460")
-	)
 	(wire
 		(pts
-			(xy 55.88 109.22) (xy 187.96 109.22)
+			(xy 60.96 109.22) (xy 187.96 109.22)
 		)
 		(stroke
 			(width 0)
@@ -2470,7 +2438,7 @@
 	)
 	(global_label "RLY1"
 		(shape bidirectional)
-		(at 35.56 106.68 180)
+		(at 30.48 106.68 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -2480,7 +2448,7 @@
 		)
 		(uuid "15dcd52d-c066-5ca0-9eb8-4b393e082200")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 35.56 106.68 0)
+			(at 30.48 106.68 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -2493,7 +2461,7 @@
 	)
 	(global_label "RLY2"
 		(shape bidirectional)
-		(at 35.56 109.22 180)
+		(at 30.48 114.3 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -2503,7 +2471,7 @@
 		)
 		(uuid "4e59687e-b3af-563a-8d32-c238c90edaf0")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 35.56 109.22 0)
+			(at 30.48 114.3 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3248,7 +3216,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "ULN2003A"
+		(property "Value" "ULN2003V12"
 			(at 38.1 96.52 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3270,7 +3238,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/uln2003a.pdf"
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/uln2003v12.pdf"
 			(at 45.72 111.76 0)
 			(hide yes)
 			(show_name no)
@@ -3281,7 +3249,7 @@
 				)
 			)
 		)
-		(property "Description" "High Voltage, High Current Darlington Transistor Arrays, SOIC16/SOIC16W/DIP16/TSSOP16"
+		(property "Description" "7-channel low-side relay driver, NMOS outputs, clamp diodes to COM; pin-compatible with ULN2003A"
 			(at 45.72 111.76 0)
 			(hide yes)
 			(show_name no)
@@ -4613,6 +4581,204 @@
 			(type default)
 		)
 		(uuid "229191a1-4440-469c-8af0-2e7d3bcc1414")
+	)
+	(wire
+		(pts
+			(xy 30.48 106.68) (xy 35.56 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3359a104-18ea-4ce0-acdd-3ac8c7440386")
+	)
+	(wire
+		(pts
+			(xy 33.02 109.22) (xy 35.56 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7ad55c2d-6a89-4da6-a3b1-2cea9bdf0140")
+	)
+	(wire
+		(pts
+			(xy 33.02 111.76) (xy 35.56 111.76)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5f425a40-91e6-4a58-82a0-f32c8016c457")
+	)
+	(wire
+		(pts
+			(xy 33.02 106.68) (xy 33.02 111.76)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0db9156d-e3ef-4594-9aea-f563171b90c3")
+	)
+	(junction
+		(at 33.02 106.68)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "e21b86b2-28da-4473-baac-1e48161aef4a")
+	)
+	(junction
+		(at 33.02 109.22)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "0e4f4b8b-e5a2-45f5-ac41-d2967a06e4e6")
+	)
+	(wire
+		(pts
+			(xy 30.48 114.3) (xy 35.56 114.3)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8d89a355-545e-46f3-a882-cfcf00a68ed8")
+	)
+	(wire
+		(pts
+			(xy 33.02 116.84) (xy 35.56 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9a6496e7-6abe-4b96-a747-0ac334ffca32")
+	)
+	(wire
+		(pts
+			(xy 33.02 119.38) (xy 35.56 119.38)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c6bca309-4b88-4a66-943c-21ea57a17765")
+	)
+	(wire
+		(pts
+			(xy 33.02 114.3) (xy 33.02 119.38)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a9de4f4e-731a-468e-b46c-858232808d80")
+	)
+	(junction
+		(at 33.02 114.3)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "56032f33-963f-4dd4-8983-00b43c9df801")
+	)
+	(junction
+		(at 33.02 116.84)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "d40cca63-a604-4767-88f1-050130f9d94d")
+	)
+	(wire
+		(pts
+			(xy 55.88 109.22) (xy 58.42 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "15202f98-dec7-4ddc-86e9-cac9888f5f44")
+	)
+	(wire
+		(pts
+			(xy 55.88 111.76) (xy 58.42 111.76)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a30bc410-cfb8-4cf2-80b2-94b358b80b38")
+	)
+	(wire
+		(pts
+			(xy 58.42 106.68) (xy 58.42 111.76)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c71e8199-fa6a-4980-86ae-3637f972ad16")
+	)
+	(junction
+		(at 58.42 106.68)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "c77eb185-199d-449c-8d03-07c89feeb7ff")
+	)
+	(junction
+		(at 58.42 109.22)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "bd7676ce-5774-41d1-927d-f220ede381b7")
+	)
+	(wire
+		(pts
+			(xy 55.88 114.3) (xy 60.96 114.3)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a7fc729b-8e11-4448-8d35-c31806515a26")
+	)
+	(wire
+		(pts
+			(xy 55.88 116.84) (xy 60.96 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "972a4a3a-519d-457b-b7ec-549f4614d9cb")
+	)
+	(wire
+		(pts
+			(xy 55.88 119.38) (xy 60.96 119.38)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "79c411c2-6c53-46c1-a8e6-5863145dec06")
+	)
+	(wire
+		(pts
+			(xy 60.96 109.22) (xy 60.96 119.38)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c9a4ccce-a152-43eb-9706-c87996f88add")
+	)
+	(junction
+		(at 60.96 114.3)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "23a7c193-ec5b-4c34-b887-907a5c3b8e4a")
+	)
+	(junction
+		(at 60.96 116.84)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "0853b599-8a26-43a5-985f-66e9778b8cf0")
 	)
 	(symbol
 		(lib_id "power:GND")

@@ -24,7 +24,7 @@ Fogli:
 | `mcu` | STM32G0B1RET6, decoupling, SWD (J4) e UART (J9) collegati a filo, pull-up I2C, INA_ALERT e LED_OE_N, pull-down EN |
 | `switches` | 3 × TPS2561A con R_ILIM, shunt 20 mΩ per porta, 2 × INA3221 |
 | `port_c` ×4, `port_a` ×1 | connettore, switch dati PI3USB4002A (con protezione ESD integrata), scarica VBUS, condensatori (sulla USB-A anche 100 µF), LED, pulsante |
-| `relays` | ULN2003A, 2 × G5Q-1, ponticelli NC/NO, boccole Cliff FCR7350, snubber DNP, pulsanti SW1/SW2 |
+| `relays` | ULN2003V12 (3 canali in parallelo per relè), 2 × G5Q-1, ponticelli NC/NO, boccole Cliff FCR7350, snubber DNP, pulsanti SW1/SW2 |
 | `ui` | 2 × 74HC595 (/OE dal MCU, pull-up), LED relè / alimentatore / host |
 
 Piedinatura del MCU: [../docs/pinout-mcu.md](../docs/pinout-mcu.md).

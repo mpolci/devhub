@@ -22,7 +22,7 @@ USB-C UPSTREAM ─── VBUS ──► VBUS_DET (hub, MCU)                     
                                              │
                                              ├─ per porta: EN, FAULT, OE dati, DIS (scarica), pulsante
                                              ├─ monitor corrente: 5 porte + ingresso (INA3221 ×2, I2C)
-                                             ├─ 2 relè (ULN2003) ──► boccole a banana (COM/NO/NC)
+                                             ├─ 2 relè (ULN2003V12) ► boccole a banana (COM/NO/NC)
                                              └─ LED via 74HC595, SWD, UART di debug
 ```
 
@@ -278,8 +278,8 @@ sviluppo; telefoni e computer conformi si limitano a 500 mA.
 ### Relè ausiliari
 
 Specifica contatti: **max 16 V, max 3 A**. 2 relè **SPDT** con bobina 5 V (es. Omron G5Q-1,
-Songle SRD-05VDC-SL-C: 10 A nominali, ampio margine) pilotati da ULN2003 (diodi di ricircolo
-integrati). Su pannello, per ogni canale, **due boccole a banana da 4 mm su COM e NC**: la linea
+Songle SRD-05VDC-SL-C: 10 A nominali, ampio margine) pilotati da un ULN2003V12 con tre canali in
+parallelo per relè (diodi di ricircolo integrati). Su pannello, per ogni canale, **due boccole a banana da 4 mm su COM e NC**: la linea
 è **normalmente collegata** e la bobina si eccita solo per staccarla. Così lo stacco dura il tempo
 di un impulso, e se l'hub perde alimentazione o si blocca la linea torna collegata (comportamento
 sicuro per una scheda in prova). Il contatto NO è portato su un **ponticello a saldare** interno:
@@ -287,6 +287,13 @@ spostandolo la seconda boccola diventa NO per un eventuale uso "normalmente aper
 Nel protocollo i comandi parlano di linea ("collegata / staccata", "stacca per N ms"), non di
 bobina. LED per canale, acceso quando la linea è staccata. Un pulsante per canale (SW1/SW2, su
 PB12/PB13): ogni pressione alterna la linea, collegata o staccata (RF-17).
+
+**Margine sulla bobina (D33).** Il G5Q-1 da 5 V (63 Ω, 80 mA) scatta garantito con 3,75 V a 23 °C
+di bobina; la resistenza cresce con la temperatura (~0,4 %/°C) e con la bobina a 40 °C servono
+~4,0 V. Obiettivo: scatto garantito fino a 5V_SYS = 4,5 V (soglia sotto cui il firmware spegne le
+porte) e 40 °C. Il ULN2003A (Darlington) perdeva 0,9–1,1 V e lasciava 3,4–3,6 V alla bobina; il
+ULN2003V12 ha uscite MOSFET (~6 Ω per canale a 3,3 V d'ingresso) e con tre canali in parallelo
+perde ~0,2 V: alla bobina restano ~4,3 V.
 
 ### Upstream
 
