@@ -200,13 +200,20 @@ Dettagli verificati sul datasheet (DS00001598C) e sull'errata (DS80000628A):
 - **Reset** (D16): l'errata dice che il POR interno non funziona e suggerisce un supervisore
   esterno. RESET_N ha un pull-up da 10 kΩ e due sorgenti in wired-OR: il supervisore **MCP120T-300**
   (open-drain, soglia 2,85–3,0 V, ritardo 150–700 ms), che tiene il hub in reset finché la 3,3 V non
-  è stabile, e PA8 del MCU in open-drain, che può forzare il reset (comando `RESET_HUB`). Un reset del
-  MCU (watchdog, `REBOOT`, debugger, bootloader) lascia PA8 in alta impedenza e **non resetta il
+  è stabile, e PF1 del MCU in open-drain, che può forzare il reset (comando `RESET_HUB`). Un reset del
+  MCU (watchdog, `REBOOT`, debugger, bootloader) lascia PF1 in alta impedenza e **non resetta il
   hub**. All'accensione il MCU parte prima che il supervisore rilasci, tiene basso il reset, sceglie
   CFG_SEL2 e lo rilascia; senza firmware il hub parte comunque con i default interni (101).
-- **VBUS_DET** dalla VBUS upstream con partitore 100 k / 100 k, letto anche dal MCU (PA6, ADC).
+  Il reset del hub non sta su PA8: è un pin CC dell'UCPD, con una pull-down da ~5,1 kΩ dopo ogni
+  reset del MCU e anche nel bootloader. Con R27 da 10 kΩ avrebbe tenuto RESET_N a ~1,1 V, tra le
+  soglie del hub (0,8 / 2,0 V), proprio durante il DFU (D34).
+- **Avvio senza firmware e DFU (D34).** I pin del MCU sono scelti in modo che con il bootloader ST
+  (AN2606) il hub parta con i default, veda VBUS e LOCAL_PWR corretti, e relè e porte restino a
+  riposo: dettaglio in [pinout-mcu.md](pinout-mcu.md). Non è ancora dimostrato: è la prima prova da
+  fare sul prototipo (DFU con flash vuota e dopo `ENTER_BOOTLOADER`).
+- **VBUS_DET** dalla VBUS upstream con partitore 100 k / 100 k, letto anche dal MCU (PB2, ADC).
   Con l'alimentatore staccato e il PC collegato il partitore mette ~2,5 V su hub e MCU spenti: il
-  USB2517 ammette 5,5 V su ogni I/O e PA6 è un pin FT (tollera 5 V, senza diodo verso VDD; 4 V
+  USB2517 ammette 5,5 V su ogni I/O e PB2 è un pin FT (tollera 5 V, senza diodo verso VDD; 4 V
   massimi a MCU spento). Su un pin TT come il PA5 di prima non si potrebbe (D32).
 - **LOCAL_PWR** da un partitore su 5V_SYS: con la logica alimentata solo dall'alimentatore è sempre
   alto (hub self-powered).

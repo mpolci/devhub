@@ -6,7 +6,7 @@ I pin senza segnale sono liberi (no-connect nello schema).
 | Pin | Nome | Segnale | Funzione |
 |---|---|---|---|
 | 1 | PC11 | FAULT_P3 | ingresso: FAULT load switch porta 3 (basso = sovracorrente; anche OCS3_N del hub) |
-| 2 | PC12 | — |  |
+| 2 | PC12 | INA_ALERT | ingresso: CRITICAL dei due INA3221 (open-drain, pull-up R47) |
 | 3 | PC13 | BTN_P1 | ingresso: pulsante porta 1 (basso = premuto; pull-up interno) |
 | 4 | PC14 | BTN_P2 | ingresso: pulsante porta 2 (basso = premuto; pull-up interno) |
 | 5 | PC15 | BTN_P3 | ingresso: pulsante porta 3 (basso = premuto; pull-up interno) |
@@ -15,7 +15,7 @@ I pin senza segnale sono liberi (no-connect nello schema).
 | 8 | VDD | +3V3 |  |
 | 9 | VSS | GND |  |
 | 10 | PF0 | BTN_P5 | ingresso: pulsante porta 5 (basso = premuto; pull-up interno) |
-| 11 | PF1 | — |  |
+| 11 | PF1 | HUB_RST_N | uscita open-drain: RESET_N del hub (basso = reset), in wired-OR con il supervisore U12 |
 | 12 | PF2 | NRST | reset (SWD J4 pin 10, C46) |
 | 13 | PC0 | EN_P1 | uscita: EN load switch porta 1 (alto = VBUS on; pull-down) |
 | 14 | PC1 | OE_N_P1 | uscita: EN del PI3USB4002A porta 1 (basso = dati collegati; pull-up) |
@@ -25,28 +25,28 @@ I pin senza segnale sono liberi (no-connect nello schema).
 | 18 | PA1 | CC2_ADC | ADC: tensione CC2 |
 | 19 | PA2 | UART_TX | USART2 TX, J9 |
 | 20 | PA3 | UART_RX | USART2 RX, J9 |
-| 21 | PA4 | — |  |
-| 22 | PA5 | — |  |
-| 23 | PA6 | VBUS_DET | ADC: VBUS upstream / 2 (anche VBUS_DET del hub); pin FT, regge ~2,5 V a MCU spento |
-| 24 | PA7 | VSYS_ADC | ADC: 5V_SYS / 2 (anche LOCAL_PWR del hub); pin FT |
+| 21 | PA4 | RLY1 | uscita: relè 1 (alto = linea staccata) |
+| 22 | PA5 | RLY2 | uscita: relè 2 |
+| 23 | PA6 | — |  |
+| 24 | PA7 | EN_P4 | uscita: EN load switch porta 4 (alto = VBUS on; pull-down) |
 | 25 | PC4 | EN_P2 | uscita: EN load switch porta 2 (alto = VBUS on; pull-down) |
 | 26 | PC5 | OE_N_P2 | uscita: EN del PI3USB4002A porta 2 (basso = dati collegati; pull-up) |
-| 27 | PB0 | INA_ALERT | ingresso: CRITICAL dei due INA3221 (open-drain, pull-up R47) |
+| 27 | PB0 | VSYS_ADC | ADC: 5V_SYS / 2 (anche LOCAL_PWR del hub); pin FT |
 | 28 | PB1 | EFUSE_FLT_N | ingresso: guasto dell'eFuse d'ingresso U13 (basso = guasto; pull-up R34) |
-| 29 | PB2 | — |  |
-| 30 | PB10 | RLY1 | uscita: relè 1 (alto = linea staccata) |
-| 31 | PB11 | RLY2 | uscita: relè 2 |
+| 29 | PB2 | VBUS_DET | ADC: VBUS upstream / 2 (anche VBUS_DET del hub); pin FT, regge ~2,5 V a MCU spento |
+| 30 | PB10 | — |  |
+| 31 | PB11 | — |  |
 | 32 | PB12 | BTN_RLY1 | ingresso: pulsante relè 1 (basso = premuto; pull-up interno) |
 | 33 | PB13 | BTN_RLY2 | ingresso: pulsante relè 2 (basso = premuto; pull-up interno) |
 | 34 | PB14 | — |  |
 | 35 | PB15 | — |  |
-| 36 | PA8 | HUB_RST_N | uscita open-drain: RESET_N del hub (basso = reset), in wired-OR con il supervisore U12 |
-| 37 | PA9/UCPD1_DBCC1 | — |  |
+| 36 | PA8 | — |  |
+| 37 | PA9/UCPD1_DBCC1 | UCPD1_DBCC1 | pull-down R48 10 kΩ (dead battery disattivato) |
 | 38 | PC6 | DIS_P2 | uscita: scarica VBUS porta 2 (alto = scarica; pull-down) |
 | 39 | PC7 | FAULT_P2 | ingresso: FAULT load switch porta 2 (basso = sovracorrente; anche OCS2_N del hub) |
 | 40 | PD8 | DIS_P5 | uscita: scarica VBUS porta 5 (alto = scarica; pull-down) |
 | 41 | PD9 | FAULT_P5 | ingresso: FAULT load switch porta 5 (basso = sovracorrente; anche OCS5_N del hub) |
-| 42 | PA10/UCPD1_DBCC2 | — |  |
+| 42 | PA10/UCPD1_DBCC2 | UCPD1_DBCC2 | pull-down R49 10 kΩ (dead battery disattivato) |
 | 43 | PA9/PA11 | USB_MCU_DM | USB FS D- verso porta 6 del hub |
 | 44 | PA10/PA12 | USB_MCU_DP | USB FS D+ verso porta 6 del hub |
 | 45 | PA13 | SWDIO | SWD |
@@ -54,7 +54,7 @@ I pin senza segnale sono liberi (no-connect nello schema).
 | 47 | PA15 | HUB_CFG_SEL2 | uscita: CFG_SEL2 del hub, campionato al rilascio del reset (0 = SMBus, 1 = default interni) |
 | 48 | PC8 | EN_P3 | uscita: EN load switch porta 3 (alto = VBUS on; pull-down) |
 | 49 | PC9 | OE_N_P3 | uscita: EN del PI3USB4002A porta 3 (basso = dati collegati; pull-up) |
-| 50 | PD0 | EN_P4 | uscita: EN load switch porta 4 (alto = VBUS on; pull-down) |
+| 50 | PD0 | — |  |
 | 51 | PD1 | OE_N_P4 | uscita: EN del PI3USB4002A porta 4 (basso = dati collegati; pull-up) |
 | 52 | PD2 | DIS_P4 | uscita: scarica VBUS porta 4 (alto = scarica; pull-down) |
 | 53 | PD3 | FAULT_P4 | ingresso: FAULT load switch porta 4 (basso = sovracorrente; anche OCS4_N del hub) |
@@ -74,16 +74,17 @@ I pin senza segnale sono liberi (no-connect nello schema).
 
 - USB FS senza quarzo: HSI48 + CRS sincronizzato sul SOF.
 - I2C1 su PB8/PB9: INA3221 a 0x40 (A0 = GND, porte 1-3) e 0x41 (A0 = VS, porte 4-5 e corrente d'ingresso); hub USB2517 a 0x2C in modalità SMBus.
-- PA8 va sempre configurato open-drain (mai push-pull alto): RESET_N è condiviso con il supervisore U12 e ha il pull-up R27.
+- PF1 (HUB_RST_N) va sempre configurato open-drain (mai push-pull alto): RESET_N è condiviso con il supervisore U12 e ha il pull-up R27.
 - Sequenza di avvio del hub, solo dopo un'accensione o un calo di tensione (flag di RCC_CSR, oppure un flag in un registro di backup): tirare basso HUB_RST_N, impostare HUB_CFG_SEL2, rilasciare il reset; se CFG_SEL2 = 0 scrivere i registri del hub via SMBus e poi il comando di attach (registro FFh). Il MCU parte prima che U12 rilasci il reset (150-700 ms), quindi il hub enumera una volta sola.
 - Dopo un reset software, un watchdog o il ritorno dal bootloader non toccare HUB_RST_N: il hub è già configurato e il MCU si ricollega da solo sulla porta 6.
 - 74HC595 ×2 in cascata (16 bit): U10 = LED porte 1-4 (PWR/FLT), U11 = LED porta 5, relè 1-2, acceso, host collegato. LED_OE_N (PB6) ha un pull-up: i LED restano spenti finché il firmware non carica i registri e porta PB6 basso.
 - I pulsanti delle porte 1-3 sono su PC13/PC14/PC15, pin a bassa capacità di pilotaggio: vanno usati solo come ingressi.
 - FAULT_P1-P5: abilitare il pull-up interno. Il pull-up degli OCS_N del hub potrebbe mancare mentre il hub è in reset.
 - SCL è anche CFG_SEL0 del hub, campionato al rilascio di HUB_RST_N: in quel momento il bus I2C dev'essere fermo (SCL alto).
-- PA8, PD0 e PD2 sono anche pin CC dell'UCPD, con pull-down "dead battery" all'avvio: probabilmente vanno rilasciati con i bit UCPD1_STROBE / UCPD2_STROBE di SYSCFG_CFGR1 (da verificare su RM0444).
+- UCPD (D34): dopo ogni reset i pin CC dell'UCPD (PA8, PB15, PD0, PD2) hanno una pull-down Rd da ~5,1 kΩ, finché il firmware non imposta UCPD1_STROBE e UCPD2_STROBE in SYSCFG_CFGR1 (RM0444, §7.3.16 e §38.4.6). Il bootloader non la stacca. Il firmware la stacca all'avvio; dei quattro pin solo PD2 (DIS_P4) è usato, e lì la pull-down coincide con lo stato sicuro (scarica spenta). I DBCC dell'UCPD1 (PA9, PA10) hanno pull-down da 10 kΩ e non direttamente a massa, perché il bootloader pilota PA9 alto (USART1_TX); i DBCC dell'UCPD2 sono PD1 e PD3, con pull-up verso la 3,3 V: a scheda spenta sono comunque bassi.
+- Bootloader ST (AN2606, tabella 111; D34): in DFU il bootloader configura USART1 (PA9/PA10), USART2 (PA2/PA3), USART3 (PC10/PC11), I2C1 (PB6/PB7), I2C2 (PB10/PB11), SPI1 (PA4-PA7), SPI2 (PB12-PB15), FDCAN1 (PD0/PD1) e USB. Regola: le uscite che comandano reset, alimentazioni o relè stanno su pin che il bootloader non tocca o tiene bassi. RLY1/RLY2 (PA4/PA5) ed EN_P4 (PA7) hanno la pull-down di SPI1, quindi relè a riposo e porta spenta; HUB_RST_N (PF1), VBUS_DET (PB2), VSYS_ADC (PB0) e HUB_CFG_SEL2 (PA15) non vengono toccati. Effetti innocui: DIS_P3 (PC10, USART3_TX) va alto e scarica una porta già spenta, OE_N_P4 (PD1, FDCAN_TX) va alto e stacca i dati di una porta già spenta, LED_OE_N (PB6) resta alto con i LED spenti. Con il bootloader si può programmare anche dalla UART J9 (USART2).
 - Ingresso alimentazione: EFUSE_FLT_N (PB1) basso = eFuse in limitazione di corrente da più del tempo impostato (o sovratemperatura, guasto ILM, corrente inversa); con sovratensione o sottotensione FLT resta alto. La logica è a valle dell'eFuse (D32): quando l'eFuse stacca il MCU si spegne, quindi FLT serve solo durante la limitazione, per spegnere subito le porte. Tensione e corrente d'ingresso si leggono dal canale 3 di U8 (shunt R5).
 - Porte: l'INA3221 misura anche la tensione di ogni VBUS. Se una porta accesa supera ~5,5 V (scheda in prova che rimanda tensione) spegnerla e segnalarlo (PORT_FAULT, causa "tensione inversa").
 - Porte, sorgente esterna (D29): prima di accendere una porta leggere la sua VBUS dall'INA3221; se a porta spenta c'è già tensione (soglia indicativa ~1 V) non accenderla. A porta accesa, se la corrente misurata è entrante (shunt negativo) spegnerla. In entrambi i casi LED rosso della porta acceso e PORT_FAULT con causa "sorgente esterna".
-- VBUS_DET e VSYS_ADC sono su pin FT (PA6, PA7), non TT: VBUS_DET può avere tensione con il MCU spento (alimentatore staccato, PC collegato), e i pin TT non ammettono corrente iniettata verso VDD.
+- VBUS_DET e VSYS_ADC sono su pin FT (PB2, PB0), non TT: VBUS_DET può avere tensione con il MCU spento (alimentatore staccato, PC collegato), e i pin TT non ammettono corrente iniettata verso VDD.
 - I nomi dei pin 43/44 sono quelli del simbolo KiCad: sono PA11/PA12 (USB), rimappabili su PA9/PA10.

@@ -19,7 +19,7 @@
 | D13 | VID/PID USB | VID 0x1209 (pid.codes) con PID di test durante lo sviluppo; PID definitivo da richiedere a pid.codes alla pubblicazione |
 | D14 | Porta hub di scorta (DS7) | su header interno a 4 pin (VBUS, D-, D+, GND), non sezionata |
 | D15 | Scatola | stampata in 3D su misura; tutti i connettori saldati sul PCB, boccole a banana in versione da PCB; connettori sui due lati corti (banco: porte, pulsanti, boccole; retro: upstream e alimentazione) |
-| D16 | Reset del hub | supervisore **MCP120T-300** open-drain su RESET_N con pull-up, in wired-OR con il MCU (PA8 open-drain): il hub non dipende dal firmware e resta acceso durante reset e DFU del MCU |
+| D16 | Reset del hub | supervisore **MCP120T-300** open-drain su RESET_N con pull-up, in wired-OR con il MCU (open-drain, ora su PF1: D34): il hub non dipende dal firmware e resta acceso durante reset e DFU del MCU |
 | D17 | Regolatore 3,3 V | LDO **AP7361C-33E** (1 A, SOT-223) al posto dell'AP2112K in SOT-23-5 |
 | D18 | Connettori USB | orizzontali (angolo retto, montati sopra il PCB): **GCT USB4105-GF-A** per tutti e sei gli USB-C (16 pin USB 2.0, 5 A, guscio con linguette passanti), **Kycon KUSBX-AS1N-B** passante per l'USB-A; scartati i modelli ruotati di 90° (rari e meno robusti) |
 | D19 | Quarzo del hub | YXC **X322524MOB4SI** (24 MHz, 3225, C_L 12 pF, il più economico e con più disponibilità), C22/C23 = 15 pF C0G |
@@ -35,8 +35,9 @@
 | D29 | Rilevamento dell'inserimento sulle porte USB-C | non fatto (opzione C, revisione 02, R02-02): VBUS presente appena la porta è accesa; il firmware non accende una porta con tensione già presente e spegne una porta che riceve corrente, con LED rosso e avviso al PC. Scartati un controller USB-C per porta (TPS25810) e la lettura delle CC dal MCU (richiedeva tutti i pin liberi e lasciava senza alimentazione le schede prive di resistenze CC) |
 | D30 | Corrente annunciata dalle porte USB-C | standard USB (Rp 56 kΩ, 500 mA) al posto di 1,5 A (revisione 02, R02-03): annuncio coerente con il budget; la porta non lo impone, chi lo ignora assorbe fino a ~2,3 A |
 | D31 | Limiti della protezione d'ingresso | protezione garantita in continuo fino a 20 V; sopra ~23 V la SMAJ20A si sacrifica e l'INA3221 (26 V) non è garantito; TVS invariata, codice fissato in `componenti.md` (revisione 02, R02-04) |
-| D32 | Alimentazione della logica | RF-16 eliminato: hub e MCU solo dall'alimentatore, tolto D3 (ORing dalla VBUS upstream), D2 resta per la dissipazione dell'LDO; VBUS_DET e VSYS_ADC su pin FT (PA6, PA7) perché il partitore VBUS_DET ha tensione anche a MCU spento; con sovratensione o sottotensione d'ingresso si spegne tutto senza segnalazione al PC; hub funzionante dal solo PC rimandato come variante futura (revisione 02, R02-05) |
+| D32 | Alimentazione della logica | RF-16 eliminato: hub e MCU solo dall'alimentatore, tolto D3 (ORing dalla VBUS upstream), D2 resta per la dissipazione dell'LDO; VBUS_DET e VSYS_ADC su pin FT (PA6, PA7; poi PB2, PB0 con D34) perché il partitore VBUS_DET ha tensione anche a MCU spento; con sovratensione o sottotensione d'ingresso si spegne tutto senza segnalazione al PC; hub funzionante dal solo PC rimandato come variante futura (revisione 02, R02-05) |
 | D33 | Driver dei relè | **ULN2003V12** al posto del ULN2003A (stessa piedinatura, uscite MOSFET), tre canali in parallelo per relè: caduta ~0,2 V invece di 0,9–1,1 V, scatto garantito fino a 5V_SYS = 4,5 V e 40 °C; alternativa 2× AO3400A (revisione 02, R02-06) |
+| D34 | Pin del MCU, UCPD e bootloader | HUB_RST_N da PA8 (pin CC dell'UCPD, pull-down Rd dopo ogni reset) a PF1; spostati VBUS_DET (PB2), VSYS_ADC (PB0), INA_ALERT (PC12), RLY1/RLY2 (PA4/PA5), EN_P4 (PA7) perché nel bootloader ST relè e porte restino a riposo e il hub funzioni; DBCC dell'UCPD1 a massa con 10 kΩ (R48, R49); il firmware stacca le Rd con UCPDx_STROBE; DFU da provare sul prototipo (revisione 02, R02-07) |
 
 ## Aperte
 

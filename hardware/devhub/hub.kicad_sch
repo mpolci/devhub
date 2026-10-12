@@ -4121,7 +4121,7 @@
 		)
 		(uuid "2bcbcfc0-31ac-598b-b460-26da824a9162")
 	)
-	(text "Reset (errata USB2517: POR interno non funzionante): supervisore U12 e MCU (PA8 open-drain) in wired-OR, pull-up R27. Un reset del MCU non resetta il hub."
+	(text "Reset (errata USB2517: POR interno non funzionante): supervisore U12 e MCU (PF1 open-drain) in wired-OR, pull-up R27. Un reset del MCU non resetta il hub."
 		(exclude_from_sim no)
 		(at 10.16 254 0)
 		(effects
