@@ -47,7 +47,7 @@ I pin senza segnale sono liberi (no-connect nello schema).
 | 40 | PD8 | DIS_P5 | uscita: scarica VBUS porta 5 (alto = scarica; pull-down) |
 | 41 | PD9 | FAULT_P5 | ingresso: FAULT load switch porta 5 (basso = sovracorrente; anche OCS5_N del hub) |
 | 42 | PA10/UCPD1_DBCC2 | UCPD1_DBCC2 | pull-down R49 10 kΩ (dead battery disattivato) |
-| 43 | PA9/PA11 | USB_MCU_DM | USB FS D- verso porta 6 del hub |
+| 43 | PA9/PA11 | USB_MCU_DN | USB FS D- verso porta 6 del hub |
 | 44 | PA10/PA12 | USB_MCU_DP | USB FS D+ verso porta 6 del hub |
 | 45 | PA13 | SWDIO | SWD |
 | 46 | PA14 | SWCLK | SWD (anche BOOT0 via nBOOT_SEL) |

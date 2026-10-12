@@ -24,7 +24,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_DFN_QFN:QFN-64-1EP_9x9mm_P0.5mm_EP4.7x4.7mm_ThermalVias"
+		(property "Footprint" "lcsc_footprints:QFN-64-1EP_9x9mm_P0.5mm_EP4.7x4.7mm_ThermalVias_0.3mm"
 			(at 0 0 0)
 			(effects
 				(font

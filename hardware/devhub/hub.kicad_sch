@@ -2326,7 +2326,7 @@
 					(justify left)
 				)
 			)
-			(property "Footprint" "Package_DFN_QFN:QFN-64-1EP_9x9mm_P0.5mm_EP4.7x4.7mm_ThermalVias"
+			(property "Footprint" "lcsc_footprints:QFN-64-1EP_9x9mm_P0.5mm_EP4.7x4.7mm_ThermalVias_0.3mm"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -4706,7 +4706,7 @@
 		)
 		(uuid "20dd1eef-6ed4-54b2-9919-0835d54b7e5f")
 	)
-	(label "UP_DM_C"
+	(label "UP_CONN_DN"
 		(at 50.8 119.38 0)
 		(effects
 			(font
@@ -4726,7 +4726,7 @@
 		)
 		(uuid "2b31bcce-b987-580b-bc10-8297704f6938")
 	)
-	(label "USBUP_DM"
+	(label "USBUP_DN"
 		(at 172.72 109.22 0)
 		(effects
 			(font
@@ -4736,7 +4736,7 @@
 		)
 		(uuid "326cf596-37ca-581d-b76d-9d7d1e108dd9")
 	)
-	(label "UP_DP_C"
+	(label "UP_CONN_DP"
 		(at 157.48 106.68 180)
 		(effects
 			(font
@@ -4816,7 +4816,7 @@
 		)
 		(uuid "8ceac94e-00b0-5688-9836-002fbd2517a5")
 	)
-	(label "SPARE_DM"
+	(label "SPARE_DN"
 		(at 309.88 162.56 180)
 		(effects
 			(font
@@ -4826,7 +4826,7 @@
 		)
 		(uuid "ad7afa79-0e8c-5727-a08e-dd3b3aba18f4")
 	)
-	(label "SPARE_DM"
+	(label "SPARE_DN"
 		(at 242.57 154.94 0)
 		(effects
 			(font
@@ -4866,7 +4866,7 @@
 		)
 		(uuid "ccfe0542-e6d7-54e5-9663-9713959d6ae6")
 	)
-	(label "UP_DM_C"
+	(label "UP_CONN_DN"
 		(at 157.48 109.22 180)
 		(effects
 			(font
@@ -4876,7 +4876,7 @@
 		)
 		(uuid "d0ec0727-8a48-5dd9-a26a-5b74e33b37b2")
 	)
-	(label "UP_DP_C"
+	(label "UP_CONN_DP"
 		(at 50.8 127 0)
 		(effects
 			(font
@@ -4906,7 +4906,7 @@
 		)
 		(uuid "e2ee86af-ee71-57dc-ae46-11505d8da58b")
 	)
-	(global_label "USB_MCU_DM"
+	(global_label "USB_MCU_DN"
 		(shape bidirectional)
 		(at 242.57 147.32 0)
 		(fields_autoplaced yes)
@@ -4929,7 +4929,7 @@
 			)
 		)
 	)
-	(global_label "HUB_DM3"
+	(global_label "HUB_DN3"
 		(shape bidirectional)
 		(at 242.57 124.46 0)
 		(fields_autoplaced yes)
@@ -5067,7 +5067,7 @@
 			)
 		)
 	)
-	(global_label "HUB_DM1"
+	(global_label "HUB_DN1"
 		(shape bidirectional)
 		(at 242.57 109.22 0)
 		(fields_autoplaced yes)
@@ -5090,7 +5090,7 @@
 			)
 		)
 	)
-	(global_label "HUB_DM4"
+	(global_label "HUB_DN4"
 		(shape bidirectional)
 		(at 242.57 132.08 0)
 		(fields_autoplaced yes)
@@ -5182,7 +5182,7 @@
 			)
 		)
 	)
-	(global_label "HUB_DM2"
+	(global_label "HUB_DN2"
 		(shape bidirectional)
 		(at 242.57 116.84 0)
 		(fields_autoplaced yes)
@@ -5297,7 +5297,7 @@
 			)
 		)
 	)
-	(global_label "HUB_DM5"
+	(global_label "HUB_DN5"
 		(shape bidirectional)
 		(at 242.57 139.7 0)
 		(fields_autoplaced yes)
@@ -5547,6 +5547,50 @@
 				)
 			)
 		)
+		(property "warehouse" "238"
+			(at 81.28 115.57 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C23186"
+			(at 81.28 115.57 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "603-RC0603FR-075K1L"
+			(at 81.28 115.57 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "311-5.10KHRCT-ND"
+			(at 81.28 115.57 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "168c36f8-55a2-5496-9f39-3734cf118513")
 		)
@@ -5695,6 +5739,50 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 71.12 118.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "warehouse" "238"
+			(at 71.12 118.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C23186"
+			(at 71.12 118.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "603-RC0603FR-075K1L"
+			(at 71.12 118.11 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "311-5.10KHRCT-ND"
 			(at 71.12 118.11 0)
 			(hide yes)
 			(show_name no)
@@ -6160,6 +6248,50 @@
 		)
 		(property "Description" "Resistor"
 			(at 152.4 144.78 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "warehouse" "249"
+			(at 152.4 144.78 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C2907003"
+			(at 152.4 144.78 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "603-RC0603FR-071ML"
+			(at 152.4 144.78 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "311-1.00MHRCT-ND"
+			(at 152.4 144.78 270)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6712,6 +6844,50 @@
 				)
 			)
 		)
+		(property "warehouse" "235"
+			(at 162.56 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C1591"
+			(at 162.56 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "187-CL10B104KB8NNNC"
+			(at 162.56 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "1276-1000-1-ND"
+			(at 162.56 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "1d721326-a35e-5aae-a9e5-428459778e31")
 		)
@@ -7168,6 +7344,50 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 142.24 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "warehouse" "235"
+			(at 142.24 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C1591"
+			(at 142.24 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "187-CL10B104KB8NNNC"
+			(at 142.24 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "1276-1000-1-ND"
 			(at 142.24 77.47 0)
 			(hide yes)
 			(show_name no)
@@ -7721,6 +7941,50 @@
 				)
 			)
 		)
+		(property "warehouse" "240"
+			(at 152.4 224.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C29936"
+			(at 152.4 224.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "187-CL10B105KA8NNNC"
+			(at 152.4 224.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "1276-1184-1-ND"
+			(at 152.4 224.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "b8c11aae-3ef1-53c0-9c43-fe86d6081c45")
 		)
@@ -8033,6 +8297,50 @@
 				)
 			)
 		)
+		(property "warehouse" "235"
+			(at 40.64 214.63 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C1591"
+			(at 40.64 214.63 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "187-CL10B104KB8NNNC"
+			(at 40.64 214.63 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "1276-1000-1-ND"
+			(at 40.64 214.63 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "f62af7fe-6074-5d2e-b608-39a2c8876f9e")
 		)
@@ -8268,6 +8576,50 @@
 				)
 			)
 		)
+		(property "warehouse" ""
+			(at 170.18 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C114659"
+			(at 170.18 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "603-RC0603FR-0712KL"
+			(at 170.18 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "311-12.0KHRCT-ND"
+			(at 170.18 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "79077d11-6161-5cde-9195-36aec3e6a51a")
 		)
@@ -8493,6 +8845,50 @@
 			)
 		)
 		(property "Description" "Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 314.96 162.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "warehouse" ""
+			(at 314.96 162.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C124378"
+			(at 314.96 162.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "710-61300411121"
+			(at 314.96 162.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "732-5317-ND"
 			(at 314.96 162.56 0)
 			(hide yes)
 			(show_name no)
@@ -9052,6 +9448,50 @@
 				)
 			)
 		)
+		(property "warehouse" "248"
+			(at 55.88 229.87 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C2906982"
+			(at 55.88 229.87 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "603-RC0603FR-0710KL"
+			(at 55.88 229.87 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "311-10.0KHRCT-ND"
+			(at 55.88 229.87 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "ba7266fa-17f8-5efb-9a1e-438d3f6733b0")
 		)
@@ -9122,6 +9562,50 @@
 		)
 		(property "Description" "Resistor"
 			(at 146.05 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "warehouse" "248"
+			(at 146.05 121.92 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C2906982"
+			(at 146.05 121.92 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "603-RC0603FR-0710KL"
+			(at 146.05 121.92 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "311-10.0KHRCT-ND"
+			(at 146.05 121.92 270)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9202,6 +9686,50 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 66.04 237.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "warehouse" "235"
+			(at 66.04 237.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C1591"
+			(at 66.04 237.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "187-CL10B104KB8NNNC"
+			(at 66.04 237.49 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "1276-1000-1-ND"
 			(at 66.04 237.49 0)
 			(hide yes)
 			(show_name no)
@@ -9360,6 +9888,50 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 142.24 224.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "warehouse" "247"
+			(at 142.24 224.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C2906980"
+			(at 142.24 224.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "603-RC0603FR-07100KL"
+			(at 142.24 224.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "311-100KHRCT-ND"
 			(at 142.24 224.79 0)
 			(hide yes)
 			(show_name no)
@@ -9570,7 +10142,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Fuse:Fuse_1206_3216Metric"
+		(property "Footprint" "Fuse:Fuse_1812_4532Metric"
 			(at 284.48 160.02 0)
 			(hide yes)
 			(show_name no)
@@ -9594,6 +10166,50 @@
 		)
 		(property "Description" "Resettable fuse, polymeric positive temperature coefficient"
 			(at 284.48 160.02 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "warehouse" "210"
+			(at 284.48 160.02 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C17313"
+			(at 284.48 160.02 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "652-MF-MSMF050-2"
+			(at 284.48 160.02 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "MF-MSMF050-2CT-ND"
+			(at 284.48 160.02 270)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9751,6 +10367,50 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 172.72 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "warehouse" "235"
+			(at 172.72 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C1591"
+			(at 172.72 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "187-CL10B104KB8NNNC"
+			(at 172.72 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "1276-1000-1-ND"
 			(at 172.72 77.47 0)
 			(hide yes)
 			(show_name no)
@@ -10073,6 +10733,50 @@
 				)
 			)
 		)
+		(property "warehouse" ""
+			(at 140.97 158.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C1644"
+			(at 140.97 158.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "187-CL10C150JB8NNNC"
+			(at 140.97 158.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "1276-1296-1-ND"
+			(at 140.97 158.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "e492e9a0-73d5-500b-a21c-fb6b4f25a8cc")
 		)
@@ -10144,6 +10848,50 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 104.14 222.25 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "warehouse" "248"
+			(at 104.14 222.25 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C2906982"
+			(at 104.14 222.25 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "603-RC0603FR-0710KL"
+			(at 104.14 222.25 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "311-10.0KHRCT-ND"
 			(at 104.14 222.25 0)
 			(hide yes)
 			(show_name no)
@@ -10312,6 +11060,50 @@
 				)
 			)
 		)
+		(property "warehouse" "235"
+			(at 132.08 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C1591"
+			(at 132.08 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "187-CL10B104KB8NNNC"
+			(at 132.08 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "1276-1000-1-ND"
+			(at 132.08 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "ae84793c-370d-50f4-9992-d48906e34fbf")
 		)
@@ -10460,6 +11252,50 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 279.4 82.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "warehouse" "235"
+			(at 279.4 82.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C1591"
+			(at 279.4 82.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "187-CL10B104KB8NNNC"
+			(at 279.4 82.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "1276-1000-1-ND"
 			(at 279.4 82.55 0)
 			(hide yes)
 			(show_name no)
@@ -10705,6 +11541,50 @@
 				)
 			)
 		)
+		(property "warehouse" "235"
+			(at 182.88 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C1591"
+			(at 182.88 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "187-CL10B104KB8NNNC"
+			(at 182.88 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "1276-1000-1-ND"
+			(at 182.88 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "0c7e10d0-8f37-53ae-9ac0-9acb57b1661f")
 		)
@@ -10776,6 +11656,50 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 142.24 217.17 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "warehouse" "247"
+			(at 142.24 217.17 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C2906980"
+			(at 142.24 217.17 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "603-RC0603FR-07100KL"
+			(at 142.24 217.17 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "311-100KHRCT-ND"
 			(at 142.24 217.17 0)
 			(hide yes)
 			(show_name no)
@@ -10867,6 +11791,50 @@
 				)
 			)
 		)
+		(property "warehouse" "235"
+			(at 254 90.17 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C1591"
+			(at 254 90.17 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "187-CL10B104KB8NNNC"
+			(at 254 90.17 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "1276-1000-1-ND"
+			(at 254 90.17 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "873fa12a-bf7c-5ac1-b1b7-21a69d3bec31")
 		)
@@ -10937,6 +11905,50 @@
 			)
 		)
 		(property "Description" "Four pin crystal, GND on pins 2 and 4"
+			(at 152.4 154.94 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "warehouse" ""
+			(at 152.4 154.94 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C70590"
+			(at 152.4 154.94 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "520-240-12-33Q-JEST"
+			(at 152.4 154.94 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "XC2150CT-ND"
 			(at 152.4 154.94 0)
 			(hide yes)
 			(show_name no)
@@ -11111,6 +12123,50 @@
 				)
 			)
 		)
+		(property "warehouse" "240"
+			(at 266.7 82.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C29936"
+			(at 266.7 82.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "187-CL10B105KA8NNNC"
+			(at 266.7 82.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "1276-1184-1-ND"
+			(at 266.7 82.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "fe6d2337-69ea-53a5-92b8-e91be90f5830")
 		)
@@ -11269,6 +12325,50 @@
 				)
 			)
 		)
+		(property "warehouse" ""
+			(at 25.4 233.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C625180"
+			(at 25.4 233.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "579-MCP120T-300I/TT"
+			(at 25.4 233.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "MCP120T-300I/TTCT-ND"
+			(at 25.4 233.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "bda2dcfb-44bf-5b79-a09d-27107e3b50d0")
 		)
@@ -11353,6 +12453,50 @@
 				)
 			)
 		)
+		(property "warehouse" "235"
+			(at 152.4 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C1591"
+			(at 152.4 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "187-CL10B104KB8NNNC"
+			(at 152.4 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "1276-1000-1-ND"
+			(at 152.4 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "5eaacb5d-cdb0-5d6f-a449-52c591a20a84")
 		)
@@ -11424,6 +12568,50 @@
 			)
 		)
 		(property "Description" "Very low capacitance ESD protection diode, 2 data-line, SOT-23-6"
+			(at 162.56 106.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "warehouse" "277"
+			(at 162.56 106.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C7519"
+			(at 162.56 106.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "511-USBLC6-2SC6"
+			(at 162.56 106.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "497-5235-1-ND"
 			(at 162.56 106.68 0)
 			(hide yes)
 			(show_name no)
@@ -11604,6 +12792,50 @@
 				)
 			)
 		)
+		(property "warehouse" "240"
+			(at 193.04 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C29936"
+			(at 193.04 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "187-CL10B105KA8NNNC"
+			(at 193.04 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "1276-1184-1-ND"
+			(at 193.04 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "9a7f0efa-e565-545b-bfb4-b613022aa113")
 		)
@@ -11675,6 +12907,50 @@
 			)
 		)
 		(property "Description" "USB 2.0-only 16P Type-C Receptacle connector"
+			(at 35.56 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "warehouse" "279"
+			(at 35.56 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C3020560"
+			(at 35.56 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "640-USB4105-GF-A"
+			(at 35.56 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "2073-USB4105-GF-ACT-ND"
 			(at 35.56 121.92 0)
 			(hide yes)
 			(show_name no)
@@ -11965,6 +13241,50 @@
 				)
 			)
 		)
+		(property "warehouse" ""
+			(at 163.83 158.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C1644"
+			(at 163.83 158.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "187-CL10C150JB8NNNC"
+			(at 163.83 158.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "1276-1296-1-ND"
+			(at 163.83 158.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "d8a517ed-0ea8-5f05-bc43-8132362ab792")
 		)
@@ -12046,6 +13366,50 @@
 				)
 			)
 		)
+		(property "warehouse" "236"
+			(at 111.76 100.33 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C1746"
+			(at 111.76 100.33 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "187-CL21A475KOFNNNE"
+			(at 111.76 100.33 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "1276-1065-1-ND"
+			(at 111.76 100.33 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "d605be86-9fdf-5ef1-a9f9-a991283cd3a9")
 		)
@@ -12094,7 +13458,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_DFN_QFN:QFN-64-1EP_9x9mm_P0.5mm_EP4.7x4.7mm_ThermalVias"
+		(property "Footprint" "lcsc_footprints:QFN-64-1EP_9x9mm_P0.5mm_EP4.7x4.7mm_ThermalVias_0.3mm"
 			(at 213.36 152.4 0)
 			(hide yes)
 			(show_name no)
@@ -12117,6 +13481,50 @@
 			)
 		)
 		(property "Description" "USB 2.0 Hi-Speed 7-port hub controller, QFN-64 9x9mm"
+			(at 213.36 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "warehouse" ""
+			(at 213.36 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C478081"
+			(at 213.36 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "886-USB2517I-JZX"
+			(at 213.36 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "638-1090-ND"
 			(at 213.36 152.4 0)
 			(hide yes)
 			(show_name no)
@@ -12397,6 +13805,50 @@
 				)
 			)
 		)
+		(property "warehouse" "240"
+			(at 203.2 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C29936"
+			(at 203.2 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "187-CL10B105KA8NNNC"
+			(at 203.2 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "1276-1184-1-ND"
+			(at 203.2 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "2a826e2c-3940-533b-8a94-6fa1c9a58632")
 		)
@@ -12468,6 +13920,50 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 243.84 90.17 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "warehouse" "240"
+			(at 243.84 90.17 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C29936"
+			(at 243.84 90.17 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "187-CL10B105KA8NNNC"
+			(at 243.84 90.17 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "1276-1184-1-ND"
 			(at 243.84 90.17 0)
 			(hide yes)
 			(show_name no)
@@ -12626,6 +14122,50 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 116.84 222.25 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "warehouse" "248"
+			(at 116.84 222.25 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "lcsc" "C2906982"
+			(at 116.84 222.25 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "mouser" "603-RC0603FR-0710KL"
+			(at 116.84 222.25 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "digikey" "311-10.0KHRCT-ND"
 			(at 116.84 222.25 0)
 			(hide yes)
 			(show_name no)

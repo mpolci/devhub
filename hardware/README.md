@@ -41,10 +41,15 @@ Footprint locali assegnati dalla libreria `lcsc_footprints` (`devhub/libs/footpr
 I footprint usano i modelli in `devhub/libs/3dmodels` con percorsi relativi al progetto.
 Il modello C3657361 è un segnaposto dell’importatore, non una rappresentazione del package.
 
-Da fare prima del PCB:
-- BOM.
+BOM: i simboli hanno i campi `warehouse` (ID del magazzino), `lcsc`, `mouser` e `digikey`;
+confronto dei costi in [../docs/confronto-costi.md](../docs/confronto-costi.md). Su Mouser
+mancano le boccole Cliff (campo vuoto).
 
 ## PCB (iniziato)
+
+Regole di progettazione: [stackup, routing e verifiche PCB](../docs/regole-pcb.md), configurate
+nel progetto: stackup nel PCB, vincoli e netclass in `devhub.kicad_pro`, regole personalizzate in
+`devhub.kicad_dru`.
 
 `devhub.kicad_pcb`: 4 strati, profilo 169 × 85 mm con angoli R3 e piazzati, bloccati, i
 componenti che vincolano la scatola (D42, D43), con il profilo al centro del foglio A4. Vista
@@ -64,8 +69,9 @@ del PCB sta sulla faccia interna delle pareti (spessore previsto 2,5 mm).
 | H1-H4 fori M3 (solo PCB, non nello schema) | — | a 4,5 mm dai bordi |
 
 Gli altri componenti sono già sulla faccia inferiore, fuori dal profilo a destra, raggruppati per
-foglio. Mancano sul PCB i 6 componenti U13 e U101-U501, ora con footprint assegnato:
-l’aggiornamento del PCB dallo schema li aggiungerà. Il PCB va modificato in KiCad dallo stato corrente,
+foglio. Il PCB è allineato allo schema (controllo di parità senza differenze), con i footprint
+di U2 (via termiche da 0,30, D50), U13 e U101-U501 dalla libreria di progetto
+`libs/footprints.pretty` e i package da magazzino di C3, C4, C505, F1 e C106-C506 (D45). Il PCB va modificato in KiCad dallo stato corrente,
 non rigenerato.
 
 Per il controllo di parità con lo schema da riga di comando:

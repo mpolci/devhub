@@ -537,7 +537,7 @@
 			)
 		)
 	)
-	(global_label "HUB_DM5"
+	(global_label "HUB_DN5"
 		(shape bidirectional)
 		(at 134.62 180.34 180)
 		(fields_autoplaced yes)
@@ -859,7 +859,7 @@
 			)
 		)
 	)
-	(global_label "HUB_DM3"
+	(global_label "HUB_DN3"
 		(shape bidirectional)
 		(at 134.62 109.22 180)
 		(fields_autoplaced yes)
@@ -1204,7 +1204,7 @@
 			)
 		)
 	)
-	(global_label "HUB_DM4"
+	(global_label "HUB_DN4"
 		(shape bidirectional)
 		(at 134.62 144.78 180)
 		(fields_autoplaced yes)
@@ -1273,7 +1273,7 @@
 			)
 		)
 	)
-	(global_label "HUB_DM1"
+	(global_label "HUB_DN1"
 		(shape bidirectional)
 		(at 134.62 38.1 180)
 		(fields_autoplaced yes)
@@ -1296,7 +1296,7 @@
 			)
 		)
 	)
-	(global_label "HUB_DM2"
+	(global_label "HUB_DN2"
 		(shape bidirectional)
 		(at 134.62 73.66 180)
 		(fields_autoplaced yes)
@@ -1400,7 +1400,7 @@
 				(justify right)
 			)
 		)
-		(pin "HUB_DM" bidirectional
+		(pin "HUB_DN" bidirectional
 			(at 142.24 180.34 180)
 			(uuid "fe0072f4-7320-5a3b-8468-cbe8c571a5c3")
 			(effects
@@ -1664,7 +1664,7 @@
 				(justify right)
 			)
 		)
-		(pin "HUB_DM" bidirectional
+		(pin "HUB_DN" bidirectional
 			(at 142.24 38.1 180)
 			(uuid "082c694e-3c0a-516a-8a26-0f926533b7f9")
 			(effects
@@ -1790,7 +1790,7 @@
 				(justify right)
 			)
 		)
-		(pin "HUB_DM" bidirectional
+		(pin "HUB_DN" bidirectional
 			(at 142.24 144.78 180)
 			(uuid "3cafc97e-3a62-50bb-9aa1-db28f54fdce0")
 			(effects
@@ -2008,7 +2008,7 @@
 				(justify right)
 			)
 		)
-		(pin "HUB_DM" bidirectional
+		(pin "HUB_DN" bidirectional
 			(at 142.24 73.66 180)
 			(uuid "916152e1-183a-5a1f-9fae-9ca3702e1580")
 			(effects
@@ -2180,7 +2180,7 @@
 				(justify right)
 			)
 		)
-		(pin "HUB_DM" bidirectional
+		(pin "HUB_DN" bidirectional
 			(at 142.24 109.22 180)
 			(uuid "f296258c-5312-5c10-b9f0-b3846dd3959f")
 			(effects

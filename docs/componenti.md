@@ -15,6 +15,20 @@ I componenti della variante ad alta potenza (TCPP01-M12, STUSB4500, LM61495) son
 descritti in [architettura.md](architettura.md#variante-ad-alta-potenza-non-in-v1) e non fanno
 parte della v1.
 
+## Codici fornitore e magazzino
+
+Ogni simbolo dello schema ha i campi `warehouse` (ID della riga nel foglio del magazzino),
+`lcsc`, `mouser` e `digikey`. Il magazzino si usa solo per articoli comprati da LCSC, TME,
+Mouser o DigiKey. Dove un fornitore non ha il pezzo scelto, il campo contiene un equivalente
+(resistenze Yageo al posto di UNI-ROYAL/FOJAN, Panasonic EEU-FR1A221 per C3/C4, Würth per gli
+header, ECS per il quarzo, G5Q-14 su LCSC, DMN3404L-7 su Mouser). Il campo `mouser` è vuoto
+solo per le boccole Cliff, che Mouser non ha. Elenco completo, equivalenze e costi in
+[confronto-costi.md](confronto-costi.md).
+
+Package scelti per usare il magazzino (D45): C106-C506 1 µF 25 V in 0603 (era 0805), F1 PTC
+MF-MSMF050-2 in 1812 (era 1206), C3/C4 radiali D6,3 passo 2,5 mm (era D8 passo 3,5),
+C505 SMD 6,3 × 5,8 mm (era 6,3 × 7,7).
+
 ## Circuiti integrati
 
 | Funzione | Candidato | Package | A mano | Classe JLC | LCSC | Note |
@@ -32,11 +46,11 @@ parte della v1.
 | Zener su EN dell'eFuse | **BZT52C5V1** | SOD-123 | sì | basic | sì | tiene EN sotto 6,5 V con ingresso fino a 28 V |
 | LDO 3,3 V | Diodes **AP7361C-33E** | SOT-223 | sì | extended | sì | 1 A, dropout 90 mV tipici a 300 mA, θJA 110 °C/W con piazzola minima: regge 0,3–0,6 W. Sostituisce l'AP2112K (SOT-23-5), troppo caldo con il carico del hub |
 | Supervisore reset hub | Microchip **MCP120T-300I/TT** | SOT-23 | sì | extended | sì | open-drain, soglia 2,85–3,0 V, ritardo 150–700 ms; in wired-OR con PF1 del MCU su RESET_N (errata USB2517: POR interno non funzionante) |
-| Diodo davanti all'LDO | Schottky **SS34** (D2) | SMA | sì | basic | sì | tra 5V_SYS e l'LDO: abbassa la tensione sull'LDO e la sua dissipazione (D32) |
+| Diodo davanti all'LDO | Schottky **SS34** (D2): Diodes **B340A-13-F** | SMA | sì | basic | sì | tra 5V_SYS e l'LDO: abbassa la tensione sull'LDO e la sua dissipazione (D32) |
 | Driver relè | TI **ULN2003V12** (U9) | SOIC-16 | sì | da verificare | C94916 | uscite MOSFET, stessa piedinatura del ULN2003A, diodi di ricircolo verso COM e pull-down sugli ingressi integrati; 3 canali in parallelo per relè: ~0,2 V di caduta a 80 mA (D33) |
 | ESD dati upstream (×1) | **USBLC6-2SC6** | SOT-23-6 | sì | basic | sì | solo sulla porta upstream; sulle porte downstream la protezione è nel PI3USB4002A (D27) |
 | TVS VBUS d'ingresso (×1) | **SMAJ20A**: ST SMAJ20A-TR o Littelfuse SMAJ20A (famiglia JEDEC, valori equivalenti, da confermare col fornitore) | SMA | sì | basic | sì | non conduce fino a 20 V, rottura 22,2–23,4 V, clamp ~25 V a 1 A e 32,4 V a 12,3 A; lascia lavorare l'eFuse fino a 20 V; nessuna TVS sulle porte (D25, D31) |
-| Quarzo hub | YXC **X322524MOB4SI**: 24 MHz, 3225 4 pad, C_L 12 pF, ±20 ppm | SMD | aria calda | basic | C70590, ~0,07 $ | C22/C23 = 15 pF C0G; il USB2517 tollera ±350 ppm, quindi va bene qualunque 24 MHz fondamentale (su Mouser/DigiKey: un 3225 da 12 pF equivalente, con gli stessi condensatori); il MCU non ha bisogno di quarzo (HSI48 + CRS) |
+| Quarzo hub | YXC **X322524MOB4SI**: 24 MHz, 3225 4 pad, C_L 12 pF, ±20 ppm | SMD | aria calda | basic | C70590, ~0,07 $ | C22/C23 = 15 pF C0G; il USB2517 tollera ±350 ppm, quindi va bene qualunque 24 MHz fondamentale (su DigiKey: ECS-240-12-33Q-JES-TR, 12 pF ±20 ppm, con gli stessi condensatori); il MCU non ha bisogno di quarzo (HSI48 + CRS) |
 
 ## Alternative sugli altri fornitori (Mouser / DigiKey)
 
@@ -77,7 +91,7 @@ visti a ottobre 2026 e vanno ricontrollati.
 
 | Funzione | Scelta | Alternative | Note |
 |---|---|---|---|
-| Quarzo 24 MHz 3225 | YXC **X322524MOB4SI** (LCSC C70590, C_L 12 pF, ~0,07 $, scorte ampie) | YXC X322524MRB4SI (LCSC C70571, C_L 18 pF, ~0,06 $, scorte scarse); Abracon ABM8-24.000MHZ-B2-T (C_L 18 pF, ~0,5–1 $, DigiKey esaurito, lead time 10 settimane); su DigiKey/Mouser va bene qualunque 3225 da 12 pF (es. serie Abracon ABM8 con C_L 12 pF, da verificare) | Con C_L 12 pF: C22/C23 = 15 pF; con 18 pF: 33 pF. Il hub tollera ±350 ppm |
+| Quarzo 24 MHz 3225 | YXC **X322524MOB4SI** (LCSC C70590, C_L 12 pF, ~0,07 $, scorte ampie) | YXC X322524MRB4SI (LCSC C70571, C_L 18 pF, ~0,06 $, scorte scarse); Abracon ABM8-24.000MHZ-B2-T (C_L 18 pF, ~0,5–1 $, DigiKey esaurito, lead time 10 settimane); su DigiKey ECS **ECS-240-12-33Q-JES-TR** (C_L 12 pF, ±20 ppm, ESR 40 Ω, ~0,75 €) | Con C_L 12 pF: C22/C23 = 15 pF; con 18 pF: 33 pF. Il hub tollera ±350 ppm |
 | Switch dati D+/D- protetto | Diodes **PI3USB4002AZUAEX** (DigiKey, ~1,2 $, >3 000 pezzi) | TI **TS5USBC410YFFR** (20 V OVP, LCSC C2150855 e DigiKey ~1,1 $; ma DSBGA-12 1,2×1,6 mm passo 0,4 mm: sconsigliato a mano); TI TS5USBC402 (DigiKey, DSBGA); Renesas ISL54226 / ISL54225 (obsoleti); ADI MAX4907 (sconsigliato per nuovi progetti); ADI MAX20046 (automotive, 18 V, più costoso); TI TPD3S714-Q1 (limite VBUS fisso 550 mA, troppo basso, un solo enable per dati e VBUS) | Il TS3USB30E di prima non ha protezione: sui pin dati regge solo VCC + 0,3 V |
 | eFuse d'ingresso | TI **TPS259470ARPWR** (DigiKey ~1,3 $, Mouser, LCSC C3662799) | TPS259474ARPWR (LCSC C3662807: interviene a circuit breaker invece di limitare); TPS2595 con clamp 5,7 V e ST STEF05S (limitano la tensione invece di staccare: con 12 V in ingresso scaldano fino alla protezione termica) | — |
 | Driver relè | TI **ULN2003V12DR** (DigiKey 296-30538: a ottobre 2026 risultava esaurito, 6 settimane; LCSC C94916 disponibile; TI diretto) | 2× **AO3400A** (MOSFET N SOT-23, 48 mΩ max a 2,5 V) con 2 diodi di ricircolo (1N4148W) e 2 pull-down da 100 kΩ sul gate: caduta trascurabile, 6 componenti invece di uno; scartati ULN2003A (Darlington, 0,9–1,1 V di caduta: la bobina non è garantita) e TPL7407L (vuole COM ≥ 8,5 V) | D33 |

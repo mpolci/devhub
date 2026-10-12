@@ -41,6 +41,7 @@ host/        strumento da riga di comando per il PC
 - [docs/architettura.md](docs/architettura.md) — schema a blocchi, scelte progettuali, componenti candidati, bilancio di potenza
 - [docs/componenti.md](docs/componenti.md) — componenti candidati, package, fornitori, classe JLCPCB
 - [docs/protocollo-controllo.md](docs/protocollo-controllo.md) — bozza del protocollo HID tra PC e hub
+- [docs/regole-pcb.md](docs/regole-pcb.md) — stackup, piste, USB, alimentazione, piazzamento e verifiche di produzione
 - [docs/pinout-mcu.md](docs/pinout-mcu.md) — piedinatura del MCU e note per il firmware
 - [docs/domande-aperte.md](docs/domande-aperte.md) — decisioni ancora da prendere
 
