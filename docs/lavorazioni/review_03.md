@@ -51,6 +51,8 @@ Da risolvere: rilevamento VBUS che rispetti il limite dell'hub anche senza alime
 
 Fonti: [USB2517, §8.2](../../datasheets/usb2517.pdf), [STM32G0B1, tabella dei pin e condizioni degli I/O](../../datasheets/DS_stm32g0b1cc.pdf).
 
+**Esito:** chiuso senza modifiche al circuito (D53). La *USB2517 Hardware Design Checklist* di Microchip, sezione 5.1, raccomanda proprio il partitore 100 kΩ / 100 kΩ e ammette la VBUS presente prima dell'alimentazione dell'hub, purché l'impedenza limiti la corrente nel pin.
+
 ### R03-03 — J501: il connettore USB-A è nominalmente da 1,5 A
 
 **Priorità: alta. RF-5 non soddisfatto dalla scelta del componente.**

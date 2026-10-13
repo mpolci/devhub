@@ -1,0 +1,8 @@
+Default	False	2.0	3
+PWR_3V3	False	2.0	3
+PWR_MAIN	False	2.0	3
+PWR_PORT	False	2.0	3
+RELAY_CONTACT	False	2.0	3
+SENSE	False	2.0	3
+USB_DIFF	True	2.0	3
+False	True	False

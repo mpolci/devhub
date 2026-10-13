@@ -23,18 +23,18 @@ I codici sono anche nei campi `warehouse`, `lcsc`, `mouser` e `digikey` dei simb
 
 | Scenario | LCSC | Mouser | DigiKey |
 |---|---|---|---|
-| 1 scheda, tutto dal fornitore | 88,88 | 62,37 | 90,93 |
-| 1 scheda, magazzino + resto dal fornitore | 72,46 | 48,78 | 77,62 |
-| 1 scheda, solo le righe disponibili su Mouser | 67,50 | 62,37 | 64,01 |
-| 10 schede, tutto dal fornitore | 646,52 | 539,10 | 669,78 |
-| 10 schede, solo le righe disponibili su Mouser | 432,70 | 539,10 | 441,18 |
+| 1 scheda, tutto dal fornitore | 88,72 | 62,09 | 90,68 |
+| 1 scheda, magazzino + resto dal fornitore | 71,89 | 48,69 | 77,43 |
+| 1 scheda, solo le righe disponibili su Mouser | 67,34 | 62,09 | 63,76 |
+| 10 schede, tutto dal fornitore | 645,53 | 536,63 | 667,78 |
+| 10 schede, solo le righe disponibili su Mouser | 431,71 | 536,63 | 439,18 |
 
 Mouser non ha le boccole Cliff, LCSC non ha le nere: nessun fornitore oltre a DigiKey copre
 tutta la BOM. Sulle righe che Mouser ha, per una scheda Mouser costa ~62 €, DigiKey ~64 € e
 LCSC ~68 €, perché i minimi d'ordine dei passivi (100 resistenze per valore)
 annullano il vantaggio sui circuiti integrati e sui relè. Le boccole sono la voce più cara: su
 DigiKey 26,92 € per una scheda e ~229 € per dieci; su LCSC le sole rosse costano 11,95 $ al pezzo.
-Per tutta la BOM da un unico fornitore resta solo DigiKey (90,93 € per una scheda, 77,62 € usando
+Per tutta la BOM da un unico fornitore resta solo DigiKey (90,68 € per una scheda, 77,43 € usando
 il magazzino). Le righe a magazzino valgono ~13 € a scheda ai prezzi DigiKey.
 Il totale Mouser per 10 schede è sovrastimato: per le 25 righe prese dal carrello si conosce solo
 il prezzo alla quantità di una scheda, senza gli sconti di quantità.
@@ -45,23 +45,23 @@ Spedizione: DigiKey Italia gratis sopra 75 €; il carrello Mouser da 33,98 CHF 
 
 | # | Riferimenti | Q.tà | Componente | MPN | Magazzino | LCSC | € LCSC | Mouser | € Mouser | DigiKey | € DigiKey |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | C1 … (41) | 40 | 100 nF 50 V X7R 0603 | CL10B104KB8NNNC | **235** | C1591 | 0,73 ×100 | 187-CL10B104KB8NNNC | 1,42 | 1276-1000-1-ND | 1,12 |
-| 2 | C3, C4 | 2 | 220 µF 25 V elettrolitico radiale D6,3 P2,5 | EGT227M1EE11RRS0P / EEU-FR1A221 | **60** | C238354 | 0,47 ×10 | 667-EEU-FR1A221 | 0,83 | P14375-ND | 0,84 |
-| 3 | C5, C6, C8, C9 | 4 | 10 µF 50 V X5R 0805 | GRM21BR61H106KE43L | **192** | C440198 | 0,93 ×5 | 81-GRM21BR61H106KE3L | 1,55 | 490-18663-1-ND | 1,16 |
-| 4 | C11 | 1 | 2,2 nF 50 V X7R 0603 | CL10B222KB8NNNC |  | C16033 | 0,45 ×50 | 187-CL10B222KB8NNNC | 0,13 | 1276-1110-1-ND | 0,09 |
-| 5 | C12 | 1 | 10 nF 50 V X7R 0603 | CL10B103KB8NNNC | **234** | C1589 | 0,43 ×50 | 187-CL10B103KB8NNNC | 0,09 | 1276-1009-1-ND | 0,09 |
-| 6 | C20 | 1 | 4,7 µF 16 V X5R 0805 | CL21A475KOFNNNE | **236** | C1746 | 0,41 ×10 | 187-CL21A475KOFNNNE | 0,16 | 1276-1065-1-ND | 0,12 |
-| 7 | C7, C21 … (12) | 12 | 1 µF 25 V X7R 0603 | CL10B105KA8NNNC | **240** | C29936 | 0,21 | 187-CL10B105KA8NNNC | 0,45 | 1276-1184-1-ND | 0,46 |
-| 8 | C22, C23 | 2 | 15 pF 50 V C0G 0603 | CL10C150JB8NNNC |  | C1644 | 0,51 ×50 | 187-CL10C150JB8NNNC | 0,17 | 1276-1296-1-ND | 0,18 |
-| 9 | C40 | 1 | 4,7 µF 16 V X5R 0603 | CL10A475KO8NNNC | **276** | C19666 | 0,27 ×10 | 187-CL10A475KO8NNNC | 0,17 | 1276-1784-1-ND | 0,12 |
-| 10 | C81, C82 | 0 (DNP) | 100 nF 50 V X7R 0805 (DNP) | 0805B104K500CT / CL21B104KBCNNNC | **178** | C83055 | — | 187-CL21B104KBCNNNC | — | 1276-1003-1-ND | — |
-| 11 | C102 … (5) | 5 | 22 µF 10 V X7R 0805 | GRM21BZ71A226ME15L | **300** | C907991 | 1,14 | 81-GRM21BZ71A226ME5L | 1,51 | 490-GRM21BZ71A226ME15LCT-ND | 1,55 |
-| 12 | C505 | 1 | 100 µF 16 V elettrolitico SMD 6,3×5,8 | EEE-FK1C101P | **184** | C128532 | 1,22 ×5 | 667-EEE-FK1C101P | 0,53 | PCE3783CT-ND | 0,54 |
-| 13 | D1 | 1 | TVS SMAJ20A, SMA | SMAJ20A-13-F | **221** | C134969 | 1,03 ×5 | 621-SMAJ20A-13-F | 0,36 | SMAJ20A-FDICT-ND | 0,42 |
-| 14 | D2 | 1 | Schottky 40 V 3 A, SMA | B340A-13-F |  | C85098 | 0,73 ×10 | 621-B340A-F | 0,50 | B340A-FDICT-ND | 0,47 |
-| 15 | D4 | 1 | Zener 5,1 V SOD-123 | BZT52C5V1-7-F |  | C151588 | 0,56 ×10 | 621-BZT52C5V1-F | 0,18 | BZT52C5V1-FDICT-ND | 0,18 |
-| 16 | D20 | 1 | ESD USBLC6-2SC6 | USBLC6-2SC6 | **277** | C7519 | 0,80 ×5 | 511-USBLC6-2SC6 | 0,51 | 497-5235-1-ND | 0,47 |
-| 17 | D21 | 1 | Schottky 30 V 200 mA SOD-323 | BAT54WS-7-F |  | C124205 | 0,57 ×10 | 621-BAT54WS-F | 0,09 | BAT54WS-FDICT-ND | 0,19 |
+| 1 | C1 … (30) | 29 | 100 nF 50 V X7R 0603 | CL10B104KB8NNNC | **235** | C1591 | 0,73 ×100 | 187-CL10B104KB8NNNC | 1,03 | 1276-1000-1-ND | 0,81 |
+| 2 | C25 … (8) | 8 | 100 nF 16 V X7R 0402 | CC0402KRX7R7BB104 | **217** | C60474 | 0,43 ×100 | 603-CC402KRX7R7BB104 | 0,24 | 311-1338-1-ND | 0,29 |
+| 3 | C3, C4 | 2 | 220 µF 25 V elettrolitico radiale D6,3 P2,5 | EGT227M1EE11RRS0P / EEU-FR1A221 | **60** | C238354 | 0,47 ×10 | 667-EEU-FR1A221 | 0,83 | P14375-ND | 0,84 |
+| 4 | C5, C6, C8, C9 | 4 | 10 µF 50 V X5R 0805 | GRM21BR61H106KE43L | **192** | C440198 | 0,93 ×5 | 81-GRM21BR61H106KE3L | 1,55 | 490-18663-1-ND | 1,16 |
+| 5 | C11 | 1 | 2,2 nF 50 V X7R 0603 | CL10B222KB8NNNC |  | C16033 | 0,45 ×50 | 187-CL10B222KB8NNNC | 0,13 | 1276-1110-1-ND | 0,09 |
+| 6 | C12 | 1 | 10 nF 50 V X7R 0603 | CL10B103KB8NNNC | **234** | C1589 | 0,43 ×50 | 187-CL10B103KB8NNNC | 0,09 | 1276-1009-1-ND | 0,09 |
+| 7 | C20 | 1 | 4,7 µF 16 V X5R 0805 | CL21A475KOFNNNE | **236** | C1746 | 0,41 ×10 | 187-CL21A475KOFNNNE | 0,16 | 1276-1065-1-ND | 0,12 |
+| 8 | C7, C21 … (11) | 11 | 1 µF 25 V X7R 0603 | CL10B105KA8NNNC | **240** | C29936 | 0,19 | 187-CL10B105KA8NNNC | 0,41 | 1276-1184-1-ND | 0,42 |
+| 9 | C22, C23 | 2 | 15 pF 50 V C0G 0603 | CL10C150JB8NNNC |  | C1644 | 0,51 ×50 | 187-CL10C150JB8NNNC | 0,17 | 1276-1296-1-ND | 0,18 |
+| 10 | C40 | 1 | 4,7 µF 16 V X5R 0603 | CL10A475KO8NNNC | **276** | C19666 | 0,27 ×10 | 187-CL10A475KO8NNNC | 0,17 | 1276-1784-1-ND | 0,12 |
+| 11 | C81, C82 | 0 (DNP) | 100 nF 50 V X7R 0805 (DNP) | 0805B104K500CT / CL21B104KBCNNNC | **178** | C83055 | — | 187-CL21B104KBCNNNC | — | 1276-1003-1-ND | — |
+| 12 | C102 … (5) | 5 | 22 µF 10 V X7R 0805 | GRM21BZ71A226ME15L | **300** | C907991 | 1,14 | 81-GRM21BZ71A226ME5L | 1,51 | 490-GRM21BZ71A226ME15LCT-ND | 1,55 |
+| 13 | C505 | 1 | 100 µF 16 V elettrolitico SMD 6,3×5,8 | EEE-FK1C101P | **184** | C128532 | 1,22 ×5 | 667-EEE-FK1C101P | 0,53 | PCE3783CT-ND | 0,54 |
+| 14 | D1 | 1 | TVS SMAJ20A, SMA | SMAJ20A-13-F | **221** | C134969 | 1,03 ×5 | 621-SMAJ20A-13-F | 0,36 | SMAJ20A-FDICT-ND | 0,42 |
+| 15 | D2 | 1 | Schottky 40 V 3 A, SMA | B340A-13-F |  | C85098 | 0,73 ×10 | 621-B340A-F | 0,50 | B340A-FDICT-ND | 0,47 |
+| 16 | D4 | 1 | Zener 5,1 V SOD-123 | BZT52C5V1-7-F |  | C151588 | 0,56 ×10 | 621-BZT52C5V1-F | 0,18 | BZT52C5V1-FDICT-ND | 0,18 |
+| 17 | D20 | 1 | ESD USBLC6-2SC6 | USBLC6-2SC6 | **277** | C7519 | 0,80 ×5 | 511-USBLC6-2SC6 | 0,51 | 497-5235-1-ND | 0,47 |
 | 18 | D90 … (8) | 8 | LED verde 0805 | LTST-C171GKT |  | C913075 | 0,56 ×20 | 859-LTST-C171GKT | 1,04 | 160-1423-1-ND | 1,04 |
 | 19 | D93 | 1 | LED arancio 0805 | LTST-C171KFKT |  | C284932 | 0,55 ×20 | 859-LTST-C171KFKT | 0,14 | 160-1425-1-ND | 0,14 |
 | 20 | D103 … (5) | 5 | LED rosso 0805 | LTST-C171KRKT |  | C284871 | 0,47 ×20 | 859-LTST-C171KRKT | 0,69 | 160-1427-1-ND | 0,70 |
@@ -113,10 +113,13 @@ Spedizione: DigiKey Italia gratis sopra 75 €; il carrello Mouser da 33,98 CHF 
   RC0603FR-07…L. R31 su LCSC è UNI-ROYAL perché la Yageo era esaurita.
 - D2: Diodes B340A-13-F (Schottky 40 V 3 A, SMA), presente su tutti e tre i fornitori.
   Il "SS34" di Vishay e onsemi è in SMC e non entra nel footprint.
-- D21, R62: aggiunti dopo la revisione 03 (D53, D54). Prezzi Mouser non letti dal carrello: per
-  D21 dal listino USA di Mouser (0,10 $, da un aggregatore), per R62 come le altre Yageo RC0603 a
-  pezzo singolo. Il 12/10/2026 DigiKey non aveva scorte di BAT54WS-7-F (ordinabile in arretrato).
-  Nei totali per 10 schede su Mouser la variazione di R60-R62 è stimata nulla.
+- R62: 33,2 kΩ dopo la revisione 03 (D54). Prezzo Mouser non letto dal carrello: come le altre
+  Yageo RC0603 a pezzo singolo. Nei totali per 10 schede su Mouser la variazione di R60-R62 è
+  stimata nulla.
+- C1 … e C7, C21 …: tolti C43, C44 e C45 (D57), aggiunto C38 (D58); costi Mouser, DigiKey e LCSC (1 µF) ricalcolati in
+  proporzione alla quantità, senza rileggere gli scaglioni.
+- C25 … (0402): i 100 nF di disaccoppiamento di U2 e U12 (C25-C30, C37, C38, D58). Codice Mouser
+  non verificato sul sito e prezzo Mouser stimato; LCSC e DigiKey letti il 13/10/2026.
 - J3, J9: su LCSC header generici (Ckmtw, BOOMELE), su Mouser e DigiKey Würth 61300411121 e
   61300311121.
 - J5, J7 (FCR7350B): non a catalogo su LCSC e su Mouser. J6, J8 (FCR7350R): non a catalogo su
@@ -139,12 +142,13 @@ altri progetti sono già stati usati; il residuo va controllato prima di montare
 
 | ID | Articolo | Fornitore | Comprati | Servono | Usati altrove |
 |---|---|---|---|---|---|
-| 235 | CL10B104KB8NNNC 100 nF 0603 | LCSC | 100 | 40 | — |
+| 235 | CL10B104KB8NNNC 100 nF 0603 | LCSC | 100 | 29 | — |
+| 217 | CC0402KRX7R7BB104 100 nF 0402 | LCSC | 100 | 8 | gw02, gw03-exp-rylr998 |
 | 60 | EGT227M1EE11RRS0P 220 µF 25 V | TME | 10 | 2 | — |
 | 192 | GRM21BR61H106KE43L 10 µF 50 V 0805 | TME | 50 | 4 | — |
 | 234 | CL10B103KB8NNNC 10 nF 0603 | LCSC | 50 | 1 | — |
 | 236 | CL21A475KOFNNNE 4,7 µF 0805 | LCSC | 50 | 1 | — |
-| 240 | CL10B105KA8NNNC 1 µF 25 V 0603 | LCSC | 50 | 12 | — (anche ID 214, altri 50) |
+| 240 | CL10B105KA8NNNC 1 µF 25 V 0603 | LCSC | 50 | 11 | — (anche ID 214, altri 50) |
 | 276 | CL10A475KO8NNNC 4,7 µF 0603 | LCSC | 30 | 1 | pb-native, pb-uart, rema-d02 |
 | 178 | 0805B104K500CT 100 nF 0805 (DNP) | TME | 100 | 0 | — |
 | 300 | GRM21BZ71A226ME15L 22 µF 0805 | LCSC | 20 | 5 | gw-03 (4 pezzi) |
@@ -162,4 +166,4 @@ altri progetti sono già stati usati; il residuo va controllato prima di montare
 Non usati dal magazzino, anche se simili: i LED verdi TLMG1100 (0603, solo 5 pezzi), il
 supervisore TLV803EA30 (piedinatura diversa dal MCP120), il 2N7002 al posto dell'AO3400A (soglia
 di gate al limite con 3,3 V), i 47 pF e le resistenze 0402 (69,8 kΩ e altre: si è evitato il
-passaggio a 0402).
+passaggio a 0402, salvo i 100 nF di disaccoppiamento di U2 e U12, D58).

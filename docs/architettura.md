@@ -241,10 +241,9 @@ Dettagli verificati sul datasheet (DS00001598C) e sull'errata (DS80000628A):
   riposo: dettaglio in [pinout-mcu.md](pinout-mcu.md). Non è ancora dimostrato: è la prima prova da
   fare sul prototipo (DFU con flash vuota e dopo `ENTER_BOOTLOADER`).
 - **VBUS_DET** dalla VBUS upstream con partitore 100 k / 100 k, letto anche dal MCU (PB2, ADC).
-  Con l'alimentatore staccato e il PC collegato il partitore porterebbe ~2,5 V su hub e MCU
-  spenti, ma il USB2517 sotto 3,0 V di alimentazione ammette sugli I/O al massimo la sua 3,3 V
-  + 0,5 V: lo Schottky D21 (BAT54WS) dal nodo verso la 3,3 V lo tiene sotto questo limite, anche
-  durante i cali della 3,3 V, e a 3,3 V presente non conduce (D53). PB2 resta comunque un pin FT
+  È il circuito raccomandato dalla USB2517 Hardware Design Checklist di Microchip (sezione 5.1):
+  con l'alimentatore staccato e il PC collegato il nodo è a ~2,5 V con hub e MCU spenti, e i
+  100 kΩ limitano a qualche decina di µA la corrente che entra nel pin (D53). PB2 è un pin FT
   (D32).
 - **LOCAL_PWR** con pull-up R26 da 10 kΩ verso la 3,3 V (D40): con la logica alimentata solo
   dall'alimentatore il hub è sempre self-powered. Resistenza e non collegamento diretto, perché con

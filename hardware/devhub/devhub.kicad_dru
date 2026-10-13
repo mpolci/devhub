@@ -30,6 +30,16 @@
    (condition "A.hasNetclass('USB_DIFF')")
 )
 
+# Uscita dei connettori USB-C: i pin doppi A6/B6 e A7/B7 sono uniti da un anello, e lo
+# skew calcolato somma anche il ramo che in un verso di inserimento resta morto. La
+# differenza reale (circa 2,3 mm in un verso, sotto 1 mm nell'altro) è accettata: limite
+# largo solo su queste reti, fra il connettore e il primo componente.
+
+(rule "USB-C uscita dal connettore"
+   (constraint skew (max 3mm) (within_diff_pairs))
+   (condition "A.NetName == '/Porta ? (USB-C)/CONN_D?' || A.NetName == '/Hub USB2517/UP_CONN_D?'")
+)
+
 # Distanza da altre piste, anche di altre coppie USB, e da rame laterale (zone)
 # fuori dai fanout: >= 0,75. Esclude la propria coppia, pad e via, quindi gap,
 # fanout e via GND di ritorno restano liberi.
@@ -46,6 +56,15 @@
 (rule "USB fanout USB2517"
    (constraint clearance (min 0.15mm))
    (condition "A.hasNetclass('USB_DIFF') && B.hasNetclass('USB_DIFF') && A.insideArea('USB_FANOUT_U2') && B.insideArea('USB_FANOUT_U2')")
+)
+
+# Disaccoppiamento del USB2517: i pin VDDA33 5, 10 e 57 stanno fra coppie USB.
+# Il tratto +3V3 fra il pad e il suo 100 nF (pochi mm, solo continua) può stare
+# a 0,2 dalle coppie, solo dentro le aree di regola U2_DECAP.
+
+(rule "USB e disaccoppiamento USB2517"
+   (constraint clearance (min 0.2mm))
+   (condition "A.hasNetclass('USB_DIFF') && B.NetName == '+3V3' && B.Type == 'Track' && B.insideArea('U2_DECAP')")
 )
 
 # -----------------------------------------------------------------------------

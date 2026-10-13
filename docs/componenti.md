@@ -27,7 +27,8 @@ solo per le boccole Cliff, che Mouser non ha. Elenco completo, equivalenze e cos
 
 Package scelti per usare il magazzino (D45): C106-C506 1 µF 25 V in 0603 (era 0805), F1 PTC
 MF-MSMF050-2 in 1812 (era 1206), C3/C4 radiali D6,3 passo 2,5 mm (era D8 passo 3,5),
-C505 SMD 6,3 × 5,8 mm (era 6,3 × 7,7).
+C505 SMD 6,3 × 5,8 mm (era 6,3 × 7,7). I 100 nF di disaccoppiamento di U2 e U12 sono 0402 (ID 217,
+Yageo CC0402KRX7R7BB104), per stare accanto ai pin fra le coppie USB (D58).
 
 ## Circuiti integrati
 
@@ -46,7 +47,6 @@ C505 SMD 6,3 × 5,8 mm (era 6,3 × 7,7).
 | Zener su EN dell'eFuse | **BZT52C5V1** | SOD-123 | sì | basic | sì | tiene EN sotto 6,5 V con ingresso fino a 28 V |
 | LDO 3,3 V | Diodes **AP7361C-33E** | SOT-223 | sì | extended | sì | 1 A, dropout 90 mV tipici a 300 mA, θJA 110 °C/W con piazzola minima: regge 0,3–0,6 W. Sostituisce l'AP2112K (SOT-23-5), troppo caldo con il carico del hub |
 | Supervisore reset hub | Microchip **MCP120T-300I/TT** | SOT-23 | sì | extended | sì | open-drain, soglia 2,85–3,0 V, ritardo 150–700 ms; in wired-OR con PF1 del MCU su RESET_N (errata USB2517: POR interno non funzionante) |
-| Limite su VBUS_DET | Schottky **BAT54WS** (D21): Diodes **BAT54WS-7-F** | SOD-323 | sì | da verificare | C124205 | dal nodo VBUS_DET verso la 3,3 V: a hub spento tiene il pin 44 del USB2517 entro 3,3 V + 0,5 V; Vf < 0,4 V a 10 mA, IR < 2 µA (D53) |
 | Diodo davanti all'LDO | Schottky **SS34** (D2): Diodes **B340A-13-F** | SMA | sì | basic | sì | tra 5V_SYS e l'LDO: abbassa la tensione sull'LDO e la sua dissipazione (D32) |
 | Driver relè | TI **ULN2003V12** (U9) | SOIC-16 | sì | da verificare | C94916 | uscite MOSFET, stessa piedinatura del ULN2003A, diodi di ricircolo verso COM e pull-down sugli ingressi integrati; 3 canali in parallelo per relè: ~0,2 V di caduta a 80 mA (D33) |
 | ESD dati upstream (×1) | **USBLC6-2SC6** | SOT-23-6 | sì | basic | sì | solo sulla porta upstream; sulle porte downstream la protezione è nel PI3USB4002A (D27) |

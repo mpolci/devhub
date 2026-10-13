@@ -141,7 +141,8 @@ Le derivazioni Kelvin non hanno una classe propria: sono le stesse reti di poten
 
 - solo via passanti;
 - USB: pista minima 0,15 (fanout), ottimale 0,2474; gap 0,1519; differenza di lunghezza
-  ≤ 0,5 dentro ciascuna coppia, senza confronti fra porte diverse; ≥ 0,75 da piste e zone
+  ≤ 0,5 dentro ciascuna coppia, senza confronti fra porte diverse, e ≤ 3 sui tratti fra i
+  connettori USB-C e il primo componente, dove la somma comprende il ramo morto dei pin doppi; ≥ 0,75 da piste e zone
   di altre reti, comprese le altre coppie USB (propria coppia, pad e via esclusi, così gap,
   fanout e via GND di ritorno restano liberi);
 - larghezze iniziali di PWR_MAIN, PWR_PORT, PWR_3V3 e SENSE come **avvisi**: ogni
@@ -152,11 +153,14 @@ Le derivazioni Kelvin non hanno una classe propria: sono le stesse reti di poten
   e fori di centraggio dei GCT USB4105;
 - fanout del USB2517: fra tratti USB interamente dentro le aree di regola `USB_FANOUT_U2`
   (a ridosso dei pin delle porte e dei pin 53–56) la distanza minima è 0,15 invece di 0,75,
-  perché le coppie adiacenti escono da pad a 1 mm di passo.
+  perché le coppie adiacenti escono da pad a 1 mm di passo;
+- disaccoppiamento del USB2517: fra le piste USB e le piste +3V3 interamente o in parte dentro le
+  aree di regola `U2_DECAP` (a ridosso dei pin 5, 10 e 57) la distanza minima è 0,2 invece di
+  0,75: sono i pochi millimetri fra il pad e il suo 100 nF (D58).
 
 **Zone e aree di regola** nel PCB: piano GND `GND_In2` su tutto In2.Cu; aree
 `RELAY1_CONTACTS` e `RELAY2_CONTACTS` senza riempimenti su tutti i layer, sotto contatti dei
-relè, ponticelli, snubber e boccole; aree `USB_FANOUT_U2` usate solo dalla regola sopra.
+relè, ponticelli, snubber e boccole; aree `USB_FANOUT_U2` e `U2_DECAP` usate solo dalle regole sopra.
 
 Nelle condizioni dei file `.kicad_dru` di KiCad 10 i caratteri jolly si usano con `==`;
 `matches` e `Parent.Reference` non funzionano e un errore fa scartare l'intero file senza
@@ -225,7 +229,8 @@ Regole di routing:
 Questi criteri seguono le [linee guida TI per interfacce veloci](https://www.ti.com/lit/an/spraar7j/spraar7j.pdf).
 
 Obiettivi geometrici iniziali per devhub: differenza D+/D− **≤ 0,5 mm** sul percorso completo
-fra endpoint, sommando i segmenti attraverso ESD o switch; distanza da altre piste e da rame
+fra endpoint, sommando i segmenti attraverso ESD o switch (eccetto l'incrocio dei pin doppi
+all'uscita dei connettori USB-C, vedi sotto); distanza da altre piste e da rame
 laterale **≥ 0,75 mm**, fuori dai fanout. Quest'ultima riduce l'effetto coplanare, ma va comunque
 inclusa nel calcolo d'impedenza. Mantenere queste distanze anche dalle altre coppie.
 Non pareggiare le lunghezze fra porte diverse e non introdurre serpentine inutili.
@@ -238,7 +243,14 @@ Realizzazione nel PCB, tutte le coppie su B.Cu sopra il piano GND di In2.Cu:
 - USB-C (porte e upstream): una coppia di pad adiacenti esce verso l'interno della scheda; il
   secondo pad della stessa rete si collega con un anello sotto il corpo del connettore, attorno
   all'estremità del pad centrale, e l'altro pin doppio raggiunge la propria pista passando
-  sopra il pad lasciato libero. Niente via, monconi corti, lunghezze dei due raccordi pari.
+  sopra il pad lasciato libero. Niente via, monconi corti, nessuna ansa di compensazione.
+  In un verso di inserimento il segnale percorre l'anello, nell'altro no: la differenza D+/D−
+  resta di circa 2,3 mm in un verso (circa 15 ps, meno dell'1 % del bit a 480 Mbit/s) e meno di
+  1 mm nell'altro, ed è accettata. Un'ansa non la elimina in entrambi i versi senza allungare il
+  ramo morto, e un incrocio simmetrico richiederebbe via sulle linee USB. Lo skew del DRC su
+  queste reti somma anche il ramo morto e non rappresenta nessuno dei due versi: per
+  `CONN_D?` delle porte USB-C e `UP_CONN_D?` vale un limite largo (regola "USB-C uscita dal
+  connettore"); l'accordo stretto resta sul resto del percorso.
 - Lato connettore: PI3USB4002A a 12 mm dal connettore, coppia diritta dai pad ai pin.
 - Upstream: USBLC6 D20 in linea fra J2 e il hub, canali secondo D52.
 - Porta 6 (MCU, Full-Speed): incrocio di D+ e D− con due via su USB_MCU_DN (D52); il DRC
@@ -312,6 +324,9 @@ Le indicazioni seguenti specificano il piazzamento dei componenti già presenti 
 | eFuse U13 | C13, 100 nF; C7, 1 µF; R30–R33, C11 e C12 | C13 direttamente presso IN/GND e C7 presso OUT/GND, prima di R5; partitore, resistenza ILM e condensatori dV/dt e timer presso i rispettivi pin, lontani dai segnali commutati |
 | Riserva sulla +5V | C3/C4, 220 µF; C5/C6, 10 µF | Dopo R5, nella zona di distribuzione della +5V verso i carichi; evitare un lungo ramo morto che ne aumenti l'induttanza. Non considerarli sostitutivi dei bypass presso gli integrati |
 | Load switch U4/U5/U6 | C60/C61/C62 | Ciascuno presso i pin IN/GND del proprio TPS2561A; riservare accanto al pin ILIM anche la relativa resistenza |
+| Hub U2 | 100 nF 0402: C27 (pin 46), C25 (5), C38 (10), C28 (52), C26 (57), C30 (64), C29 (24); 1 µF: C31 condiviso dei VDDA33 (vicino al pin 57), C32 (24); 1 µF C33 su VDD18 (25), C35 su VDD18PLL (62) | Ogni condensatore presso il proprio pin, il 100 nF più vicino del 1 µF, collegato al pad con una pista sullo stesso lato (niente via fra pad e condensatore) e ritorno GND corto; per i pin 5, 10 e 57, fra coppie USB, vale l'area `U2_DECAP` (D58) |
+| Supervisore U12 | C37, 100 nF 0402 | Presso il pin VDD di U12, non del hub |
+| MCU U3 | C41, 100 nF; C40, 4,7 µF; C42, 100 nF | C41 il più vicino alla coppia VDD/VSS (pin 8/9), con il pad +3V3 verso i pin 6–8 e il pad GND verso il pin 9; C40 subito dietro; C42 per VREF+ (pin 7) accanto a C41. VBAT (pin 6) senza condensatore proprio (D57) |
 | LDO U1 | C8 in ingresso; C9/C10 in uscita | C8 presso IN/GND, C9/C10 presso OUT/GND, con anelli corti; la vicinanza di D2 non deve togliere spazio a condensatori e rame di dissipazione |
 | VBUS delle porte | C102…C502 da 22 µF e C103…C503 da 100 nF; C505 da 100 µF sulla USB-A | Presso VBUS/GND del rispettivo connettore, a valle dello shunt; collocare il ceramico piccolo con il percorso più corto. Non raggruppare tutte le capacità nella zona dei load switch |
 

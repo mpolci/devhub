@@ -85,7 +85,7 @@ Componenti piazzati tutti sulla faccia inferiore, salvo LED e pulsanti:
 |---|---|
 | Retro, a sinistra | J1, D1, eFuse U13 con le reti di regolazione, C7, R5, C3-C6; LDO U1 con D2 e C8-C10 |
 | Retro, al centro | MCU U3 con disaccoppiamenti, filtri CC, pull-up/pull-down e condensatori dei pulsanti (D46); J4 SWD, J9 UART |
-| Retro, a destra | hub U2 con quarzo, RBIAS e disaccoppiamenti; U12; J2, D20 e reti CC/VBUS_DET con D21; J3 porta 7 con F1 |
+| Retro, a destra | hub U2 con quarzo, RBIAS e disaccoppiamenti; U12; J2, D20 e reti CC/VBUS_DET; J3 porta 7 con F1 |
 | Fra le coppie USB, dietro le porte | U6, R69 e U8 (fra porta 5 e 4); U5, R67, R68 (fra 4 e 3); U4, R65, R66 e U7 (fra 2 e 1) |
 | Davanti, per ogni porta | PI3USB4002A a 12 mm dal connettore con REF e VDD, VBUS e CC, scarica, resistenze dei LED |
 | Relè | U9 fra K1 e K2; ponticelli JP2/JP3 e snubber verso le boccole |
