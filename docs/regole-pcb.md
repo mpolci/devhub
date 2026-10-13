@@ -64,6 +64,11 @@ Collegare i due piani con via vicino ai GND dei componenti e dei connettori, ai 
 ai cambi di layer dei segnali. Come punto iniziale, stitching lungo il bordo ogni 5–10 mm,
 più fitto presso connettori e protezioni; la continuità locale del ritorno conta più del passo.
 Rimuovere isole di rame scollegate e verificare strozzature dovute a file di fori o antipad.
+Per non ferire i piani interni: zone interne (`GND_In2`, +3V3 su In1) con clearance 0,2 mm,
+come la clearance ordinaria; via con "rimuovi strati non collegati, tranne inizio e fine", così
+sugli strati interni dove la via non si collega non resta l'anello di rame e il foro nel piano è
+di circa 0,8 mm (foro 0,3 più 0,25 per lato) invece di 1,2. Via di reti diverse a passo di
+almeno 1,05 mm lasciano una striscia di piano fra i fori; più vicine i fori si fondono.
 Non separare una massa analogica: tenere lontani i percorsi di potenza dalle zone di misura
 mediante il piazzamento, conservando GND comune.
 
@@ -154,13 +159,24 @@ Le derivazioni Kelvin non hanno una classe propria: sono le stesse reti di poten
 - fanout del USB2517: fra tratti USB interamente dentro le aree di regola `USB_FANOUT_U2`
   (a ridosso dei pin delle porte e dei pin 53–56) la distanza minima è 0,15 invece di 0,75,
   perché le coppie adiacenti escono da pad a 1 mm di passo;
-- disaccoppiamento del USB2517: fra le piste USB e le piste +3V3 interamente o in parte dentro le
-  aree di regola `U2_DECAP` (a ridosso dei pin 5, 10 e 57) la distanza minima è 0,2 invece di
-  0,75: sono i pochi millimetri fra il pad e il suo 100 nF (D58).
+- piste vicine al USB2517: fra le piste USB e le piste di altre reti interamente dentro l'area di
+  regola `U2_FANOUT` (pad di U2 più circa 1,5 mm) la distanza minima è 0,2 invece di 0,75: a
+  passo 0,5 i pad di alimentazione, quarzo, PLL e CFG_SEL2 sono accanto a quelli delle coppie
+  (D58). CFG_SEL2 (pin 13), XTAL1 e XTAL2 (pin 61, 60) escono dal lato interno del pad verso una
+  via sotto il corpo, fra la fila di pad e il pad esposto, perché all'esterno sono chiusi fra le
+  coppie della porta 5 e dell'upstream; da lì proseguono su F.Cu. Le via sono coperte dalla
+  maschera su entrambi i lati;
+- uscita dei pin CC dai connettori USB-C: fra le piste USB e le piste CC (`CC1`, `CC2`, `CC1_UP`,
+  `CC2_UP`) dentro le aree di regola `USBC_FANOUT` la distanza minima è 0,2 invece di 0,75. Il pad
+  A5 (CC1) è a 0,5 mm dal pad B7 della coppia, il cui ramo scende parallelo per circa 1,5 mm; le
+  aree coprono la fila di pad e i primi 3 mm verso l'interno di J2 e J101-J401;
+- switch dati PI3USB4002A (U101-U501, passo 0,5): GND, REF, EN e VDD sono a 0,5 mm dai pad delle
+  coppie; dentro le aree di regola `SW_FANOUT` (4 × 4 mm centrate su ogni switch) le piste di
+  altre reti possono stare a 0,2 dalle coppie invece di 0,75.
 
 **Zone e aree di regola** nel PCB: piano GND `GND_In2` su tutto In2.Cu; aree
 `RELAY1_CONTACTS` e `RELAY2_CONTACTS` senza riempimenti su tutti i layer, sotto contatti dei
-relè, ponticelli, snubber e boccole; aree `USB_FANOUT_U2` e `U2_DECAP` usate solo dalle regole sopra.
+relè, ponticelli, snubber e boccole; aree `USB_FANOUT_U2`, `U2_FANOUT`, `USBC_FANOUT` e `SW_FANOUT` usate solo dalle regole sopra.
 
 Nelle condizioni dei file `.kicad_dru` di KiCad 10 i caratteri jolly si usano con `==`;
 `matches` e `Parent.Reference` non funzionano e un errore fa scartare l'intero file senza
@@ -282,7 +298,7 @@ La verifica della tensione alla porta comprende anche cavo, connettori, eFuse, s
 Controllo resistivo a 20 °C: `R = ρ × L / (w × t)`, con rame `ρ ≈ 1,72×10⁻⁸ Ω·m`.
 Per esempio, 100 mm di pista larga 2 mm e spessa 35 µm valgono circa 24,6 mΩ:
 **74 mV a 3 A sulla sola pista di andata**, prima di via e ritorno. Su una scheda da
-169 × 85 mm la sola larghezza nominale non basta: allargare le zone o accorciare i percorsi.
+172,5 × 85 mm la sola larghezza nominale non basta: allargare le zone o accorciare i percorsi.
 
 La catena è ingresso → TVS/eFuse → **R5** → +5V → carichi. Nessun ramo di carico deve aggirare
 R5. Per le porte mantenere load switch → shunt → VBUS della porta; le derivazioni di misura
@@ -290,8 +306,8 @@ non devono trasportare corrente di carico. VBUS upstream è una rete separata da
 
 ## Piazzamento e dissipazione
 
-Rispettare profilo **169 × 85 mm, R3**, quattro fori M3 a 4,5 mm dai bordi e posizioni bloccate
-in D42/D43 e D51. F.Cu ospita solo LED e pulsanti come componenti; tutto il resto è su B.Cu.
+Rispettare profilo **172,5 × 85 mm, R3**, quattro fori M3 a 4,5 mm dai bordi e posizioni bloccate
+in D42/D43, D51 e D59. F.Cu ospita solo LED e pulsanti come componenti; tutto il resto è su B.Cu.
 Verificare ingombri 3D, corsa dei pulsanti, accesso dei cavi, boccole e utensili di montaggio.
 Prevedere keepout su tutti i layer intorno a viti e distanziali, dimensionati sul loro ingombro
 reale, non solo sul foro. Conservare i vincoli già presenti nel PCB.
@@ -324,7 +340,7 @@ Le indicazioni seguenti specificano il piazzamento dei componenti già presenti 
 | eFuse U13 | C13, 100 nF; C7, 1 µF; R30–R33, C11 e C12 | C13 direttamente presso IN/GND e C7 presso OUT/GND, prima di R5; partitore, resistenza ILM e condensatori dV/dt e timer presso i rispettivi pin, lontani dai segnali commutati |
 | Riserva sulla +5V | C3/C4, 220 µF; C5/C6, 10 µF | Dopo R5, nella zona di distribuzione della +5V verso i carichi; evitare un lungo ramo morto che ne aumenti l'induttanza. Non considerarli sostitutivi dei bypass presso gli integrati |
 | Load switch U4/U5/U6 | C60/C61/C62 | Ciascuno presso i pin IN/GND del proprio TPS2561A; riservare accanto al pin ILIM anche la relativa resistenza |
-| Hub U2 | 100 nF 0402: C27 (pin 46), C25 (5), C38 (10), C28 (52), C26 (57), C30 (64), C29 (24); 1 µF: C31 condiviso dei VDDA33 (vicino al pin 57), C32 (24); 1 µF C33 su VDD18 (25), C35 su VDD18PLL (62) | Ogni condensatore presso il proprio pin, il 100 nF più vicino del 1 µF, collegato al pad con una pista sullo stesso lato (niente via fra pad e condensatore) e ritorno GND corto; per i pin 5, 10 e 57, fra coppie USB, vale l'area `U2_DECAP` (D58) |
+| Hub U2 | 100 nF 0402: C27 (pin 46), C25 (5), C38 (10), C28 (52), C26 (57), C30 (64), C29 (24); 1 µF: C31 condiviso dei VDDA33 (vicino al pin 57), C32 (24); 1 µF C33 su VDD18 (25), C35 su VDD18PLL (62) | Ogni condensatore presso il proprio pin, il 100 nF più vicino del 1 µF, collegato al pad con una pista sullo stesso lato (niente via fra pad e condensatore) e ritorno GND corto; per i pin 5, 10 e 57, fra coppie USB, vale l'area `U2_FANOUT` (D58) |
 | Supervisore U12 | C37, 100 nF 0402 | Presso il pin VDD di U12, non del hub |
 | MCU U3 | C41, 100 nF; C40, 4,7 µF; C42, 100 nF | C41 il più vicino alla coppia VDD/VSS (pin 8/9), con il pad +3V3 verso i pin 6–8 e il pad GND verso il pin 9; C40 subito dietro; C42 per VREF+ (pin 7) accanto a C41. VBAT (pin 6) senza condensatore proprio (D57) |
 | LDO U1 | C8 in ingresso; C9/C10 in uscita | C8 presso IN/GND, C9/C10 presso OUT/GND, con anelli corti; la vicinanza di D2 non deve togliere spazio a condensatori e rame di dissipazione |

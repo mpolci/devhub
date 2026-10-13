@@ -58,13 +58,32 @@
    (condition "A.hasNetclass('USB_DIFF') && B.hasNetclass('USB_DIFF') && A.insideArea('USB_FANOUT_U2') && B.insideArea('USB_FANOUT_U2')")
 )
 
-# Disaccoppiamento del USB2517: i pin VDDA33 5, 10 e 57 stanno fra coppie USB.
-# Il tratto +3V3 fra il pad e il suo 100 nF (pochi mm, solo continua) può stare
-# a 0,2 dalle coppie, solo dentro le aree di regola U2_DECAP.
+# Pad del USB2517 vicini alle coppie (alimentazioni, quarzo, PLL, CFG_SEL2): a passo 0,5
+# le piste che escono dai pad non possono stare a 0,75 dalle coppie. Le piste di altre
+# reti interamente dentro l'area di regola U2_FANOUT (pad di U2 più circa 1,5 mm) possono
+# stare a 0,2.
 
-(rule "USB e disaccoppiamento USB2517"
+(rule "USB e piste vicine a U2"
    (constraint clearance (min 0.2mm))
-   (condition "A.hasNetclass('USB_DIFF') && B.NetName == '+3V3' && B.Type == 'Track' && B.insideArea('U2_DECAP')")
+   (condition "A.hasNetclass('USB_DIFF') && B.Type == 'Track' && !B.hasNetclass('USB_DIFF') && B.enclosedByArea('U2_FANOUT')")
+)
+
+# Uscita dei connettori USB-C: CC1 (A5) è a 0,5 mm dal pad B7 della coppia e il ramo
+# di B7 scende parallelo per circa 1,5 mm. Solo le piste CC, solo dentro le aree di
+# regola USBC_FANOUT sulla fila di pad, possono stare a 0,2 dalle coppie.
+
+(rule "USB-C uscita dei pin CC"
+   (constraint clearance (min 0.2mm))
+   (condition "A.hasNetclass('USB_DIFF') && B.Type == 'Track' && (B.NetName == '*/CC?' || B.NetName == '*/CC?_UP') && B.insideArea('USBC_FANOUT')")
+)
+
+# Switch dati PI3USB4002A (U101-U501, UQFN 1,5 x 2, passo 0,5): GND, REF, EN e VDD
+# sono a 0,5 mm dai pad delle coppie. Le piste di altre reti che escono da questi pin
+# possono stare a 0,2 dalle coppie, solo dentro le aree di regola SW_FANOUT.
+
+(rule "USB e pin degli switch dati"
+   (constraint clearance (min 0.2mm))
+   (condition "A.hasNetclass('USB_DIFF') && B.Type == 'Track' && !B.hasNetclass('USB_DIFF') && B.insideArea('SW_FANOUT')")
 )
 
 # -----------------------------------------------------------------------------

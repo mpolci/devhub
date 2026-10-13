@@ -62,22 +62,24 @@ Regole di progettazione: [stackup, routing e verifiche PCB](../docs/regole-pcb.m
 nel progetto: stackup nel PCB, vincoli e netclass in `devhub.kicad_pro`, regole personalizzate in
 `devhub.kicad_dru`.
 
-`devhub.kicad_pcb`: 4 strati, profilo 169 × 85 mm con angoli R3 e piazzati, bloccati, i
+`devhub.kicad_pcb`: 4 strati, profilo 172,5 × 85 mm con angoli R3 e piazzati, bloccati, i
 componenti che vincolano la scatola (D42, D43, disposizione del fronte e del retro secondo D51),
-con il profilo al centro del foglio A4. Vista dall'alto, fronte (lato banco) in basso. Il bordo
+con il profilo circa al centro del foglio A4. Vista dall'alto, fronte (lato banco) in basso. Il bordo
 del PCB sta sulla faccia interna delle pareti (spessore previsto 2,5 mm).
 
 | Cosa | Faccia | Posizione (u dal bordo sinistro, v dal bordo frontale) |
 |---|---|---|
-| J5-J8 boccole (COM1, NC1, COM2, NC2) | inferiore | u = 14, 31, 51, 68 mm; corpo a v = 11,85 mm, manicotto Ø 11 × 14,35 mm fino a v = -2,5 mm (a filo della faccia esterna della parete) |
-| J501 USB-A, J401-J101 USB-C (porte 4…1) | inferiore | u = 88 (USB-A), 108, 123, 138, 153 mm; faccia d'innesto a filo del bordo frontale |
+| J5-J8 boccole (COM1, NC1, COM2, NC2) | inferiore | u = 17,5, 34,5, 54,5, 71,5 mm; corpo a v = 11,85 mm, manicotto Ø 11 × 14,35 mm fino a v = -2,5 mm (a filo della faccia esterna della parete) |
+| J501 USB-A, J401-J101 USB-C (porte 4…1) | inferiore | u = 91,5 (USB-A), 111,5, 126,5, 141,5, 156,5 mm; faccia d'innesto a filo del bordo frontale |
 | LED delle porte (verde D*02, rosso D*03) | superiore | in colonna sull'asse della porta: verde a v = 2 mm, rosso a v = 6 mm |
-| D90, D91 LED dei relè (verdi) | superiore | v = 2 mm, al centro della coppia di boccole (u = 22,5 e 59,5 mm) |
+| D90, D91 LED dei relè (verdi) | superiore | v = 2 mm, al centro della coppia di boccole (u = 26 e 63 mm) |
 | SW1, SW2, SW501-SW101 pulsanti SMD PTS645 (6×6, attuatore 7 mm) | superiore | v = 36 mm (centro), in asse con coppie di boccole e porte |
-| D92 acceso, D93 host | superiore | in colonna a u = 162 mm, v = 34 e 38 mm (centrati sulla fila dei pulsanti) |
+| D92 acceso, D93 host | superiore | in colonna a u = 165,5 mm, v = 34 e 38 mm (centrati sulla fila dei pulsanti) |
 | K1, K2 relè (il componente più alto sotto) | inferiore | dietro i pulsanti dei relè, v = 40-52 mm |
-| J1 alimentazione, J2 upstream | inferiore | u = 50 e 135 mm, a filo del bordo posteriore |
+| J1 alimentazione, J2 upstream | inferiore | u = 53,5 e 138,5 mm, a filo del bordo posteriore |
 | H1-H4 fori M3 (solo PCB, non nello schema) | — | a 4,5 mm dai bordi |
+
+Margini laterali uguali (D59): 11,45 mm dal bordo sinistro al corpo della boccola J5 e 11,48 mm dal bordo destro al corpo della USB-C J101.
 
 Componenti piazzati tutti sulla faccia inferiore, salvo LED e pulsanti:
 

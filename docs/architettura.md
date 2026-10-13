@@ -362,7 +362,7 @@ ripiego se la rifusione dell'hub dà problemi. La D è il ripiego se non si vuol
   in versione da PCB. Nessun cablaggio interno a filo.
 - Connettori sui due lati corti: lato "banco" le 5 porte downstream e le 4 boccole dei relè; lato
   posteriore upstream e alimentazione.
-- PCB 169 × 85 mm (D42): sulla faccia superiore solo LED e pulsanti, che si vedono e si premono dal
+- PCB 172,5 × 85 mm (D42, D59): sulla faccia superiore solo LED e pulsanti, che si vedono e si premono dal
   coperchio, ciascuno dietro la sua porta o coppia di boccole; tutto il resto, connettori compresi,
   sulla faccia inferiore. Le boccole sono a coppie (COM e NC dello stesso relè); il loro manicotto
   isolante (14,35 mm, senza filetto) attraversa la parete frontale, ispessita intorno alle boccole
