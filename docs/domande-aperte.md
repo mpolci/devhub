@@ -2,7 +2,7 @@
 
 ## Decise
 
-Le decisioni D60–D65 definiscono i requisiti semplificati correnti e prevalgono sulle parti
+Le decisioni D60–D66 e D68–D70 definiscono i requisiti correnti e prevalgono sulle parti
 incompatibili delle decisioni precedenti. Schema, PCB, pinout e BOM descrivono ancora
 l'implementazione da adeguare; non è ancora scelto un nuovo integrato per le porte.
 
@@ -73,12 +73,22 @@ l'implementazione da adeguare; non è ancora scelto un nuovo integrato per le po
 | D63 | Un LED per porta USB | RNF-5: un LED pilotato dal MCU, spento = disabilitata, fisso = abilitata, lampeggiante = guasto (prioritario); dettaglio hardware dal PC. Indica lo stato logico, non VBUS misurata. Da eliminare cinque LED e cinque resistenze; riferimenti, colore e posizione del LED mantenuto da definire nello schema/PCB. Pulsanti, LED dei relè, alimentazione e host invariati. Supera D24 e le parti relative ai LED USB di D38/D43. |
 | D64 | Gestione dei guasti senza budget misurato | RF-15: accensioni sfalsate e gestione dei guasti hardware; niente calcolo dei consumi, budget configurabile o selezione della porta più energivora. Restano i limitatori per porta e le protezioni d'ingresso. Un sovraccarico complessivo può spegnere l'intero hub; nessuna garanzia di continuità delle altre porte. Supera la gestione dinamica di D8. |
 | D65 | Alimentatore fisso e nessuna verifica CC | RF-13 richiede alimentatore USB-C 5 V / 3 A senza PD e cavo adeguato, a carico dell'utilizzatore. Un alimentatore PD è ammesso solo se offre anche questa modalità; capacità inferiori non garantite. RF-14 eliminato: nessuna lettura CC né controllo dell'annuncio di 3 A. Restano Rd da 5,1 kΩ e protezioni hardware; da togliere collegamenti all'ADC e filtri dedicati R3/R4/C1/C2. I 3 A comprendono tutti i consumi; ~2,3 A alle porte è una stima da rivalutare. Supera lettura CC e adattamento all'alimentatore di D8. |
+| D66 | Quattro USB-C e un solo canale ausiliario | Eliminata la porta USB-A con alimentazione, dati, scarica, protezioni e comandi dedicati. Restano quattro USB-C e un solo relè SPDT con due boccole COM/NC, un pulsante e un LED; NO sul ponticello interno come in D3. Cinque pulsanti complessivi e sette LED (quattro USB, relè, alimentazione, host). Supera il numero di canali di D3, la USB-A di D18/D54 e i conteggi/disposizioni incompatibili di D26/D38/D42/D43/D51/D63. USB HID interno e header di scorta D14 restano; la DS5 liberata non diventa una nuova uscita. Schema, PCB, pinout e BOM sono da adeguare dopo la scelta degli integrati. |
+| D67 | Valutazione senza MCU e pulsanti — non adottata (D68) | Sono accettati per la variante in valutazione cicli e impulsi gestiti dal PC e la rimozione dei pulsanti. Approfondire USB4715/HFC come sostituto del controllo STM32, compresi macOS, WinUSB e GPIO. La ricerca propone USB4715 + espansore I²C TCA9535, ancora da collaudare; nessuna nuova selezione hardware definitiva. L’adozione richiederà sostituire HID e autonomia nei requisiti/protocollo, definire i default e rinunciare all’header USB di scorta o scegliere un altro hub. Le specifiche attuali descrivono ancora la base con MCU. |
+| D68 | Conferma MCU, controllo autonomo e pannello | Mantenere un hub con MCU separato e USB HID (modello hub da scegliere, D69), cicli e impulsi temporizzati eseguiti dal MCU. STM32G0B1RET6 resta il riferimento; un package più piccolo è valutabile solo dopo la scelta dei controller porta e il conteggio GPIO. Conservare cinque pulsanti (quattro USB e uno relè) e un LED per porta pilotato dal MCU, con lampeggio guasti; sette LED complessivi. Confermati quattro USB-C, un relè con due boccole COM/NC e header interno di scorta. La variante USB4715 senza MCU, con o senza TCA9535, non è adottata: la ricerca resta fra le alternative valutate. Supera l’indirizzo di valutazione D67; nessuna modifica a schema/PCB in questa fase. |
+| D69 | Modello del hub non vincolato | USB2517 è il componente dello schema esistente, non un requisito. Scegliere il hub più utile per la soluzione con MCU separato, valutando porte necessarie, supporti esterni, consumi, package, costo, reperibilità e configurazione. Restano i requisiti funzionali confermati; D68 non impone USB2517. |
+| D70 | Scarica automatica e semplicità del circuito | La scarica attiva VBUS può attivarsi automaticamente alla disabilitazione della porta, anche integrata nel controller; non sono richiesti GPIO DIS o controllo separato dal MCU. Scegliere la soluzione complessivamente più semplice per componenti, collegamenti e firmware, nel rispetto delle protezioni e dei limiti di scarica D61. Il MCU gestisce il tempo fra spegnimento e riaccensione della porta; non deve necessariamente comandare la scarica. |
 
 ## Aperte
 
-- Scelta del controller delle porte per accorpare VBUS, dati e scarica: nessun componente
+- Scegliere il modello di hub (D69): quattro USB-C, porta interna MCU e header di scorta
+  richiedono sei downstream nella configurazione corrente. USB2517 è un candidato di riferimento.
+- Scelta del controller delle porte per accorpare VBUS, dati e scarica: confronto e priorità in
+  [componenti.md](componenti.md#ricerca-per-la-versione-semplificata-d60d66). Nessun componente
   nuovo è approvato. Verificare corrente, protezioni, distacco di dispositivi autoalimentati,
   sequenza interna, guasti segnalati e stato al reset/bootloader.
+- Dopo la scelta dei controller porta, verificare il conteggio GPIO e l’eventuale riduzione
+  del package STM32, mantenendo HID, SWD e gestione del bootloader.
 - Definire durata sicura della scarica, default e intervallo ammesso del ciclo sul circuito
   definitivo; il secondo proposto non è una garanzia per qualsiasi capacità o alimentazione esterna.
 - Adeguare schema e PCB, aggiornando poi pinout, BOM, costi, regole specifiche e bilancio di

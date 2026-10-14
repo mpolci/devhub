@@ -1,13 +1,19 @@
 # Architettura
 
-L'architettura funzionale segue i requisiti semplificati D60–D65: controllo delle porte
+L'architettura funzionale segue i requisiti semplificati D60–D66 e le decisioni D68–D70: controllo delle porte
 e riavvio temporizzato, senza misura dei consumi, delle tensioni delle porte/5V_SYS o delle CC
 d'ingresso. **Schema e PCB esistenti sono ancora da adeguare.** I dettagli di componente
 indicati come "nello schema attuale" descrivono il circuito presente, non una nuova selezione.
 Controller delle porte, scarica e corrispondente pinout restano da definire.
 Componenti e alternative: [componenti.md](componenti.md).
+**Hub con MCU separato confermato (D68); modello del hub da scegliere (D69)**: HID multipiattaforma, cicli e impulsi
+autonomi, cinque pulsanti e LED porta con lampeggio guasti. La
+[variante USB4715](componenti.md#usb4715-senza-mcu-verifica-di-fattibilità) non è adottata.
+Un MCU più piccolo si valuterà solo dopo aver definito i segnali dei controller porta.
 
 ## Schema a blocchi funzionale
+
+La numerazione DS seguente è quella dello schema attuale e sarà rivista con il hub scelto.
 
 ```
 USB-C PWR IN, alimentatore richiesto 5 V / 3 A
@@ -15,18 +21,22 @@ USB-C PWR IN, alimentatore richiesto 5 V / 3 A
   VBUS → TVS + eFuse → 5V_SYS → alimentazione porte e relè
                          └─→ Schottky + LDO 3,3 V → logica
 
-USB-C UPSTREAM → HUB USB2517, 7 porte
+USB-C UPSTREAM → HUB USB 2.0 da scegliere (USB2517 nello schema attuale)
   VBUS upstream → VBUS_DET (hub/MCU, conservato)
   DS1..DS4 → commutazione dati + VBUS + scarica → 4 USB-C
-  DS5      → commutazione dati + VBUS + scarica → 1 USB-A
+  DS5      → non utilizzata (da disabilitare nella configurazione)
   DS6      → STM32G0B1, USB HID (mai sezionato)
   DS7      → header interno di scorta
 
 MCU → comando logico e gestione guasti per porta
     → un LED e un pulsante per porta
-    → due relè con pulsanti e LED dedicati
+    → un relè con pulsante e LED dedicati
     → configurazione hub, SWD, UART
 ```
+
+La scarica può essere automatica allo spegnimento della porta (D70): il MCU temporizza
+il ciclo OFF/ON, senza necessità di un GPIO DIS o di un comando separato della scarica.
+Si sceglie la soluzione complessivamente più semplice, rispettando i limiti elettrici.
 
 Commutazione dati, VBUS e scarica possono essere integrate nello stesso componente:
 non sono prescritti interruttori separati o una sequenza pilotata pin per pin dal MCU.
@@ -111,7 +121,7 @@ La rete discreta attuale da 100 Ω / 0,25 W arriva a circa 0,28 W con 5,25 V: i 
 alimentazione esterna e cicli ripetuti vanno verificati, oppure gestiti dal controller scelto.
 Il default e l'intervallo configurabile restano da validare insieme alla scarica.
 
-I relè restano per le due linee ausiliarie su banana.
+Resta un relè per una sola linea ausiliaria su due boccole a banana (D66).
 
 ### Alimentazione: 5 V diretti, senza USB-PD
 
@@ -131,10 +141,10 @@ definitivi e il LED unico:
 |---|---|
 | Hub USB2517 (3,3 V tramite LDO) | 0,23–0,46 A |
 | MCU, switch e LED | circa 0,05 A, da aggiornare |
-| 2 relè eccitati | circa 0,16 A |
-| Disponibile alle porte | circa 2,3 A nel caso peggiore |
+| Un relè eccitato | circa 0,08 A |
+| Disponibile alle porte | circa 2,4 A stimati; da confermare |
 
-Le porte conservano 2 A sulla singola USB-C e 1,5 A sulla USB-A; non sono correnti disponibili
+Le quattro USB-C conservano 2 A sulla singola porta; non sono correnti disponibili
 contemporaneamente su tutte le porte. Hub e MCU sono alimentati solo dalla 5V_SYS (D32).
 Lo shunt d'ingresso R5 e quelli delle porte, con U7/U8 INA3221, sono da rimuovere (D60).
 
@@ -206,8 +216,8 @@ pin-compatibili nello stesso VQFN-HR 16, 3–36 V in, ~1,6 $), alimentatore PD d
 configurazione via resistenze o SMBus, regolatore 1,8 V interno). Il package si salda a mano con
 aria calda o piastra riscaldante e stencil: i pad perimetrali sono sotto il bordo e il pad
 centrale è la massa e va saldato; con il solo saldatore è un ripiego (pad centrale scaldato dai
-via termici sul retro). 7 porte coprono 4 USB-C + 1 USB-A + 1 porta interna per il MCU
-e ne lasciano 1 di scorta su un header interno a 4 pin (VBUS, D-, D+, GND), non sezionato e
+via termici sul retro). 7 porte coprono 4 USB-C + 1 porta interna per il MCU,
+una porta non utilizzata e 1 di scorta su un header interno a 4 pin (VBUS, D-, D+, GND), non sezionato e
 alimentato direttamente dalla 5V_SYS con un fusibile ripristinabile.
 
 Dettagli verificati sul datasheet (DS00001598C) e sull'errata (DS80000628A):
@@ -251,8 +261,10 @@ Dettagli verificati sul datasheet (DS00001598C) e sull'errata (DS80000628A):
   la configurazione via SMBus il pin 45 può diventare l'uscita SUSP_IND.
 - RBIAS 12,0 kΩ 1 %; quarzo 24 MHz YXC X322524MOB4SI (C_L 12 pF) con 15 pF C0G (D19; il hub tollera ±350 ppm); 1,8 V dal
   regolatore interno (VDD18, VDD18PLL con 1 µF ciascuno); TEST a massa; slug a massa.
-- Mappa porte: 1–4 → USB-C, 5 → USB-A, 6 → MCU, 7 → header interno. Le porte 1–5 sono sul lato
-  inferiore del QFN, da orientare verso il pannello frontale.
+- Mappa prevista: 1–4 → USB-C, 5 disabilitata, 6 → MCU, 7 → header interno.
+  Nello schema esistente DS5 serve ancora la USB-A da eliminare.
+  Quattro porte esterne più il MCU richiedono almeno cinque downstream: un hub a quattro
+  porte non basta. La ricerca di alternative è in [componenti.md](componenti.md#ricerca-per-la-versione-semplificata-d60d66).
 
 Alternativa saldabile a mano: **FE2.1** (LQFP-48), documentazione scarsa ma diffusissimo.
 
@@ -292,7 +304,7 @@ Requisiti del blocco da realizzare:
 | Funzione | Scelta funzionale |
 |---|---|
 | Commutazione | VBUS e D+/D− interrotte con unico comando logico, anche con dispositivo autoalimentato; sequenza interna ammessa |
-| Alimentazione | 5 V, 2 A su USB-C e 1,5 A su USB-A, entro il totale condiviso |
+| Alimentazione | 5 V, 2 A su ciascuna delle quattro USB-C, entro il totale condiviso |
 | Scarica | Attiva, integrata o discreta; ciclo temporizzato senza misura VBUS; durata sicura da definire |
 | Protezioni | Limitazione hardware, blocco inverso, ESD e segnalazione di guasto; limiti da verificare sul controller |
 | Misure | Nessun sensore di corrente o tensione per porta |
@@ -311,18 +323,19 @@ dall'annuncio e non garantisce la disponibilità simultanea delle correnti massi
 e le protezioni locali saranno verificati insieme al controller; lo schema attuale mantiene
 22 µF + 100 nF per porta e altri 100 µF sulla USB-A.
 
-### Relè ausiliari
+### Relè ausiliario
 
-Specifica contatti: **max 16 V, max 3 A**. 2 relè **SPDT** con bobina 5 V (es. Omron G5Q-1,
-Songle SRD-05VDC-SL-C: 10 A nominali, ampio margine) pilotati da un ULN2003V12 con tre canali in
+Specifica contatti: **max 16 V, max 3 A**. Un relè **SPDT** con bobina 5 V (es. Omron G5Q-1,
+Songle SRD-05VDC-SL-C: 10 A nominali, ampio margine) pilotato da un ULN2003V12 con tre canali in
 parallelo per relè (diodi di ricircolo integrati). Su pannello, per ogni canale, **due boccole a banana da 4 mm su COM e NC**: la linea
 è **normalmente collegata** e la bobina si eccita solo per staccarla. Così lo stacco dura il tempo
 di un impulso, e se l'hub perde alimentazione o si blocca la linea torna collegata (comportamento
 sicuro per una scheda in prova). Il contatto NO è portato su un **ponticello a saldare** interno:
 spostandolo la seconda boccola diventa NO per un eventuale uso "normalmente aperto".
 Nel protocollo i comandi parlano di linea ("collegata / staccata", "stacca per N ms"), non di
-bobina. LED per canale, acceso quando la linea è staccata. Un pulsante per canale (SW1/SW2, su
-PB12/PB13): ogni pressione alterna la linea, collegata o staccata (RF-17).
+bobina. Un LED, acceso quando la linea è staccata, e un pulsante per il canale mantenuto:
+ogni pressione alterna la linea, collegata o staccata (RF-17). Il secondo relè e i suoi comandi sono ancora nello schema da adeguare;
+il canale fisico da mantenere e il relativo pinout saranno definiti con il layout.
 
 **Margine sulla bobina (D33).** Il G5Q-1 da 5 V (63 Ω, 80 mA) scatta garantito con 3,75 V a 23 °C
 di bobina; la resistenza cresce con la temperatura (~0,4 %/°C) e con la bobina a 40 °C servono
@@ -357,9 +370,9 @@ ripiego se la rifusione dell'hub dà problemi. La D è il ripiego se non si vuol
 - Scatola **stampata in 3D su misura**, disegnata sulle misure reali del PCB a layout finito.
 - Tutti i connettori saldati sul PCB e affacciati alle aperture della scatola; boccole a banana
   in versione da PCB. Nessun cablaggio interno a filo.
-- Connettori sui due lati corti: lato "banco" le 5 porte downstream e le 4 boccole dei relè; lato
+- Connettori sui due lati corti: lato "banco" le 4 porte downstream e le 2 boccole del relè; lato
   posteriore upstream e alimentazione.
-- PCB 172,5 × 85 mm (D42, D59): sulla faccia superiore solo LED e pulsanti, che si vedono e si premono dal
+- PCB esistente 172,5 × 85 mm (D42, D59), ingombro e posizioni da rivalutare con D66: sulla faccia superiore solo LED e pulsanti, che si vedono e si premono dal
   coperchio, ciascuno dietro la sua porta o coppia di boccole; tutto il resto, connettori compresi,
   sulla faccia inferiore. Le boccole sono a coppie (COM e NC dello stesso relè); il loro manicotto
   isolante (14,35 mm, senza filetto) attraversa la parete frontale, ispessita intorno alle boccole
@@ -398,5 +411,5 @@ di alimentazione. Il LED lampeggia per il guasto, senza indicare una tensione mi
   la garanzia a qualsiasi capacità o scheda autoalimentata.
 - Verificare inrush e intervallo tra accensioni; rivalutare disponibilità di corrente e
   dissipazione con il circuito definitivo. Nessuna gestione dinamica del budget nel firmware.
-- Adeguare schema, PCB, pinout, BOM e regole specifiche a D60–D65, mantenendo integrità del
+- Adeguare schema, PCB, pinout, BOM e regole specifiche a D60–D66, mantenendo integrità del
   segnale USB Hi-Speed e requisiti termici. Il layout esistente non incorpora ancora le modifiche.

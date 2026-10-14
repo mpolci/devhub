@@ -1,9 +1,11 @@
 # hardware
 
-**Adeguamento richiesto (D60–D65).** Schema e PCB descritti sotto sono l'implementazione
+**Adeguamento richiesto (D60–D66).** Schema e PCB descritti sotto sono l'implementazione
 attuale e non incorporano ancora i [requisiti semplificati](../docs/requisiti.md).
+Da eliminare anche la porta USB-A completa e il secondo canale relè con due boccole,
+pulsante e LED (D66). La configurazione prevista ha quattro USB-C e un solo relè.
 Da eliminare INA3221 e sei shunt, lettura/filtri CC d'ingresso e un LED con resistenza per
-porta; Rd e VBUS_DET upstream restano. Controller delle porte, scarica e pilotaggio del LED
+USB-C mantenuta; Rd e VBUS_DET upstream restano. Controller delle porte, scarica e pilotaggio del LED
 unico sono da definire. Le tabelle e i risultati ERC/parità sotto riguardano lo schema
 esistente, non attestano una revisione hardware già completata.
 

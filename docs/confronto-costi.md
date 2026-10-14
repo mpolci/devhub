@@ -1,7 +1,7 @@
 # Confronto dei costi della BOM
 
 **Ambito:** prezzi, quantità e totali qui sotto si riferiscono allo schema attuale,
-ancora da adeguare alle decisioni D60–D65. Non rappresentano il costo della versione
+ancora da adeguare alle decisioni D60–D66. Non rappresentano il costo della versione
 semplificata: controller delle porte e BOM definitiva non sono ancora scelti.
 
 Prezzi letti il 12/10/2026 sui siti dei fornitori e, per 25 righe Mouser, dal carrello Mouser

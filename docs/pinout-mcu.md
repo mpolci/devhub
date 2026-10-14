@@ -1,8 +1,10 @@
 # Piedinatura del MCU (STM32G0B1RET6, LQFP-64)
 
 **Stato hardware:** la tabella resta allineata allo schema esistente, ancora da adeguare a
-D60–D65. CC1_ADC, CC2_ADC e INA_ALERT sono da eliminare; i segnali di comando porta e LED
+D60–D66. CC1_ADC, CC2_ADC e INA_ALERT sono da eliminare; i segnali di comando porta e LED
 vanno riesaminati dopo la scelta del controller. Non sono già liberi nello schema.
+D66 elimina inoltre i segnali della porta 5 e del secondo canale relè; il canale fisico
+da conservare è da definire. La tabella non anticipa la nuova assegnazione.
 VBUS_DET upstream, USB, SWD e gestione dei pin UCPD/bootloader restano necessari.
 
 Corrisponde allo schema `hardware/devhub/mcu.kicad_sch`: in caso di modifiche allo schema va aggiornata a mano.
@@ -83,7 +85,7 @@ I pin senza segnale sono liberi (no-connect nello schema).
 - Sequenza di avvio del hub, dopo un'accensione o un calo di tensione del MCU (flag di RCC_CSR, oppure un flag in un registro di backup): tirare basso HUB_RST_N, impostare HUB_CFG_SEL2, verificare SCL alto (bus I2C fermo), rilasciare il reset e **aspettare che la linea risalga davvero** (lettura di PF1 in ingresso: U12 può tenerla bassa fino a 700 ms dopo che la 3,3 V è tornata); solo allora, se CFG_SEL2 = 0, scrivere i registri del hub via SMBus e poi il comando di attach (registro FFh). Il MCU parte prima che U12 rilasci il reset (150-700 ms), quindi il hub enumera una volta sola.
 - Reset del solo hub (D35): un calo della 3,3 V tra ~1,8 e ~2,9 V fa scattare U12 ma non resetta il MCU, che funziona fino a 1,7 V (il brownout reset è disattivato di default). Il firmware legge HUB_RST_N ogni ≤10 ms (PF1 è open-drain e il suo ingresso resta attivo; U12 tiene il reset almeno 150 ms). Niente interrupt: EXTI1 è condivisa con EFUSE_FLT_N (PB1). Se lo trova basso senza averlo chiesto: porta basso anche PF1, così il rilascio non dipende da U12, ferma l'I2C, aspetta almeno 1 s, poi ripete la sequenza di avvio (CFG_SEL2, SCL alto, rilascio, attesa del livello alto, configurazione SMBus). Così il rilascio non capita mai durante una transazione I2C: SCL è anche CFG_SEL0. Attivare il brownout reset del MCU (~2,8 V) non basterebbe: resterebbe la finestra tra 2,8 e 3,0 V.
 - Dopo un reset software, un watchdog o il ritorno dal bootloader non toccare HUB_RST_N: il hub è già configurato e il MCU si ricollega da solo sulla porta 6.
-- LED USB (D63): dopo l’adeguamento, un GPIO per porta pilota il LED unico: spento = disabilitata, fisso = abilitata, lampeggiante = guasto. I collegamenti EN/LED_FLT della tabella sono ancora quelli dello schema da modificare; LED relè, acceso e host invariati.
+- LED USB (D63): dopo l’adeguamento, un GPIO per porta pilota il LED unico: spento = disabilitata, fisso = abilitata, lampeggiante = guasto. I collegamenti EN/LED_FLT della tabella sono ancora quelli dello schema da modificare; resta un LED relè, oltre ad acceso e host.
 - I pulsanti delle porte 1-3 sono su PC13/PC14/PC15, pin a bassa capacità di pilotaggio: vanno usati solo come ingressi.
 - FAULT_P1-P5: abilitare il pull-up interno. Il pull-up degli OCS_N del hub potrebbe mancare mentre il hub è in reset.
 - SCL è anche CFG_SEL0 del hub, campionato al rilascio di HUB_RST_N: in quel momento il bus I2C dev'essere fermo (SCL alto).

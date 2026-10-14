@@ -7,23 +7,24 @@ il PC può:
 - **staccare e riattaccare fisicamente** ogni porta (alimentazione VBUS e linee dati D+/D-),
   per resettare un dispositivo bloccato anche quando il reset via USB non funziona;
 - **leggere lo stato** di ogni porta (abilitata/disabilitata, ciclo in corso, guasti hardware);
-- **comandare due relè indipendenti** con uscite su boccole a banana (es. per sezionare
+- **comandare un relè ausiliario** con uscita su due boccole a banana (es. per sezionare
   l'alimentazione esterna del dispositivo in prova o chiudere un contatto di reset).
 
 ## Caratteristiche previste (v1)
 
 | Voce | Scelta v1 |
 |---|---|
-| Porte downstream | 4 × USB-C + 1 × USB-A |
+| Porte downstream | 4 × USB-C |
 | Velocità | USB 2.0 Hi-Speed (480 Mbit/s) |
-| Alimentazione per porta | 5 V, fino a 2 A sulla singola porta USB-C e 1,5 A sulla USB-A, ~2,3 A totali, con limitazione di corrente e sezionamento per porta |
+| Alimentazione per porta | 5 V, fino a 2 A sulla singola porta USB-C, circa 2,4 A totali stimati, con limitazione di corrente e sezionamento per porta |
 | Sezionamento | VBUS **e** D+/D− con unico comando logico; ammessa la sequenza interna del controller |
-| Riavvio | Ciclo temporizzato con scarica attiva, durata configurabile; default indicativo 1 s da validare, nessuna misura di corrente o tensione |
+| Ciclo di spegnimento/riaccensione porta | Ciclo temporizzato con scarica attiva, durata configurabile; default indicativo 1 s da validare, nessuna misura di corrente o tensione |
 | Indicazione porta | Un LED dal MCU: spento, acceso fisso, lampeggiante per guasto |
 | Alimentazione hub | richiesti alimentatore USB-C 5 V / 3 A senza negoziazione PD e cavo adeguato; nessuna verifica delle CC |
 | Upstream (verso il PC) | USB-C (USB 2.0) |
 | Controllo | STM32G0B1 su porta interna dell'hub, interfaccia USB HID senza driver + CLI Python |
-| Relè ausiliari | 2 × SPDT su boccole a banana, contatti max 16 V / 3 A |
+| Relè ausiliari | 1 × SPDT su due boccole a banana COM/NC, contatti max 16 V / 3 A |
+| Pannello | 5 pulsanti; 7 LED complessivi, con lampeggio guasti sui quattro LED USB |
 
 I 3 A d'ingresso comprendono anche i consumi interni: un sovraccarico complessivo può
 interrompere l'intero hub. Il ciclo non verifica elettricamente lo spegnimento e riguarda
@@ -58,7 +59,11 @@ host/        strumento da riga di comando per il PC
 
 ## Stato
 
-Requisiti semplificati definiti (D60–D65); schema elettrico v0.2 e PCB iniziato descrivono
+Requisiti semplificati definiti (D60–D66), MCU e pannello confermati (D68); schema elettrico v0.2 e PCB iniziato descrivono
 ancora l'implementazione da adeguare (vedi [hardware/README.md](hardware/README.md)).
 
-Prossimo passo: scegliere il controller delle porte e adeguare schema, PCB e BOM ai nuovi requisiti.
+Il modello del hub resta da scegliere (D69): USB2517 è il riferimento dello schema, non un requisito.
+
+Prossimo passo: scegliere hub e controller delle quattro porte, verificarne
+scarica e protezioni, poi adeguare schema, pinout, PCB e BOM. Un MCU più piccolo resta
+un’opzione da valutare dopo il conteggio dei segnali. USB4715 senza MCU non è adottato.

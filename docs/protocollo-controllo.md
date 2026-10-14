@@ -2,7 +2,9 @@
 
 Canale USB HID, usage page vendor (0xFF00), report ID fissi, report da 64 byte, little endian.
 HID non richiede driver dedicati e `hidapi` è disponibile sui sistemi previsti.
-La bozza riflette D60–D65; firmware e host non sono ancora implementati.
+La bozza riflette D60–D66 e D68; firmware e host non sono ancora implementati.
+Il controllo resta HID e i cicli/impulsi sono eseguiti dal MCU: il PC invia il comando
+senza dover restare in esecuzione per inviare la riaccensione.
 
 Il protocollo è versionato: `GET_INFO` restituisce `proto_version`; la CLI rifiuta versioni
 maggiori che non conosce. Il layout binario dei campi e i codici delle cause di guasto vanno
@@ -10,8 +12,8 @@ finalizzati con il controller scelto. Non si assegnano misure fittizie o zeri a 
 
 ## Convenzioni
 
-- Porte da 1 a N (`n_ports` da `GET_INFO`): 1–4 USB-C, 5 USB-A.
-- Relè da 1 a 2: `connected` = linea collegata, bobina a riposo; `disconnected` = linea
+- Porte da 1 a N (`n_ports` da `GET_INFO`): 1–4 USB-C (`n_ports = 4`); nessuna porta 5.
+- Un relè, identificato da 1 (`n_relays = 1`): `connected` = linea collegata, bobina a riposo; `disconnected` = linea
   staccata, bobina eccitata, con cablaggio COM/NC.
 - Ogni comando riceve una risposta con lo stesso `cmd` e uno `status` (0 = OK, altrimenti errore),
   salvo i comandi di riavvio/bootloader indicati in tabella.

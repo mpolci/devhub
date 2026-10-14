@@ -4,18 +4,20 @@
 
 Durante il test di schede a microcontrollore collegate via USB può servire scollegare e
 ricollegare il cavo per recuperare un dispositivo bloccato. Devhub esegue questa operazione
-dal PC, in modo scriptabile, e permette di gestire le porte e due relè ausiliari.
+dal PC, in modo scriptabile, e permette di gestire le porte e un relè ausiliario.
 Non è uno strumento per misurare consumi o tensioni.
 
-Questi requisiti includono le semplificazioni D60–D65 in
+Questi requisiti includono le semplificazioni D60–D66 e le decisioni D68–D70 in
 [domande-aperte.md](domande-aperte.md). Lo schema e il PCB presenti nel repository devono
-ancora essere adeguati; il controller integrato delle porte non è ancora scelto.
+ancora essere adeguati; il controller delle porte non è ancora scelto.
+Restano MCU separato, controllo HID e cicli autonomi; la variante senza MCU non è adottata.
+Il modello del hub è da scegliere: USB2517 non è un requisito (D69).
 
 ## Requisiti funzionali
 
 ### Porte downstream
 
-- **RF-1** 4 porte USB-C e 1 porta USB-A, tutte USB 2.0 Hi-Speed.
+- **RF-1** 4 porte USB-C, tutte USB 2.0 Hi-Speed; nessuna porta USB-A (D66).
 - **RF-2** Ogni porta può essere staccata e riattaccata su comando del PC: a porta
   disabilitata VBUS e D+/D− sono interrotte, GND resta collegata. Il distacco dei dati deve
   funzionare anche con dispositivi autoalimentati. Il ciclo di alimentazione riguarda le
@@ -27,15 +29,17 @@ ancora essere adeguati; il controller integrato delle porte non è ancora scelto
   regolabile fra alimentazione e dati. A porta disabilitata entrambe le connessioni devono
   risultare interrotte. Non sono richiesti comandi separati per dati e alimentazione.
 - **RF-4** Il MCU esegue autonomamente un ciclo di spegnimento e riaccensione a seguito di
-  un solo comando. È richiesta una **scarica attiva di VBUS**, anche integrata nel controller.
+  un solo comando. È richiesta una **scarica attiva di VBUS**, anche integrata nel controller
+  e automatica alla disabilitazione della porta. Non sono richiesti un GPIO DIS né un comando
+  separato del MCU: scegliere il circuito complessivamente più semplice (D70).
   Il tempo di spegnimento è predefinito e configurabile: valore iniziale indicativo **1 s**,
   da confermare con il circuito scelto e sul prototipo. Si conta dal comando di disabilitazione
   di VBUS e comprende la scarica, senza attesa di una soglia misurata. Durata della scarica e
   intervallo configurabile devono rispettare i limiti del circuito, anche a porta lasciata
   spenta o in presenza di alimentazione esterna. Capacità molto elevate possono richiedere
   attese maggiori; una sorgente esterna non viene eliminata aumentando l'attesa.
-- **RF-5** Ogni porta fornisce 5 V con almeno 2 A erogabili sulla singola porta USB-C e
-  1,5 A sulla USB-A (limite del connettore, D54), con **limitazione hardware della corrente**
+- **RF-5** Ogni porta fornisce 5 V con almeno 2 A erogabili sulla singola porta USB-C,
+  con **limitazione hardware della corrente**
   e segnalazione di guasto per porta. I valori per porta non sono disponibili simultaneamente
   su tutte le uscite: il totale è limitato dall'alimentatore e dai consumi interni (RF-13).
   Sulle USB-C resta l'annuncio di corrente standard USB tramite Rp da 56 kΩ (D30); non si
@@ -56,11 +60,11 @@ ancora essere adeguati; il controller integrato delle porte non è ancora scelto
 - **RF-10** Libreria Python generica e multipiattaforma, con CLI per macOS costruita sopra
   (es. `devhub port 2 cycle --ms 1000`).
 
-### Relè ausiliari
+### Relè ausiliario
 
-- **RF-11** 2 relè indipendenti, con contatti portati su boccole a banana da 4 mm, comandabili
+- **RF-11** Un relè ausiliario SPDT, con due boccole a banana da 4 mm su COM/NC, comandabile
   dal PC (on/off e impulso di N ms) e da un pulsante sul pannello (RF-17).
-- **RF-12** I contatti dei relè sono galvanicamente isolati dall'hub; max 16 V / 3 A.
+- **RF-12** I contatti del relè sono galvanicamente isolati dall'hub; max 16 V / 3 A.
 
 ### Alimentazione
 
@@ -69,7 +73,7 @@ ancora essere adeguati; il controller integrato delle porte non è ancora scelto
   anche questa modalità; non tutti gli alimentatori PD la offrono. Alimentatore e cavo idonei
   sono a carico dell'utilizzatore; il funzionamento con capacità inferiore non è garantito.
   I 3 A sono totali all'ingresso e comprendono hub, MCU e relè; alle porte restano indicativamente
-  ~2,3 A con l'elettronica attuale, da rivalutare con i componenti definitivi.
+  ~2,4 A stimati mantenendo la logica attuale e un solo relè, da rivalutare con i componenti definitivi.
 - **RF-14 — Eliminato (D65).** Nessuna lettura delle CC d'ingresso, verifica dell'annuncio
   di 3 A o gestione di budget diversi. Restano le resistenze Rd da 5,1 kΩ su CC1 e CC2,
   necessarie per ricevere alimentazione USB-C, e le protezioni hardware d'ingresso.
@@ -82,7 +86,8 @@ ancora essere adeguati; il controller integrato delle porte non è ancora scelto
 
 ### Comandi sul pannello
 
-- **RF-17** Un pulsante per ogni porta USB e uno per ogni relè. Ogni pressione alterna lo
+- **RF-17** Cinque pulsanti: uno per ciascuna delle quattro USB-C e uno per il relè (D68).
+  Ogni pressione alterna lo
   stato della porta (dati e alimentazione con un unico comando logico) o della linea del relè.
   I cambi di stato sono notificati all'host. Non è prevista una verifica del budget di corrente.
 
@@ -98,7 +103,7 @@ ancora essere adeguati; il controller integrato delle porte non è ancora scelto
 - **RNF-5** **Un solo LED per porta USB**, pilotato dal MCU: spento = disabilitata,
   acceso fisso = abilitata, lampeggiante = guasto. Il guasto ha priorità sull'indicazione di
   abilitazione; il dettaglio disponibile dall'hardware si legge dal PC. Il LED indica lo stato
-  logico, non la presenza misurata di VBUS. LED dei relè, alimentazione e host invariati.
+  logico, non la presenza misurata di VBUS. Un LED per il relè mantenuto; LED alimentazione e host invariati.
 
 ## Fuori ambito (v1)
 
