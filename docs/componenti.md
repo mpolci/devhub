@@ -1,5 +1,21 @@
 # Componenti candidati
 
+**Stato della selezione:** le tabelle sotto documentano componenti e alternative dello schema
+attuale, ancora da adeguare alle decisioni D60–D65. Non è approvato alcun nuovo controller.
+
+| Blocco | Indirizzo per la versione semplificata |
+|---|---|
+| Misure | Eliminare U7/U8 INA3221, R5/R65–R69 e supporti dedicati; nessun sensore o partitore sostitutivo per porte/5V_SYS |
+| CC d'ingresso | Eliminare lettura ADC e R3/R4/C1/C2; mantenere Rd R1/R2 |
+| Porte | Valutare integrazione di switch VBUS, dati, scarica e protezioni; sensore di corrente non richiesto; sequenza interna ammessa |
+| LED USB | Cinque LED comandati dal MCU, anziché dieci; eliminare anche cinque resistenze; riferimenti da definire |
+| Invariati | Hub, MCU, relè/boccole, pulsanti, LED relè/alimentazione/host e protezioni, salvo adeguamenti necessari al controller |
+
+La selezione richiede verifica di corrente per porta, distacco dei dati con dispositivi
+autoalimentati, blocco inverso, ESD, guasti disponibili, scarica e stato al reset.
+Costo, disponibilità e risparmio netto vanno confrontati sul circuito completo; le alternative
+di misura elencate sotto non sono candidate per la versione semplificata.
+
 Tabella di lavoro per la scelta dei componenti. "Classe JLC" è lo stato nella libreria di
 assemblaggio JLCPCB al momento della verifica (ottobre 2026): va **riconfermato al momento
 dell'ordine**, cambia spesso. "A mano" indica se il package si salda con il solo saldatore ("sì"), se richiede aria calda
@@ -39,7 +55,7 @@ Yageo CC0402KRX7R7BB104), per stare accanto ai pin fra le coppie USB (D58).
 | MCU di controllo | ST **STM32G0B1RET6** | LQFP-64 | sì | extended | C2829307, ~2,7 $ cad. | USB FS device senza quarzo, 2× UCPD, 512 kB flash, ~60 GPIO |
 | Load switch VBUS (×3, doppio canale) | TI **TPS2561A** | VSON-10 3×3 | aria calda / piastra | extended | sì | 2,5 A continui per canale, limite regolabile 0,25–2,8 A (accurato 2,1–2,5 A), FAULT per canale, 44 mΩ; nessuna scarica dell'uscita (verificato): MOSFET di scarica esterno; R_ILIM 24,3 kΩ, 33,2 kΩ su U6 per la USB-A (D54) |
 | Load switch, alternativa a pin | TI **TPS25221DBV** | SOT-23-6 | sì | extended | sì | 2 A continui (al limite del requisito), limite 0,275–2,7 A, FAULT, nessuna scarica dell'uscita |
-| Scarica VBUS porta (×5) | MOSFET N **AO3400** + R 100 Ω 1206 | SOT-23 | sì | basic | sì | pilotato dal MCU per ~100 ms dopo lo spegnimento |
+| Scarica VBUS porta (×5) | MOSFET N **AO3400** + R 100 Ω 1206 | SOT-23 | sì | basic | sì | presente nello schema; durata da rivalutare con il ciclo temporizzato D61, o sostituzione con scarica integrata |
 | Switch dati D+/D- (×5) | Diodes **PI3USB4002AZUAEX** | UQFN-10 1,5×2 mm, passo 0,5 mm | aria calda | — | no (DigiKey) | interruttore USB 2.0, 1 GHz, 5 Ω, EN alto = scollegato; lato connettore tollerante 24 V con OVP a 4,75 V, ESD 10 kV IEC; REF con 1 µF 25 V (D22) |
 | Misura corrente | TI **INA3221** ×2 | VQFN-16 | aria calda | extended | sì | 3 canali, I2C: 5 porte + corrente totale d'ingresso |
 | Misura corrente, alternativa a mano | TI **INA219** ×5 | SOT-23-8 | sì | extended | sì | 1 canale, 16 indirizzi I2C |

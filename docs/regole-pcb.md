@@ -1,5 +1,10 @@
 # Regole per la progettazione PCB
 
+**Ambito:** le regole e i riferimenti di componente qui sotto corrispondono allo schema/PCB
+attuale, ancora da adeguare a D60–D65. Le prescrizioni per shunt/INA3221, filtri CC d'ingresso
+e doppi LED riguardano circuiti da rimuovere; non sono requisiti della versione semplificata.
+Regole specifiche di scarica e controller saranno aggiornate insieme al circuito scelto.
+
 Devhub usa un PCB a quattro strati da 1,6 mm con stackup **JLC04161H-7628**, lo stesso
 specificato per prog-board-native (D44). Le porte esterne sono USB 2.0 Hi-Speed a 480 Mbit/s;
 la porta interna del MCU è Full-Speed. Alimentazione, misura di corrente e contatti relè

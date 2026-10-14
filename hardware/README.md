@@ -1,5 +1,12 @@
 # hardware
 
+**Adeguamento richiesto (D60–D65).** Schema e PCB descritti sotto sono l'implementazione
+attuale e non incorporano ancora i [requisiti semplificati](../docs/requisiti.md).
+Da eliminare INA3221 e sei shunt, lettura/filtri CC d'ingresso e un LED con resistenza per
+porta; Rd e VBUS_DET upstream restano. Controller delle porte, scarica e pilotaggio del LED
+unico sono da definire. Le tabelle e i risultati ERC/parità sotto riguardano lo schema
+esistente, non attestano una revisione hardware già completata.
+
 Progetto KiCad 10 (schema, PCB, BOM) dell'hub.
 
 ```

@@ -6,8 +6,13 @@ Stack: STM32CubeG0 HAL, TinyUSB o libreria USB device di ST per HID/CDC.
 
 Responsabilità:
 - interfaccia USB HID secondo [../docs/protocollo-controllo.md](../docs/protocollo-controllo.md);
-- comando dei load switch e degli switch dati, sequenze di stacco/riattacco e cicli temporizzati;
-- lettura della corrente pubblicizzata dall'alimentatore (CC via ADC) e budget di potenza;
-- lettura di fault e correnti, spegnimento delle porte oltre budget;
+- comando logico delle porte, accettando la sequenza interna del controller;
+- cicli temporizzati con scarica attiva, senza verificare VBUS; default indicativo 1 s da validare;
+- accensioni sfalsate e gestione dei guasti segnalati dall'hardware;
+- un LED per porta: spento, fisso, lampeggiante per guasto;
+- nessuna misura di corrente/tensione, lettura delle CC d'ingresso o gestione del budget;
 - comando dei relè ausiliari;
 - stato di default all'accensione salvato in flash.
+
+Il pinout documenta lo schema attuale, ancora da adeguare a D60–D65; il rilevamento VBUS
+upstream necessario al funzionamento USB resta distinto dalle misure eliminate.

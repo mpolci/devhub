@@ -2,6 +2,10 @@
 
 ## Decise
 
+Le decisioni D60–D65 definiscono i requisiti semplificati correnti e prevalgono sulle parti
+incompatibili delle decisioni precedenti. Schema, PCB, pinout e BOM descrivono ancora
+l'implementazione da adeguare; non è ancora scelto un nuovo integrato per le porte.
+
 | # | Decisione | Scelta |
 |---|---|---|
 | D1 | Velocità | USB 2.0 Hi-Speed |
@@ -63,7 +67,19 @@
 | D57 | Disaccoppiamento del MCU U3 | come da DS13560 figura 15: C41 100 nF + C40 4,7 µF sulla coppia VDD/VSS (pin 8/9), C41 il più vicino; C42 100 nF su VREF+ (pin 7); VBAT (pin 6) collegato a VDD senza condensatore. Tolti C43 e C44 (100 nF senza destinazione, venivano dallo schema generato all'inizio) e C45 (1 µF su VREF+, richiesto solo con VREFBUF, che non si usa). Nello schema ogni condensatore è disegnato sul filo del pin che serve |
 | D58 | Disaccoppiamento del hub U2 | secondo la *USB2517 Hardware Design Checklist* di Microchip (DS00004211A, 2021, sezione 3.0): un 100 nF per ciascuno dei 7 pin a 3,3 V (C27 pin 46, C25 pin 5, C38 pin 10, C28 pin 52, C26 pin 57, C30 pin 64, C29 pin 24), un 1 µF condiviso dai quattro VDDA33 (C31, disegnato sul pin 57), 1 µF + 100 nF su VDD33CR (C32 + C29) e solo 1 µF sulle uscite dei regolatori interni VDD18 (C33) e VDD18PLL (C35), che non alimentano altro. Tolti i 100 nF su VDD18 e VDD18PLL della scheda di valutazione EVB-USB2517 del 2008; aggiunto C38, perché i 100 nF erano 6 per 7 pin. C37 è il 100 nF del supervisore U12. Nello schema ogni condensatore è sul filo del proprio pin. I 100 nF di U2 e C37 sono **0402** (magazzino ID 217, Yageo CC0402KRX7R7BB104), eccezione a D45: in 0603 non entrano accanto ai pin fra le coppie USB; la checklist ammette 0603 o più piccoli. I pin 5, 10 e 57 sono fra coppie USB: il tratto +3V3 pad-condensatore può stare a 0,2 mm dalle coppie dentro l'area di regola `U2_FANOUT` attorno a U2 (regola DRC "USB e piste vicine a U2"), invece delle 0,75 mm generali; niente via fra pad e condensatore |
 | D59 | Margini laterali del PCB | profilo allargato di 3,5 mm a sinistra: **172,5 × 85 mm** (era 169 × 85), così il margine fra il bordo e il corpo del connettore più esterno è uguale sui due lati del fronte: 11,45 mm dal bordo sinistro alla boccola J5 e 11,48 mm dal bordo destro alla USB-C J101 (corpo sullo strato Fab). Spostati anche i fori M3 di sinistra (H1, H3), sempre a 4,5 mm dai bordi, e il piano GND di In2; tutte le quote u dal bordo sinistro aumentano di 3,5 mm |
+| D60 | Eliminazione delle misure | RF-6 eliminato: nessuna misura di corrente delle cinque porte o totale, né lettura di tensione delle porte/5V_SYS. Da rimuovere U7/U8 INA3221, i sei shunt R5/R65–R69 e i supporti dedicati; niente partitori sostitutivi sulle porte. Supera D4, D36, D55 e la parte di D40 relativa alle misure. Il rilevamento VBUS upstream per l'hub resta. Nessuna diagnosi firmware di sorgente esterna o corrente inversa tramite misure (supera quella parte di D29); restano le protezioni hardware. |
+| D61 | Ciclo temporizzato e scarica | RF-2/RF-4: scarica attiva richiesta, ma nessuna verifica di VBUS sotto 0,8 V. Tempo configurabile dal comando di disabilitazione VBUS, comprensivo della scarica; default indicativo 1 s da validare sul circuito e sul prototipo. Durata della scarica e limiti configurabili devono rispettare i limiti termici, anche con sorgente esterna o porta lasciata spenta. Il completamento del ciclo non certifica lo spegnimento o il riavvio del dispositivo. Capacità elevate possono richiedere più tempo; le schede autoalimentate richiedono relè/reset per il riavvio. Supera D37. |
+| D62 | Sequenza interna delle porte | RF-3: un unico comando logico per VBUS e D+/D−; ammessi ordine e tempi interni del controller, purché a porta disabilitata alimentazione e dati siano interrotti anche con dispositivi autoalimentati. Nessun ritardo dati/VBUS regolabile e nessun parametro `on_delay_ms`. Resta configurabile la durata complessiva dello spegnimento. Supera il vincolo di sequenza separata di D28; controller da scegliere. |
+| D63 | Un LED per porta USB | RNF-5: un LED pilotato dal MCU, spento = disabilitata, fisso = abilitata, lampeggiante = guasto (prioritario); dettaglio hardware dal PC. Indica lo stato logico, non VBUS misurata. Da eliminare cinque LED e cinque resistenze; riferimenti, colore e posizione del LED mantenuto da definire nello schema/PCB. Pulsanti, LED dei relè, alimentazione e host invariati. Supera D24 e le parti relative ai LED USB di D38/D43. |
+| D64 | Gestione dei guasti senza budget misurato | RF-15: accensioni sfalsate e gestione dei guasti hardware; niente calcolo dei consumi, budget configurabile o selezione della porta più energivora. Restano i limitatori per porta e le protezioni d'ingresso. Un sovraccarico complessivo può spegnere l'intero hub; nessuna garanzia di continuità delle altre porte. Supera la gestione dinamica di D8. |
+| D65 | Alimentatore fisso e nessuna verifica CC | RF-13 richiede alimentatore USB-C 5 V / 3 A senza PD e cavo adeguato, a carico dell'utilizzatore. Un alimentatore PD è ammesso solo se offre anche questa modalità; capacità inferiori non garantite. RF-14 eliminato: nessuna lettura CC né controllo dell'annuncio di 3 A. Restano Rd da 5,1 kΩ e protezioni hardware; da togliere collegamenti all'ADC e filtri dedicati R3/R4/C1/C2. I 3 A comprendono tutti i consumi; ~2,3 A alle porte è una stima da rivalutare. Supera lettura CC e adattamento all'alimentatore di D8. |
 
 ## Aperte
 
-Nessuna. Le decisioni di dettaglio si prendono durante lo schema e il PCB.
+- Scelta del controller delle porte per accorpare VBUS, dati e scarica: nessun componente
+  nuovo è approvato. Verificare corrente, protezioni, distacco di dispositivi autoalimentati,
+  sequenza interna, guasti segnalati e stato al reset/bootloader.
+- Definire durata sicura della scarica, default e intervallo ammesso del ciclo sul circuito
+  definitivo; il secondo proposto non è una garanzia per qualsiasi capacità o alimentazione esterna.
+- Adeguare schema e PCB, aggiornando poi pinout, BOM, costi, regole specifiche e bilancio di
+  alimentazione. Confermare la gestione dei guasti in base ai segnali realmente disponibili.
