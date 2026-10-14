@@ -37,7 +37,7 @@
 
 (rule "USB-C uscita dal connettore"
    (constraint skew (max 3mm) (within_diff_pairs))
-   (condition "A.NetName == '/Porta ? (USB-C)/CONN_D?' || A.NetName == '/Hub USB2517/UP_CONN_D?'")
+   (condition "A.NetName == '/Porta ? (USB-C)/CONN_D?' || A.NetName == '/Hub USB e switch VBUS/UP_CONN_D?'")
 )
 
 # Distanza da altre piste, anche di altre coppie USB, e da rame laterale (zone)
@@ -77,7 +77,7 @@
    (condition "A.hasNetclass('USB_DIFF') && B.Type == 'Track' && (B.NetName == '*/CC?' || B.NetName == '*/CC?_UP') && B.insideArea('USBC_FANOUT')")
 )
 
-# Switch dati PI3USB4002A (U101-U501, UQFN 1,5 x 2, passo 0,5): GND, REF, EN e VDD
+# Switch dati PI3USB4002A (U101-U401, UQFN 1,5 x 2, passo 0,5): GND, REF, EN e VDD
 # sono a 0,5 mm dai pad delle coppie. Le piste di altre reti che escono da questi pin
 # possono stare a 0,2 dalle coppie, solo dentro le aree di regola SW_FANOUT.
 
@@ -116,9 +116,9 @@
 )
 
 # -----------------------------------------------------------------------------
-# Contatti dei relè: almeno 1 mm dai circuiti dell'hub e fra i due canali.
-# Fra le reti dello stesso canale (COM, NC, NO, snubber) valgono il land
-# pattern del relè e la clearance ordinaria: non ridurre le distanze del footprint.
+# Contatti del relè: almeno 1 mm dai circuiti dell'hub.
+# Fra le reti del contatto (COM, NC, NO, snubber) valgono il land pattern del
+# relè e la clearance ordinaria: non ridurre le distanze del footprint.
 # La separazione su tutti i layer (niente piani sotto i contatti) va fatta con
 # aree di esclusione nel PCB, non è esprimibile come clearance.
 # -----------------------------------------------------------------------------
@@ -128,11 +128,9 @@
    (condition "A.hasNetclass('RELAY_CONTACT') && !B.hasNetclass('RELAY_CONTACT')")
 )
 
-# Fra i due canali vale la clearance di netclass RELAY_CONTACT (1 mm).
-
-(rule "Relè stesso canale"
+(rule "Relè fra reti del contatto"
    (constraint clearance (min 0.2mm))
-   (condition "A.hasNetclass('RELAY_CONTACT') && B.hasNetclass('RELAY_CONTACT') && (((A.NetName == '*BAN1_*' || A.NetName == '*K1_*' || A.NetName == '*SNUB1') && (B.NetName == '*BAN1_*' || B.NetName == '*K1_*' || B.NetName == '*SNUB1')) || ((A.NetName == '*BAN2_*' || A.NetName == '*K2_*' || A.NetName == '*SNUB2') && (B.NetName == '*BAN2_*' || B.NetName == '*K2_*' || B.NetName == '*SNUB2')))")
+   (condition "A.hasNetclass('RELAY_CONTACT') && B.hasNetclass('RELAY_CONTACT')")
 )
 
 # -----------------------------------------------------------------------------

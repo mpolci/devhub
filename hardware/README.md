@@ -10,9 +10,9 @@ hardware/bom/           BOM e file per l'assemblaggio (da fare)
 
 ## Stato: schema v0.3
 
-Lo schema applica i [requisiti semplificati](../docs/requisiti.md) e le decisioni D60–D83
+Lo schema applica i [requisiti semplificati](../docs/requisiti.md) e le decisioni D60–D84
 (dettaglio in D79): quattro porte USB-C, un relè, cinque pulsanti, un LED per porta. Il PCB
-è ancora quello della v0.2 e non è allineato allo schema (vedi sotto).
+da 100 × 100 mm ha il piazzamento iniziale ed è da sbrogliare (vedi sotto).
 
 Simboli delle librerie standard di KiCad più quelli di progetto in `lib/`; fogli gerarchici riusati per le
 porte. Componenti vicini collegati a filo, ma ogni rete ha comunque un nome esplicito: etichette
@@ -73,17 +73,34 @@ Per l'ERC da riga di comando:
 /Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli sch erc --severity-all --output /tmp/erc.rpt hardware/devhub/devhub.kicad_sch
 ```
 
-## PCB (v0.2, da adeguare)
+## PCB
 
 Regole di progettazione: [stackup, routing e verifiche PCB](../docs/regole-pcb.md), configurate
 nel progetto: stackup nel PCB, vincoli e netclass in `devhub.kicad_pro`, regole personalizzate in
 `devhub.kicad_dru`.
 
-`devhub.kicad_pcb`: 4 strati, profilo 172,5 × 85 mm con angoli R3 e fori M3 a 4,5 mm dai
-bordi (D42, D59). Contiene ancora il piazzamento della v0.2 (porta USB-A, due relè, load switch,
-misure) e solo le coppie USB sbrogliate: non è allineato allo schema v0.3 e va aggiornato
-dallo schema, poi riordinato secondo D66. Il PCB va modificato in KiCad dallo stato corrente,
-non rigenerato.
+`devhub.kicad_pcb`: 4 strati, profilo **100 × 100 mm** con angoli R3 (D84), allineato allo schema
+v0.3 (parità senza differenze). Vista dall'alto, fronte (lato banco) in basso; u dal bordo
+sinistro, v dal bordo frontale. Piazzamento iniziale fatto, sbroglio da fare.
+
+| Cosa | Faccia | Posizione (u, v in mm) |
+|---|---|---|
+| J5 COM, J6 NC boccole | inferiore | u = 10 e 27; corpo a v = 11,85 come prima, manicotto a filo della faccia esterna della parete |
+| J401, J301, J201, J101 USB-C (porte 4…1) | inferiore | u = 46, 61, 76, 91; faccia d'innesto a filo del bordo frontale |
+| LED delle porte D402…D102 (verdi) | superiore | in asse con la porta, v = 2 |
+| D93 LED host | superiore | u = 18,5, v = 2, sopra la coppia di boccole |
+| SW1, SW401…SW101 pulsanti | superiore | v = 36; SW1 al centro delle boccole (u = 18,5), gli altri in asse con le porte |
+| J1 alimentazione, J2 upstream | inferiore | u = 24 e 82, a filo del bordo posteriore |
+| H1–H4 fori M3 | — | H1 (4,5; 58) dietro il relè K1, H2 (95,5; 28), H3 (4,5; 95,5), H4 (95,5; 95,5) |
+
+Gruppi funzionali sulla faccia inferiore, traslati dal piazzamento v0.2 con le rispettive aree
+di regola: porte con switch dati e condensatori dietro i connettori; U4/U5 UCS2114 dietro i
+pulsanti, fra le porte che servono; relè K1, driver U9 e ponticello a sinistra dietro le boccole;
+MCU al centro; hub con quarzo e disaccoppiamenti al centro-destra; alimentazione (eFuse, LDO,
+bulk) dietro a sinistra; upstream con ESD e VBUS_DET dietro a destra; J4 (SWD) e J9 (UART) sul
+retro, fra J1 e J2. Tolte tutte le piste e le zone di potenza della v0.2; restano il piano
+`GND_In2`, le zone VBUS delle porte e `U1_HEATSINK`, da riempire. Il PCB va modificato in KiCad
+dallo stato corrente, non rigenerato.
 
 Per il controllo di parità con lo schema da riga di comando:
 

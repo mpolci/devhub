@@ -1,15 +1,11 @@
 # Regole per la progettazione PCB
 
-**Ambito:** le regole e i riferimenti di componente qui sotto corrispondono al PCB v0.2, non
-ancora adeguato allo schema v0.3 (D79). USB-A e secondo canale relè con i relativi
-componenti sono già eliminati dallo schema; quote e piazzamenti riportati non descrivono il nuovo fronte.
-Le prescrizioni per shunt/INA3221, filtri CC d'ingresso
-e doppi LED riguardano circuiti da rimuovere; non sono requisiti della versione semplificata.
-Regole specifiche di scarica e controller saranno aggiornate insieme al circuito scelto.
+**Ambito:** regole del PCB v0.3, 100 × 100 mm (D84), allineato allo schema v0.3 (D79–D83).
+Il piazzamento iniziale è fatto; sbroglio, zone e serigrafia sono da completare.
 
 Devhub usa un PCB a quattro strati da 1,6 mm con stackup **JLC04161H-7628**, lo stesso
 specificato per prog-board-native (D44). Le porte esterne sono USB 2.0 Hi-Speed a 480 Mbit/s;
-la porta interna del MCU è Full-Speed. Alimentazione, misura di corrente e contatti relè
+la porta interna del MCU è Full-Speed. Alimentazione e contatti relè
 richiedono regole distinte dalle coppie USB.
 
 Lo stackup è deciso. Le dimensioni indicate come **valori iniziali** sono la base proposta
@@ -20,7 +16,7 @@ verifiche di layout da fare a mano.
 
 Riferimenti di progetto: [architettura](architettura.md), [componenti](componenti.md),
 [decisioni](domande-aperte.md), [pinout MCU](pinout-mcu.md) e
-[vincoli meccanici del PCB](../hardware/README.md#pcb-iniziato).
+[vincoli meccanici del PCB](../hardware/README.md#pcb).
 Tutte le dimensioni seguenti sono in mm, salvo indicazione diversa.
 
 ## Stackup fisico
@@ -105,17 +101,15 @@ Netclass da predisporre:
 |---|---:|---:|---|
 | DEFAULT | 0,25 | 0,20 | Segnali digitali lenti |
 | USB_DIFF | 0,2474 | 0,15 | Tutti i segmenti D+/D−; gap coppia 0,1519 |
-| SENSE | 0,20 | 0,20 | Derivazioni Kelvin, ingressi ADC, bias |
+| SENSE | 0,20 | 0,20 | Bias del hub (RBIAS) |
 | PWR_3V3 | 0,60 | 0,20 | +3V3 e alimentazione locale della logica; preferire zone |
-| PWR_PORT | 1,50 | 0,20 | SW_OUT_P1…P5, VBUS_P1…P5 e relativi tratti locali |
-| PWR_MAIN | 2,00 | 0,20 | VBUS_IN, 5V_EFUSE, +5V; preferire zone ampie |
+| PWR_PORT | 1,50 | 0,20 | VBUS_P1…P4 e relativi tratti locali |
+| PWR_MAIN | 2,00 | 0,20 | VBUS_IN, +5V; preferire zone ampie |
 | RELAY_CONTACT | 2,00 | 1,00 | COM, NC, NO, ponticelli e collegamenti alle boccole |
 
 Le larghezze di potenza si riferiscono al rame esterno da 35 µm e non certificano una
 portata. I restringimenti sui pad richiedono controllo locale; le clearance di footprint
 particolari richiedono regole circoscritte, non l'abbassamento dei minimi globali.
-La classe SENSE si applica alle diramazioni di misura: una netclass è associata a tutta la rete,
-quindi non deve restringere il percorso di potenza che condivide la stessa net.
 
 I nomi locali KiCad includono il percorso gerarchico. Assegnare le classi usando i nomi
 completi effettivi dopo l'aggiornamento dallo schema; `5V_SYS` nell'architettura corrisponde
@@ -140,14 +134,12 @@ KiCad calcola lo spessore includendo la mask: 1,6167.
 
 | Classe | Reti |
 |---|---|
-| USB_DIFF | `*CONN_DP`, `*CONN_DN` (porte e upstream), `HUB_DP?`, `HUB_DN?`, `USB_MCU_DP/DN`, `USBUP_DP/DN`, `SPARE_DP/DN` |
+| USB_DIFF | `*CONN_DP`, `*CONN_DN` (porte e upstream), `HUB_DP?`, `HUB_DN?`, `USB_MCU_DP/DN`, `USBUP_DP/DN` |
 | RELAY_CONTACT | `BAN?_COM`, `BAN?_2`, `K?_NC`, `K?_NO`, `SNUB?` |
-| PWR_MAIN | `VBUS_IN`, `5V_EFUSE`, `+5V` |
-| PWR_PORT | `SW_OUT_P?`, `VBUS_P?` |
+| PWR_MAIN | `VBUS_IN`, `+5V` |
+| PWR_PORT | `VBUS_P?` |
 | PWR_3V3 | `+3V3`, `5V_LOGIC` |
-| SENSE | `CC?_ADC`, `RBIAS` |
-
-Le derivazioni Kelvin non hanno una classe propria: sono le stesse reti di potenza degli shunt.
+| SENSE | `RBIAS` |
 
 **Regole personalizzate** in `devhub.kicad_dru`:
 
@@ -159,8 +151,8 @@ Le derivazioni Kelvin non hanno una classe propria: sono le stesse reti di poten
   fanout e via GND di ritorno restano liberi);
 - larghezze iniziali di PWR_MAIN, PWR_PORT, PWR_3V3 e SENSE come **avvisi**: ogni
   restringimento compare nel DRC e va giustificato localmente;
-- contatti relè a ≥ 1,0 dalle altre reti e fra i due canali; fra le reti dello stesso canale
-  0,20, secondo il land pattern;
+- contatti relè a ≥ 1,0 dalle altre reti; fra le reti del contatto 0,20, secondo il land
+  pattern;
 - eccezioni circoscritte alle impronte: 0,15 fra i pad di U13 (passo 0,45) e 0,19 fra pad GND
   e fori di centraggio dei GCT USB4105;
 - fanout del USB2517: fra tratti USB interamente dentro le aree di regola `USB_FANOUT_U2`
@@ -169,21 +161,21 @@ Le derivazioni Kelvin non hanno una classe propria: sono le stesse reti di poten
 - piste vicine al USB2517: fra le piste USB e le piste di altre reti interamente dentro l'area di
   regola `U2_FANOUT` (pad di U2 più circa 1,5 mm) la distanza minima è 0,2 invece di 0,75: a
   passo 0,5 i pad di alimentazione, quarzo, PLL e CFG_SEL2 sono accanto a quelli delle coppie
-  (D58). CFG_SEL2 (pin 13), XTAL1 e XTAL2 (pin 61, 60) escono dal lato interno del pad verso una
-  via sotto il corpo, fra la fila di pad e il pad esposto, perché all'esterno sono chiusi fra le
-  coppie della porta 5 e dell'upstream; da lì proseguono su F.Cu. Le via sono coperte dalla
-  maschera su entrambi i lati;
+  (D58);
 - uscita dei pin CC dai connettori USB-C: fra le piste USB e le piste CC (`CC1`, `CC2`, `CC1_UP`,
   `CC2_UP`) dentro le aree di regola `USBC_FANOUT` la distanza minima è 0,2 invece di 0,75. Il pad
   A5 (CC1) è a 0,5 mm dal pad B7 della coppia, il cui ramo scende parallelo per circa 1,5 mm; le
   aree coprono la fila di pad e i primi 3 mm verso l'interno di J2 e J101-J401;
-- switch dati PI3USB4002A (U101-U501, passo 0,5): GND, REF, EN e VDD sono a 0,5 mm dai pad delle
+- switch dati PI3USB4002A (U101-U401, passo 0,5): GND, REF, EN e VDD sono a 0,5 mm dai pad delle
   coppie; dentro le aree di regola `SW_FANOUT` (4 × 4 mm centrate su ogni switch) le piste di
   altre reti possono stare a 0,2 dalle coppie invece di 0,75.
 
-**Zone e aree di regola** nel PCB: piano GND `GND_In2` su tutto In2.Cu; aree
-`RELAY1_CONTACTS` e `RELAY2_CONTACTS` senza riempimenti su tutti i layer, sotto contatti dei
-relè, ponticelli, snubber e boccole; aree `USB_FANOUT_U2`, `U2_FANOUT`, `USBC_FANOUT` e `SW_FANOUT` usate solo dalle regole sopra.
+**Zone e aree di regola** nel PCB: piano GND `GND_In2` su tutto In2.Cu; area
+`RELAY1_CONTACTS` senza riempimenti su tutti i layer, sotto contatti del relè, ponticello,
+snubber e boccole; aree `USB_FANOUT_U2`, `U2_FANOUT`, `USBC_FANOUT` e `SW_FANOUT` usate solo
+dalle regole sopra, spostate insieme al proprio componente nel piazzamento v0.3: vanno
+ricontrollate dopo la rifinitura. Restano le piccole zone VBUS delle porte su B.Cu e In1.Cu e
+la zona `U1_HEATSINK`; zone di potenza e piano +3V3 su In1.Cu sono da ridisegnare con lo sbroglio.
 
 Nelle condizioni dei file `.kicad_dru` di KiCad 10 i caratteri jolly si usano con `==`;
 `matches` e `Parent.Reference` non funzionano e un errore fa scartare l'intero file senza
@@ -192,11 +184,9 @@ messaggi. Dopo ogni modifica, controllare con il DRC che le regole compaiano nei
 Le regole coprono solo ciò che il DRC può misurare: il resto è nella sezione
 [Verifiche manuali](#verifiche-manuali).
 
-**Avvisi aperti nel DRC**: serigrafia di J501 tagliata dal bordo e sovrapposta al riferimento,
-dovuta all'impronta del connettore a filo del bordo; testi di serigrafia sovrapposti fra loro e
-ai pad dopo il piazzamento; due via GND di ritorno vicino all'incrocio della coppia del MCU
-collegate per ora solo al piano In2.Cu; skew oltre 0,5 su USB_MCU, SPARE e USBUP (D20 → hub),
-da correggere con l'accordo di lunghezza. Da sistemare con lo sbroglio e la serigrafia definitiva.
+**Avvisi aperti nel DRC**: serigrafia dei connettori a filo del bordo tagliata dal bordo;
+testi di serigrafia sovrapposti fra loro e ai pad dopo il piazzamento; zone non riempite.
+Da sistemare con lo sbroglio e la serigrafia definitiva.
 
 ## Coppie USB
 
@@ -231,10 +221,9 @@ sostituiscono la tolleranza d'impedenza concordata con il produttore.
 | Percorso | Coppie da includere |
 |---|---|
 | Upstream J2 → ESD → hub | UP_CONN_DP / UP_CONN_DN e USBUP_DP / USBUP_DN nel foglio hub |
-| Hub → switch dati porte 1–5 | HUB_DP1…5 / HUB_DN1…5 |
+| Hub → switch dati porte 1–4 | HUB_DP1…4 / HUB_DN1…4 |
 | Switch dati → connettore | CONN_DP / CONN_DN in ogni istanza dei fogli porta |
 | Porta interna 6 → MCU | USB_MCU_DP / USB_MCU_DN |
-| Porta interna 7 → header | SPARE_DP / SPARE_DN nel foglio hub |
 
 Regole di routing:
 
@@ -247,7 +236,7 @@ Regole di routing:
 - Evitare curve brusche e variazioni ripetute di larghezza; adattare simmetricamente il fanout
   ai pad e ripristinare subito larghezza e gap nominali.
 - Tenere le protezioni nel percorso, senza bypass in rame. L'upstream attraversa USBLC6;
-  sulle cinque porte la protezione è nel PI3USB4002A, secondo D27.
+  sulle quattro porte la protezione è nel PI3USB4002A, secondo D27.
 
 Questi criteri seguono le [linee guida TI per interfacce veloci](https://www.ti.com/lit/an/spraar7j/spraar7j.pdf).
 
@@ -276,7 +265,8 @@ Realizzazione nel PCB, tutte le coppie su B.Cu sopra il piano GND di In2.Cu:
   connettore"); l'accordo stretto resta sul resto del percorso.
 - Lato connettore: PI3USB4002A a 12 mm dal connettore, coppia diritta dai pad ai pin.
 - Upstream: USBLC6 D20 in linea fra J2 e il hub, canali secondo D52.
-- Porta 6 (MCU, Full-Speed): incrocio di D+ e D− con due via su USB_MCU_DN (D52); il DRC
+- Porta 6 (MCU, Full-Speed): hub e MCU sono entrambi sulla faccia inferiore; se D+ e D−
+  si incrociano, l'incrocio con due via su una sola linea (D52) è ammesso a 12 Mbit/s; il DRC
   conta anche la lunghezza delle via.
 - Coppie parallele con la geometria nominale, senza compensazione di lunghezza: l'accordo
   D+/D− si fa con lo strumento di KiCad per le coppie differenziali.
@@ -287,8 +277,8 @@ Dimensionare la dorsale per **3 A continui**, verificando anche l'intervento del
 d'ingresso da 3,5 A nominali e le sue tolleranze. Per i collegamenti locali IN/OUT
 dell'eFuse vale inoltre il criterio di almeno 6 A nella sezione dedicata al TPS259470A.
 Per ogni porta considerare **2 A continui**
-e il limite hardware fino a circa **2,5 A**; il budget totale non permette cinque porte a
-2 A simultaneamente. Contatti relè: **3 A** per circuito indipendente.
+e il limite hardware fino a **2,9 A** (UCS2114, ILIM7); il budget totale non permette quattro
+porte a 2 A simultaneamente. Contatti relè: **3 A**.
 
 Preferire zone esterne ampie e percorsi corti. Collegare tutti i pad VBUS e GND dei connettori
 USB-C senza concentrare la corrente in un solo collo di bottiglia. Il ritorno GND va verificato
@@ -300,21 +290,21 @@ La verifica deve comprendere lunghezza, spessore del rame, restringimenti, via, 
 contatti e temperatura. Usare IPC-2152 o un modello termico adeguato per la portata; come
 obiettivi iniziali di layout adottare **ΔT del rame ≤ 10 °C** e **caduta nel solo rame di andata
 più ritorno ≤ 100 mV** sul percorso ingresso → porta peggiore, al carico di progetto.
-La verifica della tensione alla porta comprende anche cavo, connettori, eFuse, shunt e switch.
+La verifica della tensione alla porta comprende anche cavo, connettori, eFuse e switch.
 
 Controllo resistivo a 20 °C: `R = ρ × L / (w × t)`, con rame `ρ ≈ 1,72×10⁻⁸ Ω·m`.
 Per esempio, 100 mm di pista larga 2 mm e spessa 35 µm valgono circa 24,6 mΩ:
-**74 mV a 3 A sulla sola pista di andata**, prima di via e ritorno. Su una scheda da
-172,5 × 85 mm la sola larghezza nominale non basta: allargare le zone o accorciare i percorsi.
+**74 mV a 3 A sulla sola pista di andata**, prima di via e ritorno. Anche su una scheda da
+100 × 100 mm la sola larghezza nominale non basta: allargare le zone o accorciare i percorsi.
 
-La catena è ingresso → TVS/eFuse → **R5** → +5V → carichi. Nessun ramo di carico deve aggirare
-R5. Per le porte mantenere load switch → shunt → VBUS della porta; le derivazioni di misura
-non devono trasportare corrente di carico. VBUS upstream è una rete separata dalla +5V di sistema.
+La catena è ingresso → TVS/eFuse → +5V → carichi (UCS2114 delle porte, LDO, bobina del relè);
+per le porte UCS2114 → VBUS della porta. VBUS upstream è una rete separata dalla +5V di sistema.
 
 ## Piazzamento e dissipazione
 
-Rispettare profilo **172,5 × 85 mm, R3**, quattro fori M3 a 4,5 mm dai bordi e posizioni bloccate
-in D42/D43, D51 e D59. F.Cu ospita solo LED e pulsanti come componenti; tutto il resto è su B.Cu.
+Rispettare profilo **100 × 100 mm, R3**, fori M3 e posizioni bloccate del pannello in D84 (D43
+per l'allineamento di LED e pulsanti). F.Cu ospita solo LED e pulsanti come componenti; tutto il
+resto è su B.Cu.
 Verificare ingombri 3D, corsa dei pulsanti, accesso dei cavi, boccole e utensili di montaggio.
 Prevedere keepout su tutti i layer intorno a viti e distanziali, dimensionati sul loro ingombro
 reale, non solo sul foro. Conservare i vincoli già presenti nel PCB.
@@ -325,8 +315,9 @@ Ordine di piazzamento consigliato:
    rispettiva porta, lato protetto rivolto al connettore e lato hub rivolto all'USB2517.
    La distanza dal connettore va verificata anche per ESD, come precisato sotto.
 2. ESD upstream vicino a J2, TVS ed eFuse vicino a J1, con ritorni GND corti e larghi.
-3. TPS2561A vicino alle porte servite; shunt e condensatori senza lunghi giri di potenza.
-4. MCU vicino alla porta interna dell'hub; INA3221 collocati per accorciare le coppie Kelvin.
+3. UCS2114 fra le due porte servite, con condensatori VS/VDD e resistenza COMM_ILIM presso i
+   pin; uscite VBUS verso i connettori senza lunghi giri di potenza.
+4. MCU vicino alla porta interna dell'hub.
 5. LDO e Schottky con spazio per dissipare; relè e driver nella zona delle boccole.
 
 Piazzare ogni integrato insieme ai componenti che ne vincolano il funzionamento: riservare
@@ -342,16 +333,16 @@ Le indicazioni seguenti specificano il piazzamento dei componenti già presenti 
 
 | Gruppo | Componenti | Regola di piazzamento |
 |---|---|---|
-| Switch USB U101–U501 | C106/C206/C306/C406/C506, 1 µF 25 V su REF | Accanto ai pin REF e GND dello switch, con anello REF → condensatore → GND corto; evitare giri attorno alle coppie dati |
-| Alimentazione switch USB | C101/C201/C301/C401/C501, 100 nF | Presso VDD del rispettivo switch, con ritorno GND locale; non sostituiti dal condensatore REF |
-| eFuse U13 | C13, 100 nF; C7, 1 µF; R30–R33, C11 e C12 | C13 direttamente presso IN/GND e C7 presso OUT/GND, prima di R5; partitore, resistenza ILM e condensatori dV/dt e timer presso i rispettivi pin, lontani dai segnali commutati |
-| Riserva sulla +5V | C3/C4, 220 µF; C5/C6, 10 µF | Dopo R5, nella zona di distribuzione della +5V verso i carichi; evitare un lungo ramo morto che ne aumenti l'induttanza. Non considerarli sostitutivi dei bypass presso gli integrati |
-| Load switch U4/U5/U6 | C60/C61/C62 | Ciascuno presso i pin IN/GND del proprio TPS2561A; riservare accanto al pin ILIM anche la relativa resistenza |
+| Switch USB U101–U401 | C106/C206/C306/C406, 1 µF 25 V su REF | Accanto ai pin REF e GND dello switch, con anello REF → condensatore → GND corto; evitare giri attorno alle coppie dati |
+| Alimentazione switch USB | C101/C201/C301/C401, 100 nF | Presso VDD del rispettivo switch, con ritorno GND locale; non sostituiti dal condensatore REF |
+| eFuse U13 | C13, 100 nF; C7, 1 µF; R30–R33, C11 e C12 | C13 direttamente presso IN/GND e C7 presso OUT/GND; partitore, resistenza ILM e condensatori dV/dt e timer presso i rispettivi pin, lontani dai segnali commutati |
+| Riserva sulla +5V | C3/C4, 220 µF; C5/C6, 10 µF | Nella zona di distribuzione della +5V verso i carichi; evitare un lungo ramo morto che ne aumenti l'induttanza. Non considerarli sostitutivi dei bypass presso gli integrati |
+| Switch VBUS U4/U5 | C60/C63, 100 nF su VDD; C61/C62 e C64/C65, 1 µF sulle coppie VS; R60/R61 su COMM_ILIM; R62–R65 pull-up ALERT# | 100 nF presso VDD (pin 8), 1 µF presso ciascuna coppia VS (6/7 e 9/10) con ritorno GND corto; resistenza COMM_ILIM presso il pin 3; pin VS e VBUS duplicati uniti con rame largo; area termica collegata al pin 17 |
 | Hub U2 | 100 nF 0402: C27 (pin 46), C25 (5), C38 (10), C28 (52), C26 (57), C30 (64), C29 (24); 1 µF: C31 condiviso dei VDDA33 (vicino al pin 57), C32 (24); 1 µF C33 su VDD18 (25), C35 su VDD18PLL (62) | Ogni condensatore presso il proprio pin, il 100 nF più vicino del 1 µF, collegato al pad con una pista sullo stesso lato (niente via fra pad e condensatore) e ritorno GND corto; per i pin 5, 10 e 57, fra coppie USB, vale l'area `U2_FANOUT` (D58) |
 | Supervisore U12 | C37, 100 nF 0402 | Presso il pin VDD di U12, non del hub |
-| MCU U3 | C41, 100 nF; C40, 4,7 µF; C42, 100 nF | C41 il più vicino alla coppia VDD/VSS (pin 8/9), con il pad +3V3 verso i pin 6–8 e il pad GND verso il pin 9; C40 subito dietro; C42 per VREF+ (pin 7) accanto a C41. VBAT (pin 6) senza condensatore proprio (D57) |
+| MCU U3 | C41, 100 nF; C40, 4,7 µF; C42, 100 nF | C41 il più vicino al pin VDD/VDDA (6), con ritorno su VSS (7) e sul pad esposto (49); C40 subito dietro; C42 per VREF+ (pin 5) accanto a C41. VBAT (pin 4) senza condensatore proprio (D57) |
 | LDO U1 | C8 in ingresso; C9/C10 in uscita | C8 presso IN/GND, C9/C10 presso OUT/GND, con anelli corti; la vicinanza di D2 non deve togliere spazio a condensatori e rame di dissipazione |
-| VBUS delle porte | C102…C502 da 22 µF e C103…C503 da 100 nF; C505 da 100 µF sulla USB-A | Presso VBUS/GND del rispettivo connettore, a valle dello shunt; collocare il ceramico piccolo con il percorso più corto. Non raggruppare tutte le capacità nella zona dei load switch |
+| VBUS delle porte | C102…C402 da 22 µF e C103…C403 da 100 nF | Presso VBUS/GND del rispettivo connettore; collocare il ceramico piccolo con il percorso più corto. Non raggruppare tutte le capacità nella zona dei load switch |
 
 REF e VDD seguono le indicazioni del
 [datasheet PI3USB4002A, Application Information](https://www.diodes.com/datasheet/download/PI3USB4002A.pdf).
@@ -361,8 +352,9 @@ mettere obbligatoriamente a ridosso del connettore. La distanza va conciliata co
 USB Hi-Speed e verificata sul prototipo; non allungare artificialmente la coppia con serpentine
 né aggiungere induttori non presenti nello schema.
 
-Per il bypass dei load switch, riferimento:
-[TPS2561A, Input and Output Capacitance](https://www.ti.com/lit/ds/symlink/tps2561a.pdf).
+Per gli UCS2114, riferimento:
+[datasheet DS20005743B](https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/UCS2114-Data-Sheet-20005743B.pdf),
+land pattern C04-2421.
 
 ### Layout specifico del TPS259470A
 
@@ -385,34 +377,27 @@ progetto da 3 A, il criterio TI richiede di verificare i collegamenti locali IN/
 modifica del limite dell'eFuse. La larghezza iniziale da 2 mm e il numero iniziale di via
 non dimostrano da soli il rispetto di questo criterio.
 
-Le zone termiche di IN e OUT appartengono rispettivamente a VBUS_IN e 5V_EFUSE:
+Le zone termiche di IN e OUT appartengono rispettivamente a VBUS_IN e +5V:
 non collegarle a GND né unirle tra loro. Conservare la continuità dei piani sotto le USB;
 il ritorno analogico locale va organizzato nella zona di U13. R33 sul pin ILM non deve avere
 stub, test point o capacità aggiunte; verificare il limite dei 50 pF considerando piste,
 pad e via, non interpretarlo come un condensatore da montare. R30–R32, C11 e C12 restano
 presso i rispettivi pin di regolazione.
 
-C7 (1 µF, D48) realizza il bypass d'uscita: va sul lato a monte di R5, a ridosso dei pin OUT e
-GND di U13, con loop minimo e via GND accanto al pad; non va spostato vicino a C3–C6, che sono
-dopo lo shunt e non lo sostituiscono. Non è previsto lo Schottky di clamp su OUT (D48): la
-5V_EFUSE resta sulla scheda e non porta a carichi induttivi o cavi; per questo è importante
-tenere corto e largo il collegamento OUT → R5 → C3/C4, così che i condensatori di riserva
+C7 (1 µF, D48) realizza il bypass d'uscita: va a ridosso dei pin OUT e GND di U13, con loop
+minimo e via GND accanto al pad; C3–C6 non lo sostituiscono. Non è previsto lo Schottky di
+clamp su OUT (D48): la +5V resta sulla scheda e alimenta solo carichi locali; per questo è
+importante tenere corto e largo il collegamento OUT → C3/C4, così che i condensatori di riserva
 limitino anche i transitori negativi all'apertura dell'eFuse.
 
-### Scarica delle porte e separazione termica
+### Separazione termica
 
-Raggruppare Q101–Q501 con le rispettive resistenze R101–R501 da 100 Ω nella zona VBUS della
-porta. Tenere corto il percorso VBUS → resistenza → MOSFET → GND e collegare il ritorno al
-piano senza passare per le derivazioni Kelvin o i ritorni locali degli INA3221. Collocare
-il pull-down del gate presso il MOSFET. Mantenere accessibile la resistenza per ispezione e
-rilavorazione e lasciare spazio perché possa dissipare durante la scarica.
-
-Evitare di concentrare LDO, Schottky, eFuse, load switch e resistenze di scarica attorno agli
-INA3221 e agli shunt. Disporre questi ultimi in modo da limitare il riscaldamento esterno
-asimmetrico delle piazzole, senza allungare inutilmente i percorsi di potenza o Kelvin.
-Non fissare una distanza termica universale: usare area di rame, potenza e temperatura nel
-case per verificare la separazione. Anche i condensatori elettrolitici vanno tenuti lontani
-dalle sorgenti di calore, compatibilmente con la loro funzione elettrica.
+La scarica delle porte è interna agli UCS2114 (D75): non ci sono componenti di scarica da
+piazzare. Evitare di concentrare LDO, Schottky, eFuse e UCS2114 nella stessa zona, senza
+allungare inutilmente i percorsi di potenza. Non fissare una distanza termica universale:
+usare area di rame, potenza e temperatura nel case per verificare la separazione. Anche i
+condensatori elettrolitici vanno tenuti lontani dalle sorgenti di calore, compatibilmente con
+la loro funzione elettrica.
 
 ### Disaccoppiamento e dissipazione degli integrati
 
@@ -434,42 +419,28 @@ di U2. Per la produzione le via diventano "encroached" (punto 7 delle
 pad, ~1,4 cm² (lo spazio fra C8/C9, D2 e R1/R2), con 10 via 0,60/0,30 ai lati e sopra/sotto il
 tab verso il piano GND In2.Cu: obiettivo θJA ≤ ~60 °C/W. Il rame non va interrotto da piste di
 segnale; il pin 2 centrale va collegato al tab con una pista corta. Verificare nel case chiuso il caso peggiore: LDO, Schottky,
-eFuse, TPS2561A, shunt e relè eccitati; sul prototipo misurare la temperatura di U1 con 7 porte
+eFuse, UCS2114 e relè eccitati; sul prototipo misurare la temperatura di U1 con 7 porte
 Hi-Speed attive.
 Dimensionare i thermal relief dei pad di potenza per la corrente; verificare il compromesso
 con la saldatura manuale. La dimensione del pad da sola non garantisce dissipazione sufficiente.
 
-## Misura di corrente e segnali sensibili
+## Segnali sensibili
 
-R5 e i cinque shunt porta da 20 mΩ richiedono collegamenti **Kelvin**: prendere IN+ e IN−
-direttamente dalle rispettive piazzole, dalla zona prossima al resistore, separatamente dal
-flusso della corrente di carico. Evitare prese sulle piste di potenza lontano dallo shunt.
+Per le CC d'ingresso, R1/R2 (Rd da 5,1 kΩ) restano nella zona del connettore J1, senza
+collegamenti al MCU (D65).
 
-Instradare le due derivazioni vicine, con ambiente simile, lontane da bobine, scarica VBUS,
-quarzo e coppie USB. Non richiedono impedenza USB o accordo di lunghezza al decimo di mm.
-Rispettare la polarità di misura; nessun piano o percorso parallelo deve cortocircuitare lo shunt.
-A 2,5 A uno shunt da 20 mΩ dissipa 0,125 W; a 3 A quello d'ingresso dissipa 0,18 W:
-verificare rating, derating e riscaldamento locale.
-
-Per le CC d'ingresso, R1/R2 (Rd da 5,1 kΩ) restano nella zona del connettore J1.
-I filtri verso l'ADC sono R3/C1 su CC1_ADC e R4/C2 su CC2_ADC: mettere C1/C2 da 100 nF
-presso i pin 17/18 di U3 e R3/R4 da 1 kΩ subito prima, mantenendo l'ordine fisico
-**linea CC → resistenza serie → nodo condensatore/ADC → pin MCU**. Il condensatore è
-in derivazione verso GND, con via accanto al pad di massa; il tratto dal nodo filtrato al pin
-deve essere corto e lontano da bobine e percorsi di potenza.
-
-Tenere corti i partitori CC verso ADC, le reti ILIM, dV/dt e timer dell'eFuse. Collocare
-resistenze e condensatori presso i pin interessati. Non aggiungere filtri rispetto allo schema
-senza verificarne l'effetto sulle misure e sulle temporizzazioni. Instradare I2C sopra GND,
-lontano dai loop di potenza; verificare i fronti con la capacità reale del bus sul prototipo.
+Tenere corte le reti ILM, dV/dt e timer dell'eFuse e le resistenze COMM_ILIM degli UCS2114.
+Collocare resistenze e condensatori presso i pin interessati. Non aggiungere filtri rispetto
+allo schema senza verificarne l'effetto sulle temporizzazioni. Instradare i due bus I2C sopra
+GND, lontano dai loop di potenza; verificare i fronti con la capacità reale del bus sul prototipo.
 
 ## Relè e isolamento dei contatti
 
-I contatti sono circuiti separati da GND e dalle alimentazioni USB e separati fra i due relè.
+I contatti sono circuiti separati da GND e dalle alimentazioni USB.
 Sono previsti **16 V / 3 A massimi**, non l'uso su rete elettrica.
 
 Come regola iniziale di layout, mantenere **almeno 1 mm di separazione** fra rame dei contatti
-e circuiti dell'hub e fra i due canali indipendenti, su tutti i layer. Escludere piani GND e
+e circuiti dell'hub, su tutti i layer. Escludere piani GND e
 alimentazioni sotto la zona dei contatti e le piste verso le boccole. Questa distanza è una
 scelta funzionale per la bassa tensione prevista, non una qualifica d'isolamento di sicurezza.
 Non ridurre le distanze del footprint del relè rispetto al land pattern del produttore.
@@ -477,15 +448,15 @@ Non ridurre le distanze del footprint del relè rispetto al land pattern del pro
 Tenere le piste COM/NC/NO larghe e corte fino ai ponticelli e alle boccole; controllare anche
 la portata di ponticelli, pad e thermal relief. Gli snubber DNP restano sul lato contatti.
 Bobine, ULN2003V12 e ritorni di ricircolo appartengono invece alla massa dell'hub: rendere
-compatto il loop bobina → driver → clamp/COM → alimentazione, lontano dagli ingressi INA.
+compatto il loop bobina → driver → clamp/COM → alimentazione, lontano da quarzo e coppie USB.
 Non creare una separazione della massa logica per imitare l'isolamento dei contatti.
 
 ## Pulsanti e condensatori di filtro
 
-I sette condensatori da **100 nF** delle linee dei pulsanti vanno sulla faccia inferiore
+I cinque condensatori da **100 nF** delle linee dei pulsanti vanno sulla faccia inferiore
 **vicino ai rispettivi GPIO dell'MCU** (D46), con il tratto condensatore → pin il più corto
 possibile e una via GND accanto al pad di massa. I pulsanti restano sulla faccia superiore,
-nelle posizioni definite da D42/D43 e D51.
+nelle posizioni definite da D43 e D84.
 
 La posizione presso l'ingresso permette di filtrare anche i disturbi raccolti lungo la pista
 pulsante → MCU. Instradare queste linee sopra un piano GND continuo, lontano dai percorsi
@@ -499,7 +470,7 @@ condensatore sul PCB è meno determinante; il **debounce resta in firmware**, se
 - Definire stencil e aperture dei pad esposti; prevedere accesso per rilavorazione dei package
   piccoli senza urtare connettori e componenti alti. La finitura superficiale resta da scegliere
   in base a planarità e processo di assemblaggio.
-- Identificare porte 1–5, PWR IN, UPSTREAM, COM e NC, pin 1 degli header, revisione PCB e polarità.
+- Identificare porte 1–4, PWR IN, UPSTREAM, COM e NC, pin 1 degli header, revisione PCB e polarità.
   Conservare le marcature leggibili anche a scheda montata, dove servono all'utente.
 - Prevedere accesso a GND, +5V, +3V3, reset hub/MCU, SWD, I2C, FLT e VBUS di ogni porta.
   Preferire pad già accessibili; eventuali nuovi TP devono essere coerenti con lo schema.
@@ -507,7 +478,7 @@ condensatore sul PCB è meno determinante; il **debounce resta in firmware**, se
 - Al primo avvio usare alimentazione limitata, verificare rail e reset, poi enumerazione hub
   e MCU. Provare ogni porta in Hi-Speed e Full-Speed, entrambi gli orientamenti USB-C,
   trasferimenti simultanei e cicli di stacco sotto carico.
-- Misurare tensione alla porta peggiore, temperatura nel case, accuratezza degli INA, scarica
+- Misurare tensione alla porta peggiore, temperatura nel case, scarica
   VBUS e assenza di rialimentazione indesiderata; verificare i guasti previsti dall'architettura.
   Il solo successo dell'enumerazione non dimostra la qualità del canale USB Hi-Speed.
 
@@ -535,14 +506,12 @@ modifica significativa. Il dettaglio di ciascun punto è nelle sezioni indicate.
 - Almeno quattro via 0,60/0,30 a ogni cambio di faccia della dorsale; tutti i pad VBUS e GND
   dei connettori USB-C collegati.
 - Ogni avviso di larghezza delle classi PWR_* e SENSE giustificato da un restringimento locale.
-- Collegamenti locali IN/OUT di U13 dimensionati per 6 A; nessun carico a monte di R5.
+- Collegamenti locali IN/OUT di U13 dimensionati per 6 A.
 
-**Misura di corrente** ([Misura di corrente e segnali sensibili](#misura-di-corrente-e-segnali-sensibili))
+**Segnali sensibili** ([Segnali sensibili](#segnali-sensibili))
 
-- Derivazioni Kelvin di R5 e degli shunt porta prese dalle piazzole, vicine fra loro e
-  senza corrente di carico: sono le stesse reti di potenza e il DRC non le distingue.
-- Pin ILM di U13 senza stub e con capacità parassita < 50 pF; reti dV/dt, timer e ILIM corte.
-- Filtri CC nell'ordine linea → resistenza → condensatore/ADC → pin, presso il MCU.
+- Pin ILM di U13 senza stub e con capacità parassita < 50 pF; reti dV/dt, timer, ILM e
+  COMM_ILIM corte.
 
 **Relè e meccanica** ([Relè e isolamento dei contatti](#relè-e-isolamento-dei-contatti),
 [Piazzamento e dissipazione](#piazzamento-e-dissipazione))
@@ -558,7 +527,8 @@ modifica significativa. Il dettaglio di ciascun punto è nelle sezioni indicate.
   nessuna isola di rame scollegata o strozzatura dei piani.
 - Disaccoppiamenti, quarzo, RBIAS, REF dei PI3USB4002A e bypass C7/C13 di U13 presso i pin
   ([Componenti di supporto e condensatori](#componenti-di-supporto-e-condensatori)).
-- Separazione termica fra sorgenti di calore, INA3221 e shunt; caso peggiore nel case chiuso.
+- Separazione termica fra sorgenti di calore (LDO, Schottky, eFuse, UCS2114) e condensatori
+  elettrolitici; caso peggiore nel case chiuso.
 - Pad esposto di U2: nei Gerber della maschera del lato opposto le 16 aperture 1:1 delle via
   termiche; sul prototipo saldatura e temperatura di U2 con 7 porte Hi-Speed attive (D50).
 

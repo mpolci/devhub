@@ -2,9 +2,9 @@
 
 ## Decise
 
-Le decisioni D60–D66 e D68–D83 definiscono i requisiti correnti e prevalgono sulle parti
+Le decisioni D60–D66 e D68–D84 definiscono i requisiti correnti e prevalgono sulle parti
 incompatibili delle decisioni precedenti. Lo schema v0.3 e il pinout le applicano (D79);
-PCB e BOM descrivono ancora l'implementazione v0.2 da adeguare.
+il PCB da 100 × 100 mm (D84) ha il piazzamento iniziale, la BOM è da aggiornare.
 
 | # | Decisione | Scelta |
 |---|---|---|
@@ -91,6 +91,7 @@ PCB e BOM descrivono ancora l'implementazione v0.2 da adeguare.
 | D81 | Colore del LED unico di porta | Verde: si tiene il LED che indicava la porta alimentata (D102–D402 con R106–R406, 1 kΩ), pilotato da LED_P1–P4; il guasto si distingue dal lampeggio (D63) |
 | D82 | LED di sistema | Dei tre LED di sistema resta solo quello di host collegato (D93, R93, da LED_HOST). Eliminati il LED del relè (D90, R90) e quello di accensione (D92, R92). Cinque LED complessivi: quattro di porta e host. Supera i conteggi dei LED di D66 e D68 |
 | D83 | Fogli dello schema | Gli switch VBUS (U4/U5 UCS2114 con strap, disaccoppiamenti e pull-up degli ALERT#) stanno nel foglio del hub, rinominato "Hub USB e switch VBUS"; il LED di host (D93, R93) sta nel foglio MCU, con LED_HOST come etichetta locale. Eliminati i fogli `switches` e `ui`; il relè resta nel proprio foglio. Componenti, riferimenti e collegamenti invariati |
+| D84 | PCB 100 × 100 mm | Profilo 100 × 100 mm R3, 4 strati. Fronte (vista dall'alto, u dal bordo sinistro): boccole COM/NC a u = 10 e 27 (17 mm fra loro), USB-C porte 4…1 a u = 46, 61, 76, 91 (passo 15 mm, 19 mm fra boccola NC e porta 4), margini laterali ~3,5 mm; pulsanti a v = 36 in asse con porte e coppia di boccole, LED a v = 2, LED host sopra le boccole. Retro: J1 a u = 24, J2 a u = 82. Fori M3 tolti dagli angoli anteriori: H1 (4,5; 58) dietro il relè, H2 (95,5; 28), H3/H4 agli angoli posteriori a 4,5 mm dai bordi. Restano le regole delle facce di D42 (sopra solo LED e pulsanti) e le profondità di boccole e connettori di D42/D43. Supera profilo, posizioni e fori di D42, D51 e D59 |
 
 ## Aperte
 
@@ -100,7 +101,8 @@ PCB e BOM descrivono ancora l'implementazione v0.2 da adeguare.
   reset e bootloader.
 - Definire durata sicura della scarica, default e intervallo ammesso del ciclo sul circuito
   definitivo; il secondo proposto non è una garanzia per qualsiasi capacità o alimentazione esterna.
-- Adeguare PCB, BOM, costi, regole specifiche e bilancio di alimentazione allo schema v0.3.
+- Completare piazzamento fine e sbroglio del PCB (D84), poi BOM, costi e bilancio di
+  alimentazione.
   Confermare la gestione dei guasti in base ai segnali realmente disponibili.
 - Completare i codici fornitore mancanti: U4/U5 (UCS2114-1-V/LX), U3 su Mouser e LCSC,
   R60/R61 (27 kΩ 1 %) su LCSC; campi `warehouse` vuoti per i componenti non a magazzino.

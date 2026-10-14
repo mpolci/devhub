@@ -1,8 +1,9 @@
 # Architettura
 
-L'architettura funzionale segue i requisiti semplificati D60–D66 e le decisioni D68–D83: controllo delle porte
+L'architettura funzionale segue i requisiti semplificati D60–D66 e le decisioni D68–D84: controllo delle porte
 e riavvio temporizzato, senza misura dei consumi, delle tensioni delle porte/5V_SYS o delle CC
-d'ingresso. Lo schema v0.3 la applica (D79); il PCB è ancora quello della v0.2 e va adeguato.
+d'ingresso. Lo schema v0.3 la applica (D79); il PCB da 100 × 100 mm (D84) ha il
+piazzamento iniziale ed è da sbrogliare.
 D75 sceglie due UCS2114-1-V/LX con due bus I²C indipendenti e quattro PI3USB4002A.
 La scarica automatica va configurata all’avvio, con 400 ms come durata iniziale da validare.
 Componenti e alternative: [componenti.md](componenti.md).
@@ -374,14 +375,15 @@ ripiego se la rifusione dell'hub dà problemi. La D è il ripiego se non si vuol
 - Scatola **stampata in 3D su misura**, disegnata sulle misure reali del PCB a layout finito.
 - Tutti i connettori saldati sul PCB e affacciati alle aperture della scatola; boccole a banana
   in versione da PCB. Nessun cablaggio interno a filo.
-- Connettori sui due lati corti: lato "banco" le 4 porte downstream e le 2 boccole del relè; lato
+- Connettori su due lati opposti: lato "banco" le 4 porte downstream e le 2 boccole del relè; lato
   posteriore upstream e alimentazione.
-- PCB esistente 172,5 × 85 mm (D42, D59), ingombro e posizioni da rivalutare con D66: sulla faccia superiore solo LED e pulsanti, che si vedono e si premono dal
+- PCB 100 × 100 mm (D84): sulla faccia superiore solo LED e pulsanti, che si vedono e si premono dal
   coperchio, ciascuno dietro la sua porta o coppia di boccole; tutto il resto, connettori compresi,
-  sulla faccia inferiore. Le boccole sono a coppie (COM e NC dello stesso relè); il loro manicotto
+  sulla faccia inferiore. Le due boccole (COM e NC del relè) sono affiancate; il loro manicotto
   isolante (14,35 mm, senza filetto) attraversa la parete frontale, ispessita intorno alle boccole
   perché il manicotto finisca a filo della faccia esterna.
-- PCB fissato alla scatola con 4 viti M3 su boccole filettate o inserti; i pulsanti tattili con
+- PCB fissato alla scatola con 4 viti M3 su boccole filettate o inserti, due agli angoli
+  posteriori e due lontano dagli angoli anteriori, occupati da boccole e porte (D84); i pulsanti tattili con
   estensori stampati o pulsanti ad asta lunga.
 
 ## Protezioni (uso in laboratorio)
