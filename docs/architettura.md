@@ -1,6 +1,6 @@
 # Architettura
 
-L'architettura funzionale segue i requisiti semplificati D60–D66 e le decisioni D68–D81: controllo delle porte
+L'architettura funzionale segue i requisiti semplificati D60–D66 e le decisioni D68–D83: controllo delle porte
 e riavvio temporizzato, senza misura dei consumi, delle tensioni delle porte/5V_SYS o delle CC
 d'ingresso. Lo schema v0.3 la applica (D79); il PCB è ancora quello della v0.2 e va adeguato.
 D75 sceglie due UCS2114-1-V/LX con due bus I²C indipendenti e quattro PI3USB4002A.
@@ -36,7 +36,8 @@ USB-C UPSTREAM → HUB USB 2.0 USB2517I-JZX
 
 MCU → comando logico e gestione guasti per porta
     → un LED e un pulsante per porta
-    → un relè con pulsante e LED dedicati
+    → un relè con pulsante dedicato
+    → LED di host collegato
     → configurazione hub, SWD, UART
 ```
 
@@ -337,7 +338,7 @@ di un impulso, e se l'hub perde alimentazione o si blocca la linea torna collega
 sicuro per una scheda in prova). Il contatto NO è portato su un **ponticello a saldare** interno:
 spostandolo la seconda boccola diventa NO per un eventuale uso "normalmente aperto".
 Nel protocollo i comandi parlano di linea ("collegata / staccata", "stacca per N ms"), non di
-bobina. Un LED (D90, dal comando RLY1), acceso quando la linea è staccata, e un pulsante (SW1):
+bobina. Un pulsante (SW1), senza LED dedicato (D82):
 ogni pressione alterna la linea, collegata o staccata (RF-17).
 
 **Margine sulla bobina (D33).** Il G5Q-1 da 5 V (63 Ω, 80 mA) scatta garantito con 3,75 V a 23 °C

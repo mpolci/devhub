@@ -815,52 +815,6 @@
 		)
 	)
 	(sheet
-		(at 15.24 121.92)
-		(size 76.2 20.32)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0)
-		)
-		(uuid "1e0a4864-e5d3-5f33-ba41-65dd2f29348f")
-		(property "Sheetname" "Switch VBUS porte"
-			(at 15.24 121.22 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Sheetfile" "switches.kicad_sch"
-			(at 15.24 142.84 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(instances
-			(project "devhub"
-				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630"
-					(page "5")
-				)
-			)
-		)
-	)
-	(sheet
 		(at 15.24 91.44)
 		(size 76.2 20.32)
 		(exclude_from_sim no)
@@ -907,7 +861,7 @@
 		)
 	)
 	(sheet
-		(at 15.24 152.4)
+		(at 15.24 121.92)
 		(size 76.2 20.32)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -923,7 +877,7 @@
 		)
 		(uuid "754ef4c0-187b-5738-814a-57c901f66789")
 		(property "Sheetname" "Relè ausiliario"
-			(at 15.24 151.7 0)
+			(at 15.24 121.22 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -934,7 +888,7 @@
 			)
 		)
 		(property "Sheetfile" "relays.kicad_sch"
-			(at 15.24 173.32 0)
+			(at 15.24 142.84 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -947,7 +901,7 @@
 		(instances
 			(project "devhub"
 				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630"
-					(page "6")
+					(page "5")
 				)
 			)
 		)
@@ -1053,7 +1007,7 @@
 		(instances
 			(project "devhub"
 				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630"
-					(page "8")
+					(page "6")
 				)
 			)
 		)
@@ -1159,7 +1113,7 @@
 		(instances
 			(project "devhub"
 				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630"
-					(page "11")
+					(page "9")
 				)
 			)
 		)
@@ -1180,7 +1134,7 @@
 			(color 0 0 0 0)
 		)
 		(uuid "af081a2b-4668-5eab-8d09-70b13e5ee477")
-		(property "Sheetname" "Hub USB2517"
+		(property "Sheetname" "Hub USB e switch VBUS"
 			(at 15.24 60.26 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -1357,52 +1311,6 @@
 		(instances
 			(project "devhub"
 				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630"
-					(page "9")
-				)
-			)
-		)
-	)
-	(sheet
-		(at 15.24 182.88)
-		(size 76.2 20.32)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0)
-		)
-		(uuid "c82dde94-3a77-5cb6-9c61-f280daabce7c")
-		(property "Sheetname" "LED di stato"
-			(at 15.24 182.18 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Sheetfile" "ui.kicad_sch"
-			(at 15.24 203.8 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(instances
-			(project "devhub"
-				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630"
 					(page "7")
 				)
 			)
@@ -1509,7 +1417,7 @@
 		(instances
 			(project "devhub"
 				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630"
-					(page "10")
+					(page "8")
 				)
 			)
 		)

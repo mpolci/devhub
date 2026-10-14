@@ -7,7 +7,7 @@ ricollegare il cavo per recuperare un dispositivo bloccato. Devhub esegue questa
 dal PC, in modo scriptabile, e permette di gestire le porte e un relè ausiliario.
 Non è uno strumento per misurare consumi o tensioni.
 
-Questi requisiti includono le semplificazioni D60–D66 e le decisioni D68–D81 in
+Questi requisiti includono le semplificazioni D60–D66 e le decisioni D68–D83 in
 [domande-aperte.md](domande-aperte.md). D75 seleziona UCS2114-1-V/LX e PI3USB4002A per le
 porte, con due bus I²C indipendenti e scarica automatica configurata all’avvio; D78 conferma
 USB2517I-JZX e STM32G0B1CEU6. Restano MCU separato, controllo HID e cicli autonomi; la
@@ -113,7 +113,7 @@ ancora da adeguare.
 - **RNF-5** **Un solo LED per porta USB**, pilotato dal MCU: spento = disabilitata,
   acceso fisso = abilitata, lampeggiante = guasto. Il guasto ha priorità sull'indicazione di
   abilitazione; il dettaglio disponibile dall'hardware si legge dal PC. Il LED indica lo stato
-  logico, non la presenza misurata di VBUS. Un LED per il relè mantenuto; LED alimentazione e host invariati.
+  logico, non la presenza misurata di VBUS. Fra i LED di sistema resta solo quello di host collegato: nessun LED del relè né di accensione (D82).
 
 ## Fuori ambito (v1)
 

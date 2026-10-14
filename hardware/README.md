@@ -10,7 +10,7 @@ hardware/bom/           BOM e file per l'assemblaggio (da fare)
 
 ## Stato: schema v0.3
 
-Lo schema applica i [requisiti semplificati](../docs/requisiti.md) e le decisioni D60–D81
+Lo schema applica i [requisiti semplificati](../docs/requisiti.md) e le decisioni D60–D83
 (dettaglio in D79): quattro porte USB-C, un relè, cinque pulsanti, un LED per porta. Il PCB
 è ancora quello della v0.2 e non è allineato allo schema (vedi sotto).
 
@@ -24,12 +24,10 @@ Fogli:
 | Foglio | Contenuto |
 |---|---|
 | `power_in` | USB-C di alimentazione a 5 V, Rd 5,1 kΩ su CC1/CC2 senza lettura, TVS, eFuse TPS259470A (U13), bulk, Schottky D2, LDO 3,3 V (AP7361C-33E, SOT-223) |
-| `hub` | USB2517, USB-C upstream con ESD, quarzo, RBIAS, supervisore di reset (U12) in wired-OR con il MCU, strap di configurazione, VBUS_DET; DS5, DS7 e OCS5_N non collegati |
-| `mcu` | STM32G0B1CEU6 (UFQFPN48), decoupling, SWD (J4) e UART (J9) collegati a filo, pull-up dei due bus I²C, pull-down degli EN porta, pull-down dei DBCC dell'UCPD |
-| `switches` | 2 × UCS2114-1-V/LX (U4 porte 1-2 su I2C1, U5 porte 3-4 su I2C2), strap COMM_ILIM 27 kΩ, disaccoppiamenti, pull-up degli ALERT# |
+| `hub` | USB2517, USB-C upstream con ESD, quarzo, RBIAS, supervisore di reset (U12) in wired-OR con il MCU, strap di configurazione, VBUS_DET; DS5, DS7 e OCS5_N non collegati. Switch VBUS: 2 × UCS2114-1-V/LX (U4 porte 1-2 su I2C1, U5 porte 3-4 su I2C2), strap COMM_ILIM 27 kΩ, disaccoppiamenti, pull-up degli ALERT# |
+| `mcu` | STM32G0B1CEU6 (UFQFPN48), decoupling, SWD (J4) e UART (J9) collegati a filo, pull-up dei due bus I²C, pull-down degli EN porta, pull-down dei DBCC dell'UCPD, LED di host collegato (unico LED di sistema) |
 | `port_c` ×4 | connettore, switch dati PI3USB4002A (con protezione ESD integrata), condensatori VBUS, Rp 56 kΩ, LED verde dal MCU, pulsante |
 | `relays` | ULN2003V12 (3 canali in parallelo), G5Q-1, ponticello NC/NO, boccole Cliff FCR7350, snubber DNP, pulsante SW1 |
-| `ui` | LED del relè (dal comando RLY1), acceso (3,3 V), host collegato (dal MCU) |
 
 Piedinatura del MCU: [../docs/pinout-mcu.md](../docs/pinout-mcu.md).
 

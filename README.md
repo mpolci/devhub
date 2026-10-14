@@ -24,7 +24,7 @@ il PC può:
 | Upstream (verso il PC) | USB-C (USB 2.0) |
 | Controllo | STM32G0B1 su porta interna dell'hub, interfaccia USB HID senza driver + CLI Python |
 | Relè ausiliari | 1 × SPDT su due boccole a banana COM/NC, contatti max 16 V / 3 A |
-| Pannello | 5 pulsanti; 7 LED complessivi, con lampeggio guasti sui quattro LED USB |
+| Pannello | 5 pulsanti; 5 LED: uno per porta USB, con lampeggio guasti, e uno di host collegato |
 
 I 3 A d'ingresso comprendono anche i consumi interni: un sovraccarico complessivo può
 interrompere l'intero hub. Il ciclo non verifica elettricamente lo spegnimento e riguarda
@@ -63,6 +63,6 @@ Requisiti semplificati definiti (D60–D66). Hub USB2517I-JZX, MCU STM32G0B1CEU6
 (D78), due UCS2114-1-V/LX con due bus I²C e quattro PI3USB4002A per le porte (D75), con
 DigiKey come fornitore di riferimento.
 
-Schema elettrico v0.3 allineato ai requisiti (D79–D81); il PCB è ancora quello della v0.2 e
+Schema elettrico v0.3 allineato ai requisiti (D79–D83); il PCB è ancora quello della v0.2 e
 va adeguato, poi la BOM (vedi [hardware/README.md](hardware/README.md)). Restano da
 completare il dimensionamento della scarica e le verifiche sul prototipo.

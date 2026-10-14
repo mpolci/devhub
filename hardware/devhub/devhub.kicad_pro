@@ -728,11 +728,11 @@
       },
       {
         "netclass": "USB_DIFF",
-        "pattern": "/Hub USB2517/USBUP_DP"
+        "pattern": "/Hub USB e switch VBUS/USBUP_DP"
       },
       {
         "netclass": "USB_DIFF",
-        "pattern": "/Hub USB2517/USBUP_DN"
+        "pattern": "/Hub USB e switch VBUS/USBUP_DN"
       },
       {
         "netclass": "RELAY_CONTACT",
@@ -776,7 +776,7 @@
       },
       {
         "netclass": "SENSE",
-        "pattern": "/Hub USB2517/RBIAS"
+        "pattern": "/Hub USB e switch VBUS/RBIAS"
       }
     ]
   },
@@ -947,23 +947,15 @@
     ],
     [
       "af081a2b-4668-5eab-8d09-70b13e5ee477",
-      "Hub USB2517"
+      "Hub USB e switch VBUS"
     ],
     [
       "357eb134-3b36-5717-b194-1b0e8ceb4547",
       "MCU STM32G0B1"
     ],
     [
-      "1e0a4864-e5d3-5f33-ba41-65dd2f29348f",
-      "Switch VBUS porte"
-    ],
-    [
       "754ef4c0-187b-5738-814a-57c901f66789",
       "Relè ausiliario"
-    ],
-    [
-      "c82dde94-3a77-5cb6-9c61-f280daabce7c",
-      "LED di stato"
     ],
     [
       "8fa65214-18b0-5d08-bb37-cbf5f7730b77",

@@ -1919,7 +1919,7 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "VBUS dagli UCS2114 (foglio switches), con limite di corrente, blocco inverso e scarica automatica integrati. Dati: PI3USB4002A tra hub e connettore, OE_N (EN) alto = scollegato (pull-up: scollegato al reset); lato connettore tollera 24 V e si apre da solo sopra 4,75 V."
+	(text "VBUS dagli UCS2114 (foglio hub), con limite di corrente, blocco inverso e scarica automatica integrati. Dati: PI3USB4002A tra hub e connettore, OE_N (EN) alto = scollegato (pull-up: scollegato al reset); lato connettore tollera 24 V e si apre da solo sopra 4,75 V."
 		(exclude_from_sim no)
 		(at 10.16 16.51 0)
 		(effects

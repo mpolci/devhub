@@ -12,7 +12,7 @@ non adottata; TCA9535 non è previsto nella soluzione corrente.
 | CC d'ingresso | Solo Rd R1/R2 da 5,1 kΩ, nessuna lettura (D65) |
 | Porte | U4/U5 UCS2114-1-V/LX con scarica automatica configurata all’avvio, U101–U401 PI3USB4002A (D75); nessuna scarica discreta né GPIO DIS |
 | LED USB | Un LED verde per porta, D102–D402, pilotato dal MCU (D81) |
-| Uscite e pannello | Quattro USB-C, un relè, due boccole COM/NC, cinque pulsanti e sette LED complessivi (D66) |
+| Uscite e pannello | Quattro USB-C, un relè, due boccole COM/NC, cinque pulsanti e cinque LED complessivi (D66, D82) |
 | Logica e ingresso | USB2517I-JZX e STM32G0B1CEU6 a 48 pin; eFuse, TVS e LDO invariati |
 
 La selezione richiede verifica di corrente per porta, distacco dei dati con dispositivi
@@ -95,7 +95,7 @@ Con il montaggio a mano e un fornitore unico il catalogo si allarga. Per blocco:
 | USB-C upstream (×1) | GCT **USB4105-GF-A** | Rd 5,1 kΩ su CC1 e CC2 |
 | USB-C alimentazione (×1) | GCT **USB4105-GF-A** | solo CC1, CC2 (Rd 5,1 kΩ, nessuna lettura), VBUS, GND; 5 V / 3 A (il connettore regge 5 A) |
 | Pulsanti (×5: 4 porte, 1 relè) | C&K **PTS645SL70SMTR92 LFS**: tattile 6×6 SMD, terminali gull-wing, attuatore 7 mm (DigiKey) | sulla faccia superiore, premuti dal coperchio con estensore stampato; footprint KiCad `Button_Switch_SMD:SW_SPST_PTS645Sx43SMTR92`, comune a tutte le altezze della serie SMD (da verificare sul disegno C&K); ogni pressione alterna lo stato (RF-17) (D43) |
-| LED (×7) | 0805 | uno verde per porta dal MCU (spento, fisso, lampeggiante per guasto, D81), uno verde per il relè (acceso = linea staccata), acceso (verde), host collegato (arancio) |
+| LED (×5) | 0805 | uno verde per porta dal MCU (spento, fisso, lampeggiante per guasto, D81) e host collegato (arancio); nessun LED del relè né di accensione (D82) |
 
 ## Conteggio dei tipi "extended" per l'assemblaggio JLCPCB
 
@@ -615,7 +615,7 @@ circuito completo. Nessuna richiesta al produttore è stata inviata.
 **Scelta D75: due UCS2114-1-V/LX con due bus I²C indipendenti e quattro PI3USB4002AZUAEX.**
 La -1A autonoma non è adottata per reperibilità. La scarica viene abilitata all’avvio
 e poi gestita dal timer interno, senza GPIO DIS. Applicata nello schema v0.3 (foglio
-`switches`, D79). Il confronto con la modalità autonoma resta fra le alternative.
+`hub`, D79, D83). Il confronto con la modalità autonoma resta fra le alternative.
 
 ### Indirizzi, varianti e reperibilità
 

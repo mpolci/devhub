@@ -76,8 +76,8 @@ VBUS upstream, due controlli del hub, UART, USB e SWD.
   definito anche con il hub in reset. Il MCU legge i registri UCS2114 per distinguere i guasti.
 - EXTI0, EXTI3, EXTI4, EXTI5 per le quattro porte, EXTI1 per l'eFuse: nessun conflitto.
   Pulsanti e HUB_RST_N letti in polling; non assegnare EXTI1 anche a PF1.
-- LED del relè (D90) pilotato dal comando RLY1, LED di accensione (D92) dalla 3,3 V: nessun
-  GPIO aggiuntivo. Correnti dei cinque LED pilotati dal MCU da verificare entro i limiti per
+- Unico LED di sistema: host collegato (D93) su LED_HOST; nessun LED del relè né di
+  accensione (D82). Correnti dei cinque LED pilotati dal MCU da verificare entro i limiti per
   pin e totali.
 - Nessun GPIO DIS: la scarica degli UCS2114 è configurata all'avvio e parte automaticamente.
 

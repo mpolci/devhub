@@ -2,7 +2,7 @@
 
 ## Decise
 
-Le decisioni D60–D66 e D68–D81 definiscono i requisiti correnti e prevalgono sulle parti
+Le decisioni D60–D66 e D68–D83 definiscono i requisiti correnti e prevalgono sulle parti
 incompatibili delle decisioni precedenti. Lo schema v0.3 e il pinout le applicano (D79);
 PCB e BOM descrivono ancora l'implementazione v0.2 da adeguare.
 
@@ -89,6 +89,8 @@ PCB e BOM descrivono ancora l'implementazione v0.2 da adeguare.
 | D79 | Schema v0.3 | Aggiornato il progetto KiCad esistente invece di rifarlo: restano alimentazione, hub, porte, relè e LED di stato, con i campi fornitore e le impronte già verificati. U3 diventa STM32G0B1CEU6 sul pinout di [pinout-mcu.md](pinout-mcu.md); il foglio switches contiene U4/U5 UCS2114-1-V/LX (COMM_ILIM 27 kΩ 1 %, 100 nF su VDD, 1 µF per coppia di pin VS, BOOST# a massa, ALERT# con pull-up 10 kΩ a 3,3 V verso MCU e OCS1–4_N del hub); pull-up 4,7 kΩ su entrambi i bus I²C (R40/R41, R50/R51). DS5, DS7 e OCS5_N del hub non collegati: con CFG_SEL 001 e 101 gli strap sono disattivati, le porte si disabilitano via SMBus. Eliminati R3/R4/C1/C2, shunt R5 (C7 resta sull'uscita dell'eFuse), INA3221, TPS2561A e shunt delle porte, J3/F1, porta USB-A, scariche discrete, LED rossi, secondo relè; canali 4–6 del ULN2003V12 con ingressi a massa. Impronta UCS2114 di progetto dal land pattern Microchip C04-2421, area termica coperta da solder mask sul pin 17 (GND) |
 | D80 | Pull-down degli EN porta | R42–R45 da 10 kΩ invece di 100 kΩ: con la dispersione massima di ±5 µA di PWR_EN dell'UCS2114 la tensione resta sotto 0,05 V invece di 0,5 V, contro VIL 0,8 V; 0,33 mA per porta abilitata |
 | D81 | Colore del LED unico di porta | Verde: si tiene il LED che indicava la porta alimentata (D102–D402 con R106–R406, 1 kΩ), pilotato da LED_P1–P4; il guasto si distingue dal lampeggio (D63) |
+| D82 | LED di sistema | Dei tre LED di sistema resta solo quello di host collegato (D93, R93, da LED_HOST). Eliminati il LED del relè (D90, R90) e quello di accensione (D92, R92). Cinque LED complessivi: quattro di porta e host. Supera i conteggi dei LED di D66 e D68 |
+| D83 | Fogli dello schema | Gli switch VBUS (U4/U5 UCS2114 con strap, disaccoppiamenti e pull-up degli ALERT#) stanno nel foglio del hub, rinominato "Hub USB e switch VBUS"; il LED di host (D93, R93) sta nel foglio MCU, con LED_HOST come etichetta locale. Eliminati i fogli `switches` e `ui`; il relè resta nel proprio foglio. Componenti, riferimenti e collegamenti invariati |
 
 ## Aperte
 
