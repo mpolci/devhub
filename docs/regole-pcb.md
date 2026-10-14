@@ -54,16 +54,16 @@ Distribuzione proposta per rispettare D42, con elettronica e connettori sulla fa
 | Layer | Uso previsto |
 |---|---|
 | F.Cu | LED, pulsanti, segnali lenti, distribuzione di potenza a zone; USB solo se necessario |
-| In1.Cu | Piano GND continuo sotto i circuiti dell'hub; riferimento di F.Cu |
-| In2.Cu | Piano GND continuo sotto i circuiti dell'hub; riferimento di B.Cu |
+| In1.Cu | Piano +3V3 (`3V3_In1`) su tutta la scheda, con isole VBUS delle porte sotto i connettori |
+| In2.Cu | Piano GND continuo (`GND_In2`) su tutta la scheda; riferimento delle coppie USB su B.Cu |
 | B.Cu | Elettronica principale, coppie USB, collegamenti locali e zone di alimentazione |
 
-Due piani GND consentono di instradare USB su entrambe le facce senza usare un piano di
-alimentazione frazionato come riferimento. Distribuire +5V e +3V3 sulle facce esterne;
-non ricavare isole di potenza nei piani sotto USB, quarzo o circuiti di misura.
+Le coppie USB stanno su B.Cu, con riferimento il piano GND di In2.Cu. F.Cu ha come piano
+adiacente il +3V3 di In1.Cu: non instradarci USB. Distribuire la +5V sulle facce esterne; non
+ricavare altre isole di potenza nei piani interni sotto USB e quarzo.
 Le aree dei contatti isolati dei relè fanno eccezione: lì si applicano i keepout descritti sotto.
 
-Collegare i due piani con via vicino ai GND dei componenti e dei connettori, ai condensatori e
+Collegare il piano GND alle masse delle facce esterne con via vicino ai GND dei componenti e dei connettori, ai condensatori e
 ai cambi di layer dei segnali. Come punto iniziale, stitching lungo il bordo ogni 5–10 mm,
 più fitto presso connettori e protezioni; la continuità locale del ritorno conta più del passo.
 Rimuovere isole di rame scollegate e verificare strozzature dovute a file di fori o antipad.
@@ -210,8 +210,8 @@ La geometria USB è confermata dal
 | Impedance Tolerance del calcolatore | ±0,5 %, parametro del calcolo; non tolleranza produttiva |
 
 Il risultato conferma la geometria riportata per prog-board-native. Si applica al percorso
-**B.Cu rispetto al piano GND In2.Cu**, con coppia non coplanare e solder mask; lo stackup
-simmetrico permette la geometria corrispondente su F.Cu rispetto a In1.Cu.
+**B.Cu rispetto al piano GND In2.Cu**, con coppia non coplanare e solder mask; la stessa geometria varrebbe su F.Cu
+rispetto a In1.Cu, che però porta il piano +3V3: le coppie restano su B.Cu.
 Se cambiano stackup, rame, mask o geometria del rame laterale, ripetere il calcolo.
 
 Il valore è un risultato di calcolo, da verificare sul prodotto finito. Come obiettivo iniziale
@@ -492,7 +492,7 @@ modifica significativa. Il dettaglio di ciascun punto è nelle sezioni indicate.
 **Coppie USB** ([Coppie USB](#coppie-usb))
 
 - Piano GND continuo sotto ogni tratto, senza attraversare tagli, vuoti, bordi del piano,
-  antipad in fila o aree dei contatti relè; controllo visivo su In1.Cu e In2.Cu.
+  antipad in fila o aree dei contatti relè; controllo visivo su In2.Cu.
 - Differenza D+/D− ≤ 0,5 sul percorso completo fra endpoint, sommando i segmenti attraverso
   USBLC6 e PI3USB4002A: il DRC controlla solo ogni tratto separato.
 - Cambi di layer: stesso numero di via sui due conduttori e via GND vicine.

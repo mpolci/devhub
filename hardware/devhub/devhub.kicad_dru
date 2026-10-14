@@ -15,7 +15,7 @@
 )
 
 # -----------------------------------------------------------------------------
-# Coppie USB: 90 ohm differenziali, B.Cu su In2.Cu (o F.Cu su In1.Cu),
+# Coppie USB: 90 ohm differenziali, B.Cu sul piano GND di In2.Cu (In1.Cu è +3V3),
 # JLC04161H-7628. Pista 0,2474, gap 0,1519; 0,15 solo nel fanout dai pad.
 # Coppie riconosciute da KiCad con i nomi ...DP / ...DN. La differenza di
 # lunghezza è per singola rete e dentro ciascuna coppia: il totale attraverso
