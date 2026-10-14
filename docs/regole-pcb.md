@@ -304,7 +304,7 @@ per le porte UCS2114 → VBUS della porta. VBUS upstream è una rete separata da
 
 ## Piazzamento e dissipazione
 
-Rispettare profilo **100 × 100 mm, R3**, fori M3 e posizioni bloccate del pannello in D84 (D43
+Rispettare profilo **100 × 100 mm, R3**, fori M3 e posizioni bloccate del pannello in D84 e D87 (D43
 per l'allineamento di LED e pulsanti). F.Cu ospita solo LED e pulsanti come componenti; tutto il
 resto è su B.Cu.
 Verificare ingombri 3D, corsa dei pulsanti, accesso dei cavi, boccole e utensili di montaggio.
@@ -338,7 +338,7 @@ Le indicazioni seguenti specificano il piazzamento dei componenti già presenti 
 | Switch USB U101–U401 | C106/C206/C306/C406, 1 µF 25 V su REF | Accanto ai pin REF e GND dello switch, con anello REF → condensatore → GND corto; evitare giri attorno alle coppie dati |
 | Alimentazione switch USB | C101/C201/C301/C401, 100 nF | Presso VDD del rispettivo switch, con ritorno GND locale; non sostituiti dal condensatore REF |
 | eFuse U13 | C13, 100 nF; C7, 1 µF; R30–R33, C11 e C12 | C13 direttamente presso IN/GND e C7 presso OUT/GND; partitore, resistenza ILM e condensatori dV/dt e timer presso i rispettivi pin, lontani dai segnali commutati |
-| Riserva sulla +5V | C3/C4, 220 µF; C5/C6, 10 µF | Nella zona di distribuzione della +5V verso i carichi; evitare un lungo ramo morto che ne aumenti l'induttanza. Non considerarli sostitutivi dei bypass presso gli integrati |
+| Riserva sulla +5V | C3/C4, 220 µF elettrolitici SMD Ø 6,3 × 7,7 mm sulla faccia inferiore (D86); C5/C6, 10 µF | Nella zona di distribuzione della +5V verso i carichi; evitare un lungo ramo morto che ne aumenti l'induttanza. Non considerarli sostitutivi dei bypass presso gli integrati |
 | Switch VBUS U4/U5 | C60/C63, 100 nF su VDD; C61/C62 e C64/C65, 1 µF sulle coppie VS; R60/R61 su COMM_ILIM; R62–R65 pull-up ALERT# | 100 nF presso VDD (pin 8), 1 µF presso ciascuna coppia VS (6/7 e 9/10) con ritorno GND corto; resistenza COMM_ILIM presso il pin 3; pin VS e VBUS duplicati uniti con rame largo; area termica collegata al pin 17 |
 | Hub U2 | 100 nF 0402: C27 (pin 46), C25 (5), C38 (10), C28 (52), C26 (57), C30 (64), C29 (24); 1 µF: C31 condiviso dei VDDA33 (vicino al pin 57), C32 (24); 1 µF C33 su VDD18 (25), C35 su VDD18PLL (62) | Ogni condensatore presso il proprio pin, il 100 nF più vicino del 1 µF, collegato al pad con una pista sullo stesso lato (niente via fra pad e condensatore) e ritorno GND corto; per i pin 5, 10 e 57, fra coppie USB, vale l'area `U2_FANOUT` (D58) |
 | Supervisore U12 | C37, 100 nF 0402 | Presso il pin VDD di U12, non del hub |
@@ -416,12 +416,12 @@ via termiche e apertura della pasta. Il pad esposto di U2 ha 16 via 0,60/0,30 a 
 verificare nei Gerber che le 16 aperture restino e, sul prototipo, saldatura e temperatura
 di U2. Per la produzione le via diventano "encroached" (punto 7 delle
 [verifiche prima della produzione](#verifiche-prima-della-produzione)). Il tab dell'AP7361C-33E
-(U1) è il pin 2, GND, e fa da dissipatore: l'LDO dissipa fino a 0,8–0,9 W nel caso peggiore
-(D56). Zona GND `U1_HEATSINK` sul tab, sul lato del componente (B.Cu), collegamento pieno al
+(U1) è il pin 2, GND, e fa da dissipatore: l'LDO dissipa fino a 0,65–0,75 W nel caso peggiore
+(D56, [architettura.md](architettura.md)). Zona GND `U1_HEATSINK` sul tab, sul lato del componente (B.Cu), collegamento pieno al
 pad, ~1,4 cm² (lo spazio fra C8/C9, D2 e R1/R2), con 10 via 0,60/0,30 ai lati e sopra/sotto il
 tab verso il piano GND In2.Cu: obiettivo θJA ≤ ~60 °C/W. Il rame non va interrotto da piste di
 segnale; il pin 2 centrale va collegato al tab con una pista corta. Verificare nel case chiuso il caso peggiore: LDO, Schottky,
-eFuse, UCS2114 e relè eccitati; sul prototipo misurare la temperatura di U1 con 7 porte
+eFuse, UCS2114 e relè eccitati; sul prototipo misurare la temperatura di U1 con le quattro porte
 Hi-Speed attive.
 Dimensionare i thermal relief dei pad di potenza per la corrente; verificare il compromesso
 con la saldatura manuale. La dimensione del pad da sola non garantisce dissipazione sufficiente.

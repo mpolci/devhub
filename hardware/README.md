@@ -10,7 +10,7 @@ hardware/bom/           BOM e file per l'assemblaggio (da fare)
 
 ## Stato: schema v0.3
 
-Lo schema applica i [requisiti semplificati](../docs/requisiti.md) e le decisioni D60–D84
+Lo schema applica i [requisiti semplificati](../docs/requisiti.md) e le decisioni D60–D87
 (dettaglio in D79): quattro porte USB-C, un relè, cinque pulsanti, un LED per porta. Il PCB
 da 100 × 100 mm ha il piazzamento iniziale ed è da sbrogliare (vedi sotto).
 
@@ -89,7 +89,7 @@ sinistro, v dal bordo frontale. Piazzamento iniziale fatto, sbroglio in corso.
 | J401, J301, J201, J101 USB-C (porte 4…1) | inferiore | u = 46, 61, 76, 91; faccia d'innesto a filo del bordo frontale |
 | LED delle porte D402…D102 (verdi) | superiore | in asse con la porta, v = 2 |
 | D93 LED host | superiore | u = 18,5, v = 2, sopra la coppia di boccole |
-| SW1, SW401…SW101 pulsanti | superiore | v = 36; SW1 al centro delle boccole (u = 18,5), gli altri in asse con le porte |
+| SW1, SW401…SW101 pulsanti | superiore | v = 14,5 (D87); SW1 al centro delle boccole (u = 18,5), gli altri in asse con le porte |
 | J1 alimentazione, J2 upstream | inferiore | u = 24 e 82, a filo del bordo posteriore |
 | H1–H4 fori M3 | — | H1 (4,5; 58) dietro il relè K1, H2 (95,5; 28), H3 (4,5; 95,5), H4 (95,5; 95,5) |
 

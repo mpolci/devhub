@@ -1,6 +1,6 @@
 # Architettura
 
-L'architettura funzionale segue i requisiti semplificati D60–D66 e le decisioni D68–D84: controllo delle porte
+L'architettura funzionale segue i requisiti semplificati D60–D66 e le decisioni D68–D87: controllo delle porte
 e riavvio temporizzato, senza misura dei consumi, delle tensioni delle porte/5V_SYS o delle CC
 d'ingresso. Lo schema v0.3 la applica (D79); il PCB da 100 × 100 mm (D84) ha il
 piazzamento iniziale ed è da sbrogliare.
@@ -138,15 +138,15 @@ CC1 e CC2 mantengono le **Rd da 5,1 kΩ**. Sono da eliminare collegamenti al MCU
 R3/R4/C1/C2: nessuna lettura ADC, nessun uso di UCPD per verificare la corrente disponibile.
 La gestione elettrica dei pin UCPD usati come GPIO e del bootloader resta un problema distinto.
 
-I 3 A comprendono tutti i consumi. Stima con i blocchi attuali, da rivalutare con i componenti
-definitivi e il LED unico:
+I 3 A comprendono tutti i consumi. Stima con i componenti dello schema v0.3, da confermare
+sul prototipo:
 
 | Voce | Valore indicativo |
 |---|---|
-| Hub USB2517 (3,3 V tramite LDO) | 0,23–0,46 A |
-| MCU, switch e LED | circa 0,05 A, da aggiornare |
+| Hub USB2517 (3,3 V tramite LDO), quattro porte Hi-Speed e la porta Full-Speed del MCU | 0,33 A tipici (datasheet, 4 porte HS), ~0,37 A massimi stimati |
+| MCU, switch dati, cinque LED e pull-down EN sulla 3,3 V; UCS2114 sulla +5V | circa 0,03 A |
 | Un relè eccitato | circa 0,08 A |
-| Disponibile alle porte | circa 2,4 A stimati; da confermare |
+| Disponibile alle porte | circa 2,5 A |
 
 Le quattro USB-C conservano 2 A sulla singola porta; non sono correnti disponibili
 contemporaneamente su tutte le porte. Hub e MCU sono alimentati solo dalla 5V_SYS (D32).
@@ -163,10 +163,13 @@ dipendono dai guasti realmente segnalati e dal fatto che la logica resti aliment
 
 **Protezione d'ingresso.** TVS **SMAJ20A** ed eFuse **TPS259470A** (U13, D21), la cui uscita
 è direttamente la 5V_SYS (rete `+5V`), senza shunt:
-- stacca l'uscita sopra 5,84 V (riaccende sotto 5,3 V) e sotto 4,0 V, con un solo partitore
-  (R30/R31/R32); lo zener D4 tiene il pin EN sotto il suo massimo (6,5 V) fino a 28 V d'ingresso;
+- con un solo partitore (R30/R31/R32, D85) stacca l'uscita sopra 5,69 V (5,52–5,90 V con le
+  tolleranze, rientro sotto 5,17 V), sotto i 6 V massimi assoluti degli UCS2114 alimentati
+  dalla +5V; in sottotensione accende sopra 4,0 V e stacca sotto 3,64 V. Lo zener D4 tiene il
+  pin EN sotto il suo massimo (6,5 V) fino a 28 V d'ingresso;
 - limite di corrente 3,5 A (R33), transitori ammessi fino a ~8 ms (C12), ripartenza automatica;
-- avvio dolce: la 5V_SYS sale in ~5 ms e i 460 µF di bulk si caricano con ~0,4 A invece di un picco
+- avvio dolce: la 5V_SYS sale in ~5 ms e i 460 µF di bulk (C3/C4 elettrolitici SMD da 220 µF,
+  D86, più C5/C6) si caricano con ~0,4 A invece di un picco
   di decine di ampere; i condensatori d'ingresso restano quelli attuali (D20);
 - blocca la corrente inversa; FLT (open-drain) va al MCU su PB1. FLT va basso solo per
   sovracorrente prolungata (dopo il tempo di C12), sovratemperatura, guasto del pin ILM e corrente
@@ -196,16 +199,16 @@ e una da 5 V limiterebbe comunque sopra i 6 V massimi assoluti dell'UCS2114.
 **Logica (D32).** 3V3 da LDO a basso dropout (**AP7361C-33E**, 1 A, SOT-223) alimentato dalla
 5V_SYS tramite lo Schottky D2: la logica si alimenta solo dall'alimentatore e senza alimentatore
 l'hub non si vede dal PC. D2 resta per abbassare la tensione sull'LDO e quindi la dissipazione
-(senza, ~0,17 W in più a 0,48 A). Carico 3,3 V fino a ~0,5 A (USB2517 460 mA max con 7 porte
-Hi-Speed, più il resto della logica), ~0,35 A nell'uso tipico. Nel caso peggiore l'alimentatore
+(senza, ~0,15 W in più a 0,4 A). Carico 3,3 V fino a ~0,4 A (USB2517 con quattro porte
+Hi-Speed, più il resto della logica), ~0,36 A nell'uso tipico. Nel caso peggiore l'alimentatore
 è al massimo (5,25 V, fino a 5,5 V per il Type-C), le porte assorbono poco e all'LDO arrivano
-~4,9–5,15 V: dissipa **0,8–0,9 W**, ~0,45 W nell'uso tipico. Con i 110 °C/W della piazzola
-minima la giunzione arriverebbe a ~140 °C a 40 °C ambiente, vicino alla protezione termica
-(150 °C): il tab (GND) va usato come dissipatore, con rame e via verso i piani GND, per avere
-θJA ≤ ~60 °C/W, cioè ≤ ~95 °C di giunzione nel caso peggiore (D56,
+~4,9–5,15 V: dissipa **0,65–0,75 W**, ~0,45 W nell'uso tipico. Con i 110 °C/W della piazzola
+minima la giunzione arriverebbe a ~120 °C a 40 °C ambiente, con poco margine dalla protezione
+termica (150 °C): il tab (GND) va usato come dissipatore, con rame e via verso i piani GND, per
+avere θJA ≤ ~60 °C/W, cioè ≤ ~85 °C di giunzione nel caso peggiore (D56,
 [regole-pcb.md](regole-pcb.md)). Scartato l'AP2112K in SOT-23-5, che con lo stesso carico
 rischiava la protezione termica (D17). Scartato anche un buck: dalla 5 V prenderebbe ~0,1 A in
-meno (~0,37 A invece di 0,5 A nel caso peggiore), non abbastanza per giustificare componenti,
+meno (~0,3 A invece di 0,4 A nel caso peggiore), non abbastanza per giustificare componenti,
 rumore di commutazione vicino al hub e rifacimento della zona di alimentazione (D56).
 Variante possibile in futuro: hub funzionante anche dal solo PC (commutazione tra le due sorgenti,
 budget e protezioni separati); scartata per ora perché complica molto l'alimentazione (D32).
@@ -378,7 +381,7 @@ ripiego se la rifusione dell'hub dà problemi. La D è il ripiego se non si vuol
 - Connettori su due lati opposti: lato "banco" le 4 porte downstream e le 2 boccole del relè; lato
   posteriore upstream e alimentazione.
 - PCB 100 × 100 mm (D84): sulla faccia superiore solo LED e pulsanti, che si vedono e si premono dal
-  coperchio, ciascuno dietro la sua porta o coppia di boccole; tutto il resto, connettori compresi,
+  coperchio, ciascuno dietro la sua porta o coppia di boccole, con i pulsanti a 14,5 mm dal bordo frontale (D87); tutto il resto, connettori compresi,
   sulla faccia inferiore. Le due boccole (COM e NC del relè) sono affiancate; il loro manicotto
   isolante (14,35 mm, senza filetto) attraversa la parete frontale, ispessita intorno alle boccole
   perché il manicotto finisca a filo della faccia esterna.

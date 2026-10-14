@@ -38,15 +38,15 @@ parte della v1.
 Ogni simbolo dello schema ha i campi `warehouse` (ID della riga nel foglio del magazzino),
 `lcsc`, `mouser` e `digikey`. Il magazzino si usa solo per articoli comprati da LCSC, TME,
 Mouser o DigiKey. Dove un fornitore non ha il pezzo scelto, il campo contiene un equivalente
-(resistenze Yageo al posto di UNI-ROYAL/FOJAN, Panasonic EEU-FR1A221 per C3/C4, Würth per gli
+(resistenze Yageo al posto di UNI-ROYAL/FOJAN, Würth per gli
 header, ECS per il quarzo, G5Q-14 su LCSC, DMN3404L-7 su Mouser). Il campo `mouser` è vuoto
 solo per le boccole Cliff, che Mouser non ha. Elenco completo, equivalenze e costi in
 [confronto-costi.md](confronto-costi.md).
 
-Package scelti per usare il magazzino (D45): C106-C506 1 µF 25 V in 0603 (era 0805), F1 PTC
-MF-MSMF050-2 in 1812 (era 1206), C3/C4 radiali D6,3 passo 2,5 mm (era D8 passo 3,5),
-C505 SMD 6,3 × 5,8 mm (era 6,3 × 7,7). I 100 nF di disaccoppiamento di U2 e U12 sono 0402 (ID 217,
-Yageo CC0402KRX7R7BB104), per stare accanto ai pin fra le coppie USB (D58).
+Package scelti per usare il magazzino (D45): C106-C406 1 µF 25 V in 0603. I 100 nF di
+disaccoppiamento di U2 e U12 sono 0402 (ID 217, Yageo CC0402KRX7R7BB104), per stare accanto ai
+pin fra le coppie USB (D58). I condensatori di riserva C3/C4 sono elettrolitici SMD Panasonic
+EEE-FK1C221XP (220 µF 16 V, Ø 6,3 × 7,7 mm), non a magazzino (D86).
 
 ## Componenti nello schema
 
