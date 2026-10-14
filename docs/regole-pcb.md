@@ -174,8 +174,10 @@ KiCad calcola lo spessore includendo la mask: 1,6167.
 `RELAY1_CONTACTS` senza riempimenti su tutti i layer, sotto contatti del relè, ponticello,
 snubber e boccole; aree `USB_FANOUT_U2`, `U2_FANOUT`, `USBC_FANOUT` e `SW_FANOUT` usate solo
 dalle regole sopra, spostate insieme al proprio componente nel piazzamento v0.3: vanno
-ricontrollate dopo la rifinitura. Restano le piccole zone VBUS delle porte su B.Cu e In1.Cu e
-la zona `U1_HEATSINK`; zone di potenza e piano +3V3 su In1.Cu sono da ridisegnare con lo sbroglio.
+ricontrollate dopo la rifinitura. Piano +3V3 `3V3_In1` su tutto In1.Cu (priorità 2), con le
+isole VBUS delle porte sotto i connettori a priorità più alta; piccole zone VBUS delle porte su
+B.Cu, zona +3V3 sul pin 24 di U2 e `U1_HEATSINK`. Le zone di potenza della +5V sono da
+disegnare con lo sbroglio.
 
 Nelle condizioni dei file `.kicad_dru` di KiCad 10 i caratteri jolly si usano con `==`;
 `matches` e `Parent.Reference` non funzionano e un errore fa scartare l'intero file senza

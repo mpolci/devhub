@@ -81,7 +81,7 @@ nel progetto: stackup nel PCB, vincoli e netclass in `devhub.kicad_pro`, regole 
 
 `devhub.kicad_pcb`: 4 strati, profilo **100 × 100 mm** con angoli R3 (D84), allineato allo schema
 v0.3 (parità senza differenze). Vista dall'alto, fronte (lato banco) in basso; u dal bordo
-sinistro, v dal bordo frontale. Piazzamento iniziale fatto, sbroglio da fare.
+sinistro, v dal bordo frontale. Piazzamento iniziale fatto, sbroglio in corso.
 
 | Cosa | Faccia | Posizione (u, v in mm) |
 |---|---|---|
@@ -98,9 +98,15 @@ di regola: porte con switch dati e condensatori dietro i connettori; U4/U5 UCS21
 pulsanti, fra le porte che servono; relè K1, driver U9 e ponticello a sinistra dietro le boccole;
 MCU al centro; hub con quarzo e disaccoppiamenti al centro-destra; alimentazione (eFuse, LDO,
 bulk) dietro a sinistra; upstream con ESD e VBUS_DET dietro a destra; J4 (SWD) e J9 (UART) sul
-retro, fra J1 e J2. Tolte tutte le piste e le zone di potenza della v0.2; restano il piano
-`GND_In2`, le zone VBUS delle porte e `U1_HEATSINK`, da riempire. Il PCB va modificato in KiCad
-dallo stato corrente, non rigenerato.
+retro, fra J1 e J2.
+
+Sbroglio ripreso dalla v0.2 dove la posizione relativa dei componenti è invariata, traslato con
+il gruppo: coppie connettore–switch con l'anello USB-C, CC, REF, LED e VBUS di ogni porta;
+fanout, quarzo, RBIAS, VDD18, reset e disaccoppiamenti attorno a U2; upstream J2–D20 con CC e
+VBUS_DET; via verso i piani. I collegamenti fra gruppi diversi (coppie hub → switch dati, USB_MCU,
+I2C, FAULT, EN, alimentazioni) sono da completare: i tratti importati si fermano al bordo del
+gruppo. Piani: GND su In2.Cu (`GND_In2`), +3V3 su In1.Cu (`3V3_In1`) con isole VBUS sotto i
+connettori. Il PCB va modificato in KiCad dallo stato corrente, non rigenerato.
 
 Per il controllo di parità con lo schema da riga di comando:
 
