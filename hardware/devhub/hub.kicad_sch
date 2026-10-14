@@ -6,8 +6,8 @@
 	(paper "A3")
 	(title_block
 		(title "Hub USB 2.0 a 7 porte (USB2517) e porta upstream")
-		(date "2026-10-10")
-		(rev "0.2")
+		(date "2026-10-14")
+		(rev "0.3")
 		(company "devhub")
 	)
 	(lib_symbols
@@ -4132,7 +4132,7 @@
 		)
 		(uuid "5eb25e8b-3ca4-5144-a8cb-882b21ac6c5d")
 	)
-	(text "Configurazione: CFG_SEL2 dal MCU (basso = SMBus 0x2C, alto = default interni 101; R29 = 1 senza firmware); CFG_SEL1 = HS_IND = 0 (R28 vicino al pin 42); CFG_SEL0 = SCL = 1 (pull-up I2C)."
+	(text "Configurazione: CFG_SEL2 dal MCU (basso = SMBus 0x2C, alto = default interni 101; R29 = 1 senza firmware); CFG_SEL1 = HS_IND = 0 (R28 vicino al pin 42); CFG_SEL0 = I2C1_SCL = 1 (pull-up I2C1)."
 		(exclude_from_sim no)
 		(at 10.16 259.08 0)
 		(effects
@@ -4143,7 +4143,7 @@
 		)
 		(uuid "a8942976-241e-54cd-90a4-f5f16a96f424")
 	)
-	(text "Porte: 1-4 USB-C, 5 USB-A, 6 MCU (interna), 7 header di scorta. OCS1-5 dai FAULT dei TPS2561A (pull-up interno del hub)."
+	(text "Porte: 1-4 USB-C, 6 MCU (interna, non sezionabile); 5 e 7 non usate, disabilitate dal MCU via SMBus (con CFG_SEL 001 e 101 gli strap sono disattivati, D76). OCS1-4 dagli ALERT# degli UCS2114 (pull-up esterni, foglio switches)."
 		(exclude_from_sim no)
 		(at 10.16 16.51 0)
 		(effects
@@ -4508,16 +4508,6 @@
 	)
 	(wire
 		(pts
-			(xy 288.29 160.02) (xy 309.88 160.02)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "42d432b8-188e-5d1e-a549-2bfb29f0fd53")
-	)
-	(wire
-		(pts
 			(xy 50.8 119.38) (xy 50.8 121.92)
 		)
 		(stroke
@@ -4808,16 +4798,6 @@
 	)
 	(wire
 		(pts
-			(xy 269.24 160.02) (xy 280.67 160.02)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ec8a7edd-a944-585a-98c4-7bf04db73250")
-	)
-	(wire
-		(pts
 			(xy 114.3 45.72) (xy 104.14 45.72)
 		)
 		(stroke
@@ -4875,16 +4855,6 @@
 			(justify left bottom)
 		)
 		(uuid "281662b3-31d6-5b0b-bbb1-e3eb7de4d9e0")
-	)
-	(label "SPARE_DP"
-		(at 242.57 152.4 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "2b31bcce-b987-580b-bc10-8297704f6938")
 	)
 	(label "USBUP_DP"
 		(at 149.86 109.22 0)
@@ -4956,16 +4926,6 @@
 		)
 		(uuid "5afe854c-77ee-56c7-9f91-d5725482c772")
 	)
-	(label "SPARE_DP"
-		(at 309.88 165.1 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "63acbee0-25d3-565c-9c41-077dcb021207")
-	)
 	(label "XTAL2"
 		(at 167.64 137.16 0)
 		(effects
@@ -4995,36 +4955,6 @@
 			(justify left bottom)
 		)
 		(uuid "8ceac94e-00b0-5688-9836-002fbd2517a5")
-	)
-	(label "SPARE_DN"
-		(at 309.88 162.56 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "ad7afa79-0e8c-5727-a08e-dd3b3aba18f4")
-	)
-	(label "SPARE_DN"
-		(at 242.57 154.94 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "afc2374e-136c-5b42-9054-42adde887ab3")
-	)
-	(label "SPARE_VBUS"
-		(at 289.56 160.02 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "b6d25653-2059-5cef-b57d-d7f5c0fa8ed3")
 	)
 	(label "USBUP_DN"
 		(at 149.86 106.68 0)
@@ -5132,7 +5062,7 @@
 			)
 		)
 	)
-	(global_label "SCL"
+	(global_label "I2C1_SCL"
 		(shape bidirectional)
 		(at 184.15 119.38 180)
 		(fields_autoplaced yes)
@@ -5145,29 +5075,6 @@
 		(uuid "1e8f42be-f248-5475-9538-889ea471450e")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 184.15 119.38 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-	)
-	(global_label "HUB_DP5"
-		(shape bidirectional)
-		(at 242.57 137.16 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "24d04b1a-2f60-5133-b024-a613cefd16cd")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 242.57 137.16 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5316,7 +5223,7 @@
 			)
 		)
 	)
-	(global_label "SDA"
+	(global_label "I2C1_SDA"
 		(shape bidirectional)
 		(at 184.15 116.84 180)
 		(fields_autoplaced yes)
@@ -5444,52 +5351,6 @@
 		(uuid "9d6a48c3-7fe8-5ea7-aa6d-fd8106482f3a")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 184.15 149.86 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-	)
-	(global_label "FAULT_P5"
-		(shape bidirectional)
-		(at 184.15 157.48 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "9dadaee8-5f0b-5510-b56b-d50a959f3fd9")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 184.15 157.48 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-	)
-	(global_label "HUB_DN5"
-		(shape bidirectional)
-		(at 242.57 139.7 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "a15ce15e-e24f-5a7a-bf1d-7fddcc91700f")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 242.57 139.7 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6137,83 +5998,6 @@
 			(project "devhub"
 				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630/af081a2b-4668-5eab-8d09-70b13e5ee477"
 					(reference "#PWR059")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 309.88 167.64 270)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "1450acda-5348-5267-90bd-f7d3872925c3")
-		(property "Reference" "#PWR079"
-			(at 309.88 167.64 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 305.3607 167.64 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 309.88 167.64 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 309.88 167.64 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 309.88 167.64 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "9baabb43-90a7-5fc8-8fe6-ef87cf08686e")
-		)
-		(instances
-			(project "devhub"
-				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630/af081a2b-4668-5eab-8d09-70b13e5ee477"
-					(reference "#PWR079")
 					(unit 1)
 				)
 			)
@@ -8787,137 +8571,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Connector_Generic:Conn_01x04")
-		(at 314.96 162.56 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "796246fa-6f2f-5ee2-b3a9-0bde148c7dee")
-		(property "Reference" "J3"
-			(at 317.5 156.21 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "PORTA 7 (scorta)"
-			(at 317.5 153.67 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical"
-			(at 314.96 162.56 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 314.96 162.56 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 314.96 162.56 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "warehouse" ""
-			(at 314.96 162.56 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "lcsc" "C124378"
-			(at 314.96 162.56 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "mouser" "710-61300411121"
-			(at 314.96 162.56 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "digikey" "732-5317-ND"
-			(at 314.96 162.56 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "fbd3c1d1-68af-5ff4-b08d-f35732710687")
-		)
-		(pin "2"
-			(uuid "b91e053e-4f82-547a-b955-90f491952562")
-		)
-		(pin "3"
-			(uuid "c5e13dbc-0fed-5658-a1ff-a10b5005b078")
-		)
-		(pin "4"
-			(uuid "b0a0b51c-8172-5509-af89-efd415d29988")
-		)
-		(instances
-			(project "devhub"
-				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630/af081a2b-4668-5eab-8d09-70b13e5ee477"
-					(reference "J3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GND")
 		(at 71.12 121.92 0)
 		(unit 1)
@@ -9801,129 +9454,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:Polyfuse")
-		(at 284.48 160.02 270)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "a044c423-f2f5-52f4-a440-bf14c509814e")
-		(property "Reference" "F1"
-			(at 284.48 157.48 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "500mA"
-			(at 284.48 162.56 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Fuse:Fuse_1812_4532Metric"
-			(at 284.48 160.02 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 284.48 160.02 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Resettable fuse, polymeric positive temperature coefficient"
-			(at 284.48 160.02 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "warehouse" "210"
-			(at 284.48 160.02 270)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "lcsc" "C17313"
-			(at 284.48 160.02 270)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "mouser" "652-MF-MSMF050-2"
-			(at 284.48 160.02 270)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "digikey" "MF-MSMF050-2CT-ND"
-			(at 284.48 160.02 270)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "2b12ddc9-1a37-5838-b469-16db9a516324")
-		)
-		(pin "2"
-			(uuid "553a0040-be64-5ee0-8027-e276f7b05379")
-		)
-		(instances
-			(project "devhub"
-				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630/af081a2b-4668-5eab-8d09-70b13e5ee477"
-					(reference "F1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GND")
 		(at 175.26 91.44 0)
 		(unit 1)
@@ -10198,83 +9728,6 @@
 			(project "devhub"
 				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630/af081a2b-4668-5eab-8d09-70b13e5ee477"
 					(reference "#PWR056")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+5V")
-		(at 269.24 160.02 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "b4caa32b-c856-5f1e-8b47-f14490dae7fd")
-		(property "Reference" "#PWR080"
-			(at 269.24 160.02 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "+5V"
-			(at 269.24 156.62 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 269.24 160.02 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 269.24 160.02 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 269.24 160.02 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "0db5b1f9-e5ca-55ec-9490-2661385364c0")
-		)
-		(instances
-			(project "devhub"
-				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630/af081a2b-4668-5eab-8d09-70b13e5ee477"
-					(reference "#PWR080")
 					(unit 1)
 				)
 			)
@@ -13555,5 +13008,26 @@
 				)
 			)
 		)
+	)
+
+	(no_connect
+		(at 242.57 139.7)
+		(uuid "de175b86-0d19-4f02-8d33-a549c7744c72")
+	)
+	(no_connect
+		(at 242.57 137.16)
+		(uuid "ae9fab7b-33c5-4b81-9b68-6ddc9d57da39")
+	)
+	(no_connect
+		(at 184.15 157.48)
+		(uuid "60a51b03-58cd-4789-813e-4512ef099d17")
+	)
+	(no_connect
+		(at 242.57 154.94)
+		(uuid "149f6264-5d10-450f-aea7-6b8fcf87d05a")
+	)
+	(no_connect
+		(at 242.57 152.4)
+		(uuid "6ff35002-7d12-42ae-8e6e-04be0997e27f")
 	)
 )

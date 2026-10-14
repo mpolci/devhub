@@ -2,9 +2,9 @@
 
 ## Decise
 
-Le decisioni D60–D66 e D68–D75 definiscono i requisiti correnti e prevalgono sulle parti
-incompatibili delle decisioni precedenti. Schema, PCB, pinout e BOM descrivono ancora
-l'implementazione da adeguare; non è ancora scelto un nuovo integrato per le porte.
+Le decisioni D60–D66 e D68–D81 definiscono i requisiti correnti e prevalgono sulle parti
+incompatibili delle decisioni precedenti. Lo schema v0.3 e il pinout le applicano (D79);
+PCB e BOM descrivono ancora l'implementazione v0.2 da adeguare.
 
 | # | Decisione | Scelta |
 |---|---|---|
@@ -83,19 +83,22 @@ l'implementazione da adeguare; non è ancora scelto un nuovo integrato per le po
 | D73 | Ripristino manuale dopo guasto porta | Quando riceve un guasto hardware della porta, il MCU interrompe l’eventuale ciclo, disabilita VBUS e dati e mantiene il LED lampeggiante. Nessuna riaccensione automatica alla scomparsa del segnale: serve un tentativo esplicito di riabilitazione da pulsante o PC. Se il guasto persiste o ricompare, la porta torna disabilitata con LED lampeggiante. Non è obbligatorio un controller latch-off: la protezione immediata resta hardware e il blocco persistente può essere gestito dal MCU finché alimentato e operativo. |
 | D74 | Stato di fabbrica delle porte | Tutte e quattro le porte abilitate dopo l’avvio del firmware, con accensioni sfalsate per l’inrush. Resta possibile salvare una configurazione diversa per porta. Lo stato durante reset/bootloader è una verifica elettrica distinta. |
 | D75 | Controller delle quattro porte | Scelti due UCS2114-1-V/LX, uno per coppia di porte, con due bus I²C indipendenti per il comune indirizzo 0x57; mantenuti quattro PI3USB4002A per i dati. La variante -1A non viene utilizzata perché non reperita. Abilitare e verificare la scarica automatica via I²C all’avvio; 400 ms come impostazione iniziale da validare. Strap 27 kΩ / 1%, enable VBUS e dati separati sotto un comando logico, nessun MOSFET o GPIO DIS esterno. Il firmware mantiene il blocco manuale dei guasti; misura corrente e charge rationing non utilizzati. Schema/PCB da adeguare dopo hub e pinout MCU, verifiche elettriche e collaudo restano necessari. |
-
 | D76 | Eliminazione header USB di scorta | Nessun header USB downstream di scorta. Servono cinque porte fisiche del hub: quattro USB-C e la connessione interna al MCU. Supera D14 e i riferimenti allo header in D66/D68. Con USB2517, DS5 e DS7 sono inutilizzate; eliminare connettore e alimentazione dedicata dallo schema. |
 | D77 | Fornitore di riferimento | DigiKey per selezione e confronto dei componenti, verificando codice esatto, acquisto a pezzo singolo e disponibilità effettiva. La presenza a catalogo non implica disponibilità. Supera l’indicazione provvisoria di D23; restano utilizzabili i componenti già a magazzino secondo D45. |
-
 | D78 | Hub e MCU confermati | Scelti USB2517I-JZX e STM32G0B1CEU6, versione GP in UFQFPN48, con DigiKey come riferimento. Due bus I²C indipendenti per gli UCS2114; hub sul primo bus a 0x2C. Nessun header USB di scorta. La selezione chiude il confronto D69 e sostituisce il riferimento MCU a 64 pin di D68. Il pinout a 48 pin è documentato come assegnazione da applicare; l’adeguamento dello schema è a cura dell’utente. |
+| D79 | Schema v0.3 | Aggiornato il progetto KiCad esistente invece di rifarlo: restano alimentazione, hub, porte, relè e LED di stato, con i campi fornitore e le impronte già verificati. U3 diventa STM32G0B1CEU6 sul pinout di [pinout-mcu.md](pinout-mcu.md); il foglio switches contiene U4/U5 UCS2114-1-V/LX (COMM_ILIM 27 kΩ 1 %, 100 nF su VDD, 1 µF per coppia di pin VS, BOOST# a massa, ALERT# con pull-up 10 kΩ a 3,3 V verso MCU e OCS1–4_N del hub); pull-up 4,7 kΩ su entrambi i bus I²C (R40/R41, R50/R51). DS5, DS7 e OCS5_N del hub non collegati: con CFG_SEL 001 e 101 gli strap sono disattivati, le porte si disabilitano via SMBus. Eliminati R3/R4/C1/C2, shunt R5 (C7 resta sull'uscita dell'eFuse), INA3221, TPS2561A e shunt delle porte, J3/F1, porta USB-A, scariche discrete, LED rossi, secondo relè; canali 4–6 del ULN2003V12 con ingressi a massa. Impronta UCS2114 di progetto dal land pattern Microchip C04-2421, area termica coperta da solder mask sul pin 17 (GND) |
+| D80 | Pull-down degli EN porta | R42–R45 da 10 kΩ invece di 100 kΩ: con la dispersione massima di ±5 µA di PWR_EN dell'UCS2114 la tensione resta sotto 0,05 V invece di 0,5 V, contro VIL 0,8 V; 0,33 mA per porta abilitata |
+| D81 | Colore del LED unico di porta | Verde: si tiene il LED che indicava la porta alimentata (D102–D402 con R106–R406, 1 kΩ), pilotato da LED_P1–P4; il guasto si distingue dal lampeggio (D63) |
 
 ## Aperte
 
 - Dimensionare e validare il circuito scelto D75: due UCS2114-1-V/LX e quattro PI3USB4002A,
   capacità, scarica automatica, guasti, ritorno di alimentazione e stato al reset/bootloader.
-- Applicare e verificare elettricamente il pinout proposto a 48 pin: due I²C, HID, SWD,
-  UART, reset e bootloader. Quattro GPIO restano liberi; nessun espansore necessario.
+- Verificare elettricamente sul prototipo il pinout a 48 pin: due I²C, HID, SWD, UART,
+  reset e bootloader.
 - Definire durata sicura della scarica, default e intervallo ammesso del ciclo sul circuito
   definitivo; il secondo proposto non è una garanzia per qualsiasi capacità o alimentazione esterna.
-- Adeguare lo schema a cura dell’utente (D78), poi PCB, pinout, BOM, costi, regole specifiche e bilancio di
-  alimentazione. Confermare la gestione dei guasti in base ai segnali realmente disponibili.
+- Adeguare PCB, BOM, costi, regole specifiche e bilancio di alimentazione allo schema v0.3.
+  Confermare la gestione dei guasti in base ai segnali realmente disponibili.
+- Completare i codici fornitore mancanti: U4/U5 (UCS2114-1-V/LX), U3 su Mouser e LCSC,
+  R60/R61 (27 kΩ 1 %) su LCSC; campi `warehouse` vuoti per i componenti non a magazzino.

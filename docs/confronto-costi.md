@@ -1,8 +1,8 @@
 # Confronto dei costi della BOM
 
-**Ambito:** prezzi, quantità e totali qui sotto si riferiscono allo schema attuale,
-ancora da adeguare alle decisioni D60–D66. Non rappresentano il costo della versione
-semplificata: controller delle porte e BOM definitiva non sono ancora scelti.
+**Ambito:** prezzi, quantità e totali qui sotto si riferiscono allo schema v0.2, con USB-A,
+secondo relè, misure di corrente e TPS2561A. Non rappresentano il costo dello schema v0.3:
+il confronto va rifatto con la BOM definitiva.
 
 Prezzi letti il 12/10/2026 sui siti dei fornitori e, per 25 righe Mouser, dal carrello Mouser
 della stessa data, IVA, dazi e spedizione esclusi, da

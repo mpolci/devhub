@@ -1,6 +1,6 @@
 # firmware
 
-Firmware del MCU di controllo (STM32G0B1RET6, C, CMake + arm-none-eabi-gcc). Non ancora iniziato.
+Firmware del MCU di controllo (STM32G0B1CEU6, C, CMake + arm-none-eabi-gcc). Non ancora iniziato.
 
 Stack: STM32CubeG0 HAL, TinyUSB o libreria USB device di ST per HID/CDC.
 
@@ -21,5 +21,5 @@ Responsabilità:
 - stato di default all'accensione salvato in flash; di fabbrica tutte le porte abilitate
   dopo l’avvio, con accensioni sfalsate (D74).
 
-Il pinout documenta lo schema attuale, ancora da adeguare a D60–D66; il rilevamento VBUS
-upstream necessario al funzionamento USB resta distinto dalle misure eliminate.
+Pinout e note di avvio in [../docs/pinout-mcu.md](../docs/pinout-mcu.md); il rilevamento
+VBUS upstream necessario al funzionamento USB resta distinto dalle misure eliminate.

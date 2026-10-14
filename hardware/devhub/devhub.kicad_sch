@@ -6,12 +6,12 @@
 	(paper "A3")
 	(title_block
 		(title "devhub - hub USB per lo sviluppo hardware")
-		(date "2026-10-10")
-		(rev "0.2")
+		(date "2026-10-14")
+		(rev "0.3")
 		(company "devhub")
 	)
 	(lib_symbols)
-	(text "devhub: hub USB 2.0 a 5 porte con sezionamento VBUS e dati per porta, misura di corrente, dispositivo di controllo HID (STM32G0B1) e 2 relè ausiliari. Vedi docs/architettura.md."
+	(text "devhub: hub USB 2.0 con 4 porte USB-C, sezionamento di VBUS e dati per porta, dispositivo di controllo HID (STM32G0B1) e un relè ausiliario. Vedi docs/architettura.md."
 		(exclude_from_sim no)
 		(at 10.16 16.51 0)
 		(effects
@@ -44,36 +44,6 @@
 	)
 	(wire
 		(pts
-			(xy 142.24 177.8) (xy 134.62 177.8)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0713287f-6a52-5e1d-adf9-5bcfcc76bfd2")
-	)
-	(wire
-		(pts
-			(xy 228.6 35.56) (xy 236.22 35.56)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0f1b1cae-c3d0-502c-8cc9-f6fbbdc4a5f7")
-	)
-	(wire
-		(pts
-			(xy 142.24 182.88) (xy 134.62 182.88)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "176a3865-78f4-55f2-8c38-d8050a3390f5")
-	)
-	(wire
-		(pts
 			(xy 142.24 38.1) (xy 134.62 38.1)
 		)
 		(stroke
@@ -81,16 +51,6 @@
 			(type default)
 		)
 		(uuid "2304274f-dd1f-5f7e-9e27-3a7625e0e531")
-	)
-	(wire
-		(pts
-			(xy 142.24 180.34) (xy 134.62 180.34)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2918c5c2-d63e-5f8c-8436-f3b63170c133")
 	)
 	(wire
 		(pts
@@ -134,26 +94,6 @@
 	)
 	(wire
 		(pts
-			(xy 142.24 43.18) (xy 134.62 43.18)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3f0d7d89-7513-53f5-a341-5bc305306d85")
-	)
-	(wire
-		(pts
-			(xy 142.24 114.3) (xy 134.62 114.3)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "41a75d9c-698e-5cea-bc70-37955fbd900b")
-	)
-	(wire
-		(pts
 			(xy 228.6 104.14) (xy 236.22 104.14)
 		)
 		(stroke
@@ -181,26 +121,6 @@
 			(type default)
 		)
 		(uuid "5a0e745c-3830-5e8e-bdff-e0f9dc78a318")
-	)
-	(wire
-		(pts
-			(xy 228.6 177.8) (xy 236.22 177.8)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "63970fba-f241-5d2f-b324-82ef129e52fb")
-	)
-	(wire
-		(pts
-			(xy 142.24 78.74) (xy 134.62 78.74)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6f97251f-0453-5ffc-b4ab-04c9b35232d0")
 	)
 	(wire
 		(pts
@@ -234,16 +154,6 @@
 	)
 	(wire
 		(pts
-			(xy 228.6 180.34) (xy 236.22 180.34)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7e32850e-68fa-5281-9a31-1a5e421bea5f")
-	)
-	(wire
-		(pts
 			(xy 142.24 139.7) (xy 134.62 139.7)
 		)
 		(stroke
@@ -251,16 +161,6 @@
 			(type default)
 		)
 		(uuid "87cad677-1aba-5552-af0e-faff092dce2e")
-	)
-	(wire
-		(pts
-			(xy 228.6 142.24) (xy 236.22 142.24)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8ba64530-21c7-5cf8-b1d2-12328351a87b")
 	)
 	(wire
 		(pts
@@ -284,16 +184,6 @@
 	)
 	(wire
 		(pts
-			(xy 228.6 106.68) (xy 236.22 106.68)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9fa7681e-d15e-5d40-9d5c-aaaafc8fd610")
-	)
-	(wire
-		(pts
 			(xy 228.6 73.66) (xy 236.22 73.66)
 		)
 		(stroke
@@ -311,16 +201,6 @@
 			(type default)
 		)
 		(uuid "a0ffca77-fa04-5037-84c9-ddb15542dc02")
-	)
-	(wire
-		(pts
-			(xy 228.6 175.26) (xy 236.22 175.26)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a52b0e65-39a3-5610-963c-1fc3ca7f749e")
 	)
 	(wire
 		(pts
@@ -344,26 +224,6 @@
 	)
 	(wire
 		(pts
-			(xy 228.6 71.12) (xy 236.22 71.12)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d135ca4e-8231-5bcb-b004-cb8bea14f13a")
-	)
-	(wire
-		(pts
-			(xy 142.24 149.86) (xy 134.62 149.86)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d63b95ee-e054-522f-9359-84389e1b3260")
-	)
-	(wire
-		(pts
 			(xy 142.24 147.32) (xy 134.62 147.32)
 		)
 		(stroke
@@ -384,16 +244,6 @@
 	)
 	(wire
 		(pts
-			(xy 142.24 175.26) (xy 134.62 175.26)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f389ac46-8cb4-5bdb-b68d-9c5b46d0a9f2")
-	)
-	(wire
-		(pts
 			(xy 142.24 73.66) (xy 134.62 73.66)
 		)
 		(stroke
@@ -404,16 +254,6 @@
 	)
 	(wire
 		(pts
-			(xy 142.24 185.42) (xy 134.62 185.42)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f8d71bcb-3ee1-5f3f-9357-803ef76e8b92")
-	)
-	(wire
-		(pts
 			(xy 142.24 71.12) (xy 134.62 71.12)
 		)
 		(stroke
@@ -421,75 +261,6 @@
 			(type default)
 		)
 		(uuid "f92d3971-5ddf-59c0-8bd8-c5d2da27bb07")
-	)
-	(global_label "LED_FLT_P1"
-		(shape bidirectional)
-		(at 236.22 35.56 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "073cd0e9-aca7-5b7f-82a2-2f0e428164f7")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 236.22 35.56 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-	)
-	(global_label "LED_FLT_P4"
-		(shape bidirectional)
-		(at 236.22 142.24 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "08a9e671-45d6-5637-a101-eb596d503048")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 236.22 142.24 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-	)
-	(global_label "DIS_P5"
-		(shape bidirectional)
-		(at 134.62 185.42 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "15a5af59-3552-5d0c-9ee1-1afec4c09af8")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 134.62 185.42 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 	)
 	(global_label "BTN_P1"
 		(shape bidirectional)
@@ -537,52 +308,6 @@
 			)
 		)
 	)
-	(global_label "HUB_DN5"
-		(shape bidirectional)
-		(at 134.62 180.34 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "1c383f4b-cf3c-5be4-8294-47d8a0922cf3")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 134.62 180.34 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-	)
-	(global_label "LED_FLT_P3"
-		(shape bidirectional)
-		(at 236.22 106.68 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "3432efef-6138-5895-9b57-7889abe33743")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 236.22 106.68 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-	)
 	(global_label "HUB_DP4"
 		(shape bidirectional)
 		(at 134.62 142.24 180)
@@ -619,29 +344,6 @@
 		(uuid "3a4a44ad-dedd-5c3b-a2bb-44d88c06edec")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 236.22 73.66 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-	)
-	(global_label "BTN_P5"
-		(shape bidirectional)
-		(at 236.22 180.34 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "3b7b88aa-a330-5e70-874d-bc6921b0f2d3")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 236.22 180.34 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -721,7 +423,7 @@
 			)
 		)
 	)
-	(global_label "EN_P4"
+	(global_label "LED_P4"
 		(shape bidirectional)
 		(at 236.22 139.7 0)
 		(fields_autoplaced yes)
@@ -734,52 +436,6 @@
 		(uuid "4f7129c6-4a53-5f91-8bfb-3ee2b08884f2")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 236.22 139.7 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-	)
-	(global_label "EN_P5"
-		(shape bidirectional)
-		(at 236.22 175.26 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "55f2b004-4267-5478-b936-5ca601ba5f49")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 236.22 175.26 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-	)
-	(global_label "LED_FLT_P2"
-		(shape bidirectional)
-		(at 236.22 71.12 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "577199bf-3a7b-5ca5-b2ef-dd393302da1a")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 236.22 71.12 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -813,7 +469,7 @@
 			)
 		)
 	)
-	(global_label "EN_P3"
+	(global_label "LED_P3"
 		(shape bidirectional)
 		(at 236.22 104.14 0)
 		(fields_autoplaced yes)
@@ -826,29 +482,6 @@
 		(uuid "5f2a9b58-e509-5f17-8983-ee87d29eccb8")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 236.22 104.14 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-	)
-	(global_label "DIS_P4"
-		(shape bidirectional)
-		(at 134.62 149.86 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "6cc29523-7e46-5d1c-985e-1a75b5395bd4")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 134.62 149.86 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -905,7 +538,7 @@
 			)
 		)
 	)
-	(global_label "EN_P1"
+	(global_label "LED_P1"
 		(shape bidirectional)
 		(at 236.22 33.02 0)
 		(fields_autoplaced yes)
@@ -951,29 +584,6 @@
 			)
 		)
 	)
-	(global_label "DIS_P2"
-		(shape bidirectional)
-		(at 134.62 78.74 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "94197767-a3af-5c32-920b-68a6bece6cf0")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 134.62 78.74 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-	)
 	(global_label "BTN_P4"
 		(shape bidirectional)
 		(at 236.22 144.78 0)
@@ -987,29 +597,6 @@
 		(uuid "a2505076-3a68-5926-b84c-789c72e98cd8")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 236.22 144.78 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-	)
-	(global_label "DIS_P3"
-		(shape bidirectional)
-		(at 134.62 114.3 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "a25a6879-d118-5262-8dfe-f39954afbeae")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 134.62 114.3 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -1043,52 +630,6 @@
 			)
 		)
 	)
-	(global_label "OE_N_P5"
-		(shape bidirectional)
-		(at 134.62 182.88 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "a8390e99-4ada-5e25-8c65-7939f0d22ec2")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 134.62 182.88 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-	)
-	(global_label "DIS_P1"
-		(shape bidirectional)
-		(at 134.62 43.18 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "ac98ed01-9c26-5668-8bd3-f712403ad7f7")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 134.62 43.18 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-	)
 	(global_label "VBUS_P3"
 		(shape bidirectional)
 		(at 134.62 104.14 180)
@@ -1112,29 +653,6 @@
 			)
 		)
 	)
-	(global_label "LED_FLT_P5"
-		(shape bidirectional)
-		(at 236.22 177.8 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "b4fe2134-577c-5c98-96fe-9d80ec792fb7")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 236.22 177.8 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-	)
 	(global_label "OE_N_P4"
 		(shape bidirectional)
 		(at 134.62 147.32 180)
@@ -1148,29 +666,6 @@
 		(uuid "b62f9128-4b88-58e8-a295-9514151dac6e")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 134.62 147.32 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-	)
-	(global_label "VBUS_P5"
-		(shape bidirectional)
-		(at 134.62 175.26 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "b763e2ed-e7d6-5300-8f01-fe2bb757e9cf")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 134.62 175.26 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -1227,7 +722,7 @@
 			)
 		)
 	)
-	(global_label "EN_P2"
+	(global_label "LED_P2"
 		(shape bidirectional)
 		(at 236.22 68.58 0)
 		(fields_autoplaced yes)
@@ -1240,29 +735,6 @@
 		(uuid "d106a58e-b8fa-50ad-b070-1f50b9f69e81")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 236.22 68.58 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-	)
-	(global_label "HUB_DP5"
-		(shape bidirectional)
-		(at 134.62 177.8 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "e54f5037-57e0-52c1-ae3e-863f6a96a876")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 134.62 177.8 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -1343,132 +815,6 @@
 		)
 	)
 	(sheet
-		(at 142.24 172.72)
-		(size 86.36 17.78)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0)
-		)
-		(uuid "0c5617cc-af51-5b03-9838-7bc06ac23dd1")
-		(property "Sheetname" "Porta 5 (USB-A)"
-			(at 142.24 172.02 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Sheetfile" "port_a.kicad_sch"
-			(at 142.24 191.1 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(pin "VBUS" input
-			(at 142.24 175.26 180)
-			(uuid "6cdad691-8c80-5c08-9432-0c7147539dae")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "HUB_DP" bidirectional
-			(at 142.24 177.8 180)
-			(uuid "9c127ebb-fb71-5197-92be-0bdf02138dba")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "HUB_DN" bidirectional
-			(at 142.24 180.34 180)
-			(uuid "fe0072f4-7320-5a3b-8468-cbe8c571a5c3")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "OE_N" input
-			(at 142.24 182.88 180)
-			(uuid "812224c9-5be5-5f4d-9036-09f46ceb6c49")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "DIS" input
-			(at 142.24 185.42 180)
-			(uuid "6a223c17-4ec5-5060-a5a8-45bcaba402c6")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "LED_PWR" input
-			(at 228.6 175.26 0)
-			(uuid "d95e4d64-bd6a-5f5d-94cf-4ca2d74a4719")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "LED_FLT" input
-			(at 228.6 177.8 0)
-			(uuid "4a4d259f-94d3-50f6-9e04-d5bf4115f20d")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "BTN" output
-			(at 228.6 180.34 0)
-			(uuid "714411d0-47e1-5836-a270-94b597480798")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(instances
-			(project "devhub"
-				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630"
-					(page "9")
-				)
-			)
-		)
-	)
-	(sheet
 		(at 15.24 121.92)
 		(size 76.2 20.32)
 		(exclude_from_sim no)
@@ -1484,7 +830,7 @@
 			(color 0 0 0 0)
 		)
 		(uuid "1e0a4864-e5d3-5f33-ba41-65dd2f29348f")
-		(property "Sheetname" "Load switch e misura corrente"
+		(property "Sheetname" "Switch VBUS porte"
 			(at 15.24 121.22 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -1576,7 +922,7 @@
 			(color 0 0 0 0)
 		)
 		(uuid "754ef4c0-187b-5738-814a-57c901f66789")
-		(property "Sheetname" "Relè ausiliari"
+		(property "Sheetname" "Relè ausiliario"
 			(at 15.24 151.7 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -1684,29 +1030,9 @@
 				(justify right)
 			)
 		)
-		(pin "DIS" input
-			(at 142.24 43.18 180)
-			(uuid "638213b8-8afd-5494-94d4-60d79aadbe76")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "LED_PWR" input
+		(pin "LED" input
 			(at 228.6 33.02 0)
 			(uuid "da9b9ef8-e5d0-584f-b237-7485c44b5ced")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "LED_FLT" input
-			(at 228.6 35.56 0)
-			(uuid "e0ec02aa-d5d3-5dd9-af12-51708b03c499")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1810,29 +1136,9 @@
 				(justify right)
 			)
 		)
-		(pin "DIS" input
-			(at 142.24 149.86 180)
-			(uuid "ac90d35c-1dd0-59da-8858-8bee61cf510d")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "LED_PWR" input
+		(pin "LED" input
 			(at 228.6 139.7 0)
 			(uuid "fa309598-76b8-548b-a79d-a0231c5dc4c1")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "LED_FLT" input
-			(at 228.6 142.24 0)
-			(uuid "9903638f-2880-570b-aea8-9763b22303d1")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1853,7 +1159,7 @@
 		(instances
 			(project "devhub"
 				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630"
-					(page "12")
+					(page "11")
 				)
 			)
 		)
@@ -2028,29 +1334,9 @@
 				(justify right)
 			)
 		)
-		(pin "DIS" input
-			(at 142.24 78.74 180)
-			(uuid "f3480ad0-6526-5e8e-bc8d-ec8f856df7d1")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "LED_PWR" input
+		(pin "LED" input
 			(at 228.6 68.58 0)
 			(uuid "ace231fa-73db-5f2c-b1f6-c08588431abb")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "LED_FLT" input
-			(at 228.6 71.12 0)
-			(uuid "dd5f025f-2d3a-5ed0-b270-eeb1938279c7")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2071,7 +1357,7 @@
 		(instances
 			(project "devhub"
 				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630"
-					(page "10")
+					(page "9")
 				)
 			)
 		)
@@ -2200,29 +1486,9 @@
 				(justify right)
 			)
 		)
-		(pin "DIS" input
-			(at 142.24 114.3 180)
-			(uuid "8bb65cca-10fd-53f5-9f85-15e5a5519e29")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "LED_PWR" input
+		(pin "LED" input
 			(at 228.6 104.14 0)
 			(uuid "06396105-167c-5ce9-bd23-fa85f9d7736e")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "LED_FLT" input
-			(at 228.6 106.68 0)
-			(uuid "16a3bd57-10d9-5364-a683-3160456cacc8")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2243,7 +1509,7 @@
 		(instances
 			(project "devhub"
 				(path "/af6ea7d8-d1ba-5fc6-aec8-abf514847630"
-					(page "11")
+					(page "10")
 				)
 			)
 		)

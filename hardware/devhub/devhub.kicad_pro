@@ -735,32 +735,24 @@
         "pattern": "/Hub USB2517/USBUP_DN"
       },
       {
-        "netclass": "USB_DIFF",
-        "pattern": "/Hub USB2517/SPARE_DP"
-      },
-      {
-        "netclass": "USB_DIFF",
-        "pattern": "/Hub USB2517/SPARE_DN"
+        "netclass": "RELAY_CONTACT",
+        "pattern": "/Relè ausiliario/BAN?_COM"
       },
       {
         "netclass": "RELAY_CONTACT",
-        "pattern": "/Relè ausiliari/BAN?_COM"
+        "pattern": "/Relè ausiliario/BAN?_2"
       },
       {
         "netclass": "RELAY_CONTACT",
-        "pattern": "/Relè ausiliari/BAN?_2"
+        "pattern": "/Relè ausiliario/K?_NC"
       },
       {
         "netclass": "RELAY_CONTACT",
-        "pattern": "/Relè ausiliari/K?_NC"
+        "pattern": "/Relè ausiliario/K?_NO"
       },
       {
         "netclass": "RELAY_CONTACT",
-        "pattern": "/Relè ausiliari/K?_NO"
-      },
-      {
-        "netclass": "RELAY_CONTACT",
-        "pattern": "/Relè ausiliari/SNUB?"
+        "pattern": "/Relè ausiliario/SNUB?"
       },
       {
         "netclass": "PWR_MAIN",
@@ -768,15 +760,7 @@
       },
       {
         "netclass": "PWR_MAIN",
-        "pattern": "5V_EFUSE"
-      },
-      {
-        "netclass": "PWR_MAIN",
         "pattern": "+5V"
-      },
-      {
-        "netclass": "PWR_PORT",
-        "pattern": "/Load switch e misura corrente/SW_OUT_P?"
       },
       {
         "netclass": "PWR_PORT",
@@ -789,10 +773,6 @@
       {
         "netclass": "PWR_3V3",
         "pattern": "/Alimentazione/5V_LOGIC"
-      },
-      {
-        "netclass": "SENSE",
-        "pattern": "CC?_ADC"
       },
       {
         "netclass": "SENSE",
@@ -975,11 +955,11 @@
     ],
     [
       "1e0a4864-e5d3-5f33-ba41-65dd2f29348f",
-      "Load switch e misura corrente"
+      "Switch VBUS porte"
     ],
     [
       "754ef4c0-187b-5738-814a-57c901f66789",
-      "Relè ausiliari"
+      "Relè ausiliario"
     ],
     [
       "c82dde94-3a77-5cb6-9c61-f280daabce7c",
@@ -988,10 +968,6 @@
     [
       "8fa65214-18b0-5d08-bb37-cbf5f7730b77",
       "Porta 1 (USB-C)"
-    ],
-    [
-      "0c5617cc-af51-5b03-9838-7bc06ac23dd1",
-      "Porta 5 (USB-A)"
     ],
     [
       "ba1682d4-60b7-5c55-978d-7c8e62460e69",

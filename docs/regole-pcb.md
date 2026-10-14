@@ -1,8 +1,8 @@
 # Regole per la progettazione PCB
 
-**Ambito:** le regole e i riferimenti di componente qui sotto corrispondono allo schema/PCB
-attuale, ancora da adeguare a D60–D66. USB-A e secondo canale relè con i relativi
-componenti sono da eliminare; quote e piazzamenti riportati non descrivono il nuovo fronte.
+**Ambito:** le regole e i riferimenti di componente qui sotto corrispondono al PCB v0.2, non
+ancora adeguato allo schema v0.3 (D79). USB-A e secondo canale relè con i relativi
+componenti sono già eliminati dallo schema; quote e piazzamenti riportati non descrivono il nuovo fronte.
 Le prescrizioni per shunt/INA3221, filtri CC d'ingresso
 e doppi LED riguardano circuiti da rimuovere; non sono requisiti della versione semplificata.
 Regole specifiche di scarica e controller saranno aggiornate insieme al circuito scelto.

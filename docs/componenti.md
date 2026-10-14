@@ -1,21 +1,19 @@
 # Componenti candidati
 
-**Stato della selezione:** le tabelle sotto documentano componenti e alternative dello schema
-attuale, ancora da adeguare. **D75 sceglie due UCS2114-1-V/LX con due bus I²C e quattro
-PI3USB4002A** per le porte; la scelta non è ancora applicata in KiCad.
-**Hub/MCU confermati (D78): USB2517I-JZX + STM32G0B1CEU6, UFQFPN48**, dettagli sotto.
+**Stato della selezione:** lo schema v0.3 (D79) usa **due UCS2114-1-V/LX con due bus I²C e
+quattro PI3USB4002A** per le porte (D75) e **USB2517I-JZX + STM32G0B1CEU6, UFQFPN48** (D78).
 Nessun header USB di scorta (D76); DigiKey è il fornitore di riferimento (D77). Restano cinque pulsanti e LED USB con lampeggio guasti.
 La [variante USB4715 senza MCU](#usb4715-senza-mcu-verifica-di-fattibilità) è un’alternativa
 non adottata; TCA9535 non è previsto nella soluzione corrente.
 
-| Blocco | Indirizzo per la versione semplificata |
+| Blocco | Schema v0.3 |
 |---|---|
-| Misure | Eliminare U7/U8 INA3221, R5/R65–R69 e supporti dedicati; nessun sensore o partitore sostitutivo per porte/5V_SYS |
-| CC d'ingresso | Eliminare lettura ADC e R3/R4/C1/C2; mantenere Rd R1/R2 |
-| Porte | Due UCS2114-1-V/LX con due bus I²C e scarica automatica configurata all’avvio, più quattro PI3USB4002A (D75); eliminare le scariche discrete e i GPIO DIS |
-| LED USB | Quattro LED comandati dal MCU; eliminare la coppia della USB-A e uno dei due LED per ciascuna USB-C; riferimenti da definire |
-| Uscite e pannello | Quattro USB-C, un relè, due boccole COM/NC, cinque pulsanti e sette LED complessivi; rimuovere la USB-A e il secondo canale relè (D66) |
-| Logica e ingresso | Confermati USB2517I-JZX e STM32G0B1CEU6 a 48 pin; nello schema resta STM32G0B1RET6 a 64 pin. Conservare le protezioni richieste |
+| Misure | Nessun sensore né partitore per porte o 5V_SYS (D60) |
+| CC d'ingresso | Solo Rd R1/R2 da 5,1 kΩ, nessuna lettura (D65) |
+| Porte | U4/U5 UCS2114-1-V/LX con scarica automatica configurata all’avvio, U101–U401 PI3USB4002A (D75); nessuna scarica discreta né GPIO DIS |
+| LED USB | Un LED verde per porta, D102–D402, pilotato dal MCU (D81) |
+| Uscite e pannello | Quattro USB-C, un relè, due boccole COM/NC, cinque pulsanti e sette LED complessivi (D66) |
+| Logica e ingresso | USB2517I-JZX e STM32G0B1CEU6 a 48 pin; eFuse, TVS e LDO invariati |
 
 La selezione richiede verifica di corrente per porta, distacco dei dati con dispositivi
 autoalimentati, blocco inverso, ESD, guasti disponibili, scarica e stato al reset.
@@ -50,10 +48,10 @@ MF-MSMF050-2 in 1812 (era 1206), C3/C4 radiali D6,3 passo 2,5 mm (era D8 passo 3
 C505 SMD 6,3 × 5,8 mm (era 6,3 × 7,7). I 100 nF di disaccoppiamento di U2 e U12 sono 0402 (ID 217,
 Yageo CC0402KRX7R7BB104), per stare accanto ai pin fra le coppie USB (D58).
 
-## Componenti nello schema esistente
+## Componenti nello schema
 
-Le quantità e i riferimenti nelle tabelle seguenti descrivono lo schema ancora da adeguare,
-compresi USB-A, secondo relè e misure da eliminare. Per i nuovi candidati vedere la
+Le quantità e i riferimenti nelle tabelle seguenti descrivono lo schema v0.3. Le alternative
+valutate per la versione semplificata sono nella
 [ricerca per la versione semplificata](#ricerca-per-la-versione-semplificata-d60d66).
 
 ## Circuiti integrati
@@ -62,13 +60,9 @@ compresi USB-A, secondo relè e misure da eliminare. Per i nuovi candidati veder
 |---|---|---|---|---|---|---|
 | Hub USB 2.0, 7 porte | Microchip **USB2517I-JZX** | QFN-64 9×9, passo 0,5 mm, pad esposto | aria calda + stencil | extended (da confermare) | C478081, ~4,4 $ cad. | 3 000+ pezzi in stock a ottobre 2026 |
 | Hub, alternativa saldabile a mano | Terminus **FE2.1** | LQFP-48 | sì | extended | sì | documentazione scarsa, usato in molti hub commerciali |
-| MCU di controllo | ST **STM32G0B1RET6** | LQFP-64 | sì | extended | C2829307, ~2,7 $ cad. | USB FS device senza quarzo, 2× UCPD, 512 kB flash, ~60 GPIO |
-| Load switch VBUS (×3, doppio canale) | TI **TPS2561A** | VSON-10 3×3 | aria calda / piastra | extended | sì | 2,5 A continui per canale, limite regolabile 0,25–2,8 A (accurato 2,1–2,5 A), FAULT per canale, 44 mΩ; nessuna scarica dell'uscita (verificato): MOSFET di scarica esterno; R_ILIM 24,3 kΩ, 33,2 kΩ su U6 per la USB-A (D54) |
-| Load switch, alternativa a pin | TI **TPS25221DBV** | SOT-23-6 | sì | extended | sì | 2 A continui (al limite del requisito), limite 0,275–2,7 A, FAULT, nessuna scarica dell'uscita |
-| Scarica VBUS porta (×5) | MOSFET N **AO3400** + R 100 Ω 1206 | SOT-23 | sì | basic | sì | presente nello schema; durata da rivalutare con il ciclo temporizzato D61, o sostituzione con scarica integrata |
-| Switch dati D+/D- (×5) | Diodes **PI3USB4002AZUAEX** | UQFN-10 1,5×2 mm, passo 0,5 mm | aria calda | — | no (DigiKey) | interruttore USB 2.0, 1 GHz, 5 Ω, EN alto = scollegato; lato connettore tollerante 24 V con OVP a 4,75 V, ESD 10 kV IEC; REF con 1 µF 25 V (D22) |
-| Misura corrente | TI **INA3221** ×2 | VQFN-16 | aria calda | extended | sì | 3 canali, I2C: 5 porte + corrente totale d'ingresso |
-| Misura corrente, alternativa a mano | TI **INA219** ×5 | SOT-23-8 | sì | extended | sì | 1 canale, 16 indirizzi I2C |
+| MCU di controllo | ST **STM32G0B1CEU6** | UFQFPN48 7×7, pad esposto | aria calda + stencil | — | da verificare | USB FS device senza quarzo, 2× UCPD, 2× I²C, 512 kB flash; DigiKey 497-STM32G0B1CEU6-ND (D78) |
+| Switch VBUS porte (×2, doppio canale) | Microchip **UCS2114-1-V/LX** | VQFN-20 3×3, passo 0,5 mm, senza pad esposto | aria calda + stencil | — | da verificare | SMBus 0x57 (un chip per bus I²C), strap 27 kΩ: limite 2,50–2,90 A per porta, RON ≤ 30 mΩ, blocco inverso, ALERT# per porta, scarica VBUS automatica; DigiKey ~3,3 $ (D75) |
+| Switch dati D+/D- (×4) | Diodes **PI3USB4002AZUAEX** | UQFN-10 1,5×2 mm, passo 0,5 mm | aria calda | — | no (DigiKey) | interruttore USB 2.0, 1 GHz, 5 Ω, EN alto = scollegato; lato connettore tollerante 24 V con OVP a 4,75 V, ESD 10 kV IEC; REF con 1 µF 25 V (D22) |
 | eFuse d'ingresso | TI **TPS259470ARPWR** | VQFN-HR-10 2×2 mm (RPW) | aria calda | extended | C3662799 | 2,7–23 V, 5,5 A, 28 mΩ; OVLO/UVLO regolabili, limite attivo, ripartenza automatica, FLT, blocco corrente inversa (D21) |
 | Zener su EN dell'eFuse | **BZT52C5V1** | SOD-123 | sì | basic | sì | tiene EN sotto 6,5 V con ingresso fino a 28 V |
 | LDO 3,3 V | Diodes **AP7361C-33E** | SOT-223 | sì | extended | sì | 1 A, dropout 90 mV tipici a 300 mA, θJA 110 °C/W con piazzola minima: regge 0,3–0,6 W. Sostituisce l'AP2112K (SOT-23-5), troppo caldo con il carico del hub |
@@ -86,9 +80,8 @@ Con il montaggio a mano e un fornitore unico il catalogo si allarga. Per blocco:
 | Blocco | Scelta attuale | Alternative a catalogo Mouser/DigiKey | Giudizio |
 |---|---|---|---|
 | Hub 7 porte | USB2517I (QFN-64) | 2 × Microchip **USB2514B** (QFN-36, 4 porte, cascata 4+3); 2 × Infineon/Cypress **CY7C65642** (QFN-56) | Non esiste un hub Hi-Speed a 7 porte in package a pin da nessun fornitore. Gli hub a 4 porte in SSOP-28 (GL850G, FE1.1s) sono solo su LCSC. La cascata aggiunge un quarzo e un hop. USB2517 resta la scelta. |
-| Load switch | TPS2561A | TPS25221 (SOT-23-6, 2 A); Diodes **AP22814** (SOT-25, limite fisso 3,45 A, troppo alto per il budget) | TPS2561A è il migliore sui 2 A: 2,5 A continui e limite accurato. Un canale resta libero. |
+| Switch VBUS | UCS2114-1-V/LX | Diodes **AP22615B** ×4, TI **TPS2561A** + scarica discreta (schema v0.2), UCS2114-1A autonomo (non reperito) | Scelta D75: limite, blocco inverso, ALERT# e scarica integrati in due chip; vedi la [ricerca](#ricerca-per-la-versione-semplificata-d60d66). |
 | Switch dati | PI3USB4002A (UQFN-10) | vedi "Alternative già valutate" | Unico trovato con protezione dai corti su VBUS, package saldabile e disponibilità |
-| Misura corrente | INA3221 ×2 (VQFN-16) | TI **INA260** ×5 (TSSOP-16, shunt 2 mΩ integrato, ~4,7 € cad., lead time lungo segnalato); TI **INA226** ×5 (MSOP-10, shunt esterno); TI **INA219** ×5 (SOT-23-8) | INA3221 è il più compatto e il più economico (2 chip). INA260 elimina gli shunt ma costa 5 volte tanto e la disponibilità è incerta. |
 | Relè | Omron G5Q-1 / Songle SRD | Omron **G5LE-1**, TE **OJE-SH-105LM** (5 A, slim), Panasonic **JS1-5V** | Tutti equivalenti per 16 V / 3 A; scelta per ingombro e prezzo. |
 | Connettori USB-C 16 pin | — | GCT **USB4105-GF-A**, Würth **632723300011**, Amphenol **12401610E4#2A** | Tutti a catalogo Mouser/DigiKey, footprint KiCad disponibili. |
 
@@ -96,18 +89,17 @@ Con il montaggio a mano e un fornitore unico il catalogo si allarga. Per blocco:
 
 | Funzione | Candidato | Note |
 |---|---|---|
-| Relè ausiliari (×2) | SPDT 5–10 A, bobina 5 V: Omron **G5Q-1** DC5, Songle **SRD-05VDC-SL-C**, Hongfa **HF32F** | specifica contatti: 16 V / 3 A max; usati su COM/NC; il contatto NC del G5Q-1 è tarato 3 A a 30 V DC, accettato senza margine; snubber RC opzionale sui contatti |
-| Boccole a banana 4 mm (×4) | Cliff **FCR7350** (S16N-PC, da pannello con montaggio su PCB): nera FCR7350B su COM, rossa FCR7350R su NC | COM e NC per canale; NO su ponticello interno; footprint KiCad `Connector:Banana_Cliff_FCR7350*` |
+| Relè ausiliario (×1) | SPDT 5–10 A, bobina 5 V: Omron **G5Q-1** DC5, Songle **SRD-05VDC-SL-C**, Hongfa **HF32F** | specifica contatti: 16 V / 3 A max; usati su COM/NC; il contatto NC del G5Q-1 è tarato 3 A a 30 V DC, accettato senza margine; snubber RC opzionale sui contatti |
+| Boccole a banana 4 mm (×2) | Cliff **FCR7350** (S16N-PC, da pannello con montaggio su PCB): nera FCR7350B su COM, rossa FCR7350R su NC | COM e NC; NO su ponticello interno; footprint KiCad `Connector:Banana_Cliff_FCR7350*` |
 | USB-C downstream (×4) | GCT **USB4105-GF-A**: 16 pin (solo USB 2.0), orizzontale, montato sopra il PCB, 5 A, guscio con linguette passanti | stesso modello per tutti gli USB-C (D18); sui 16 pin bastano D+/D-, CC1, CC2, VBUS, GND |
 | USB-C upstream (×1) | GCT **USB4105-GF-A** | Rd 5,1 kΩ su CC1 e CC2 |
-| USB-C alimentazione (×1) | GCT **USB4105-GF-A** | solo CC1, CC2 (Rd 5,1 kΩ, verso ADC), VBUS, GND; 5 V / 3 A (il connettore regge 5 A) |
-| USB-A downstream (×1) | Kycon **KUSBX-AS1N-B**: orizzontale, passante | corrente nominale 1,5 A: la porta USB-A è limitata a 1,5 A (D54) |
-| Pulsanti (×7: 5 porte, 2 relè) | C&K **PTS645SL70SMTR92 LFS**: tattile 6×6 SMD, terminali gull-wing, attuatore 7 mm (DigiKey) | sulla faccia superiore, premuti dal coperchio con estensore stampato; footprint KiCad `Button_Switch_SMD:SW_SPST_PTS645Sx43SMTR92`, comune a tutte le altezze della serie SMD (da verificare sul disegno C&K); ogni pressione alterna lo stato (RF-17) (D43) |
-| LED (×14) | 0805 | 2 per porta (verde alimentata, rosso fault), 1 verde per relè (acceso = linea staccata), acceso (verde), host collegato (arancio) |
+| USB-C alimentazione (×1) | GCT **USB4105-GF-A** | solo CC1, CC2 (Rd 5,1 kΩ, nessuna lettura), VBUS, GND; 5 V / 3 A (il connettore regge 5 A) |
+| Pulsanti (×5: 4 porte, 1 relè) | C&K **PTS645SL70SMTR92 LFS**: tattile 6×6 SMD, terminali gull-wing, attuatore 7 mm (DigiKey) | sulla faccia superiore, premuti dal coperchio con estensore stampato; footprint KiCad `Button_Switch_SMD:SW_SPST_PTS645Sx43SMTR92`, comune a tutte le altezze della serie SMD (da verificare sul disegno C&K); ogni pressione alterna lo stato (RF-17) (D43) |
+| LED (×7) | 0805 | uno verde per porta dal MCU (spento, fisso, lampeggiante per guasto, D81), uno verde per il relè (acceso = linea staccata), acceso (verde), host collegato (arancio) |
 
 ## Conteggio dei tipi "extended" per l'assemblaggio JLCPCB
 
-Se JLCPCB montasse tutto: hub, MCU, load switch, switch dati, INA3221, più eventuali connettori e
+Se JLCPCB montasse tutto: hub, MCU, UCS2114, switch dati, eFuse, più eventuali connettori e
 il quarzo se non basic: **circa 8–11 tipi extended**, cioè ~25–35 € di sovrapprezzo per ordine. Vedi la strategia in
 [architettura.md](architettura.md#produzione-e-assemblaggio).
 
@@ -127,8 +119,8 @@ visti a ottobre 2026 e vanno ricontrollati.
 ## Ricerca per la versione semplificata D60–D66
 
 Valutazione al **14 ottobre 2026**. Configurazione: quattro USB-C, un relè con due boccole,
-HID autonomo, alimentazione 5 V / 3 A, nessuna telemetria elettrica. **Nessun nuovo componente
-è approvato né inserito nello schema.** I giudizi seguenti riguardano l'idoneità a devhub,
+HID autonomo, alimentazione 5 V / 3 A, nessuna telemetria elettrica. Le scelte che ne sono
+derivate sono D75 e D78. I giudizi seguenti riguardano l'idoneità a devhub,
 non una graduatoria generale dei prodotti. I valori tipici non sono garanzie di progetto.
 
 ### Esito e priorità
@@ -616,15 +608,14 @@ sostenuta esternamente o per la sua interruzione automatica sicura, seguiti dall
 ricavano da una curva tipica né dal solo test di un esemplare.
 Se la scarica integrata richiede supporti aggiuntivi, confrontarli con una scarica discreta
 automatica dimensionata per servizio continuo: D70 consente entrambe e privilegia il minor
-circuito completo. Nessuna richiesta al produttore è stata inviata e nessun componente
-nuovo è stato inserito in KiCad.
+circuito completo. Nessuna richiesta al produttore è stata inviata.
 
 ## Raccomandazione per le quattro porte: UCS2114 e PI3USB4002A
 
 **Scelta D75: due UCS2114-1-V/LX con due bus I²C indipendenti e quattro PI3USB4002AZUAEX.**
 La -1A autonoma non è adottata per reperibilità. La scarica viene abilitata all’avvio
-e poi gestita dal timer interno, senza GPIO DIS. Nessuna modifica KiCad è stata ancora
-applicata. Il confronto con la modalità autonoma resta fra le alternative.
+e poi gestita dal timer interno, senza GPIO DIS. Applicata nello schema v0.3 (foglio
+`switches`, D79). Il confronto con la modalità autonoma resta fra le alternative.
 
 ### Indirizzi, varianti e reperibilità
 
@@ -740,7 +731,7 @@ I comandi VBUS sono attivi alti, gli OE dati attivi alti per l’apertura: resta
 e sono gestiti dalla stessa funzione firmware.
 
 Rispetto alla tabella dell’alternativa autonoma: sostituire -1A con -1 e 150 kΩ con 27 kΩ;
-aggiungere quattro pull-up I²C da 2,2 kΩ a 3V3 e quattro pull-down PWR_EN da 10 kΩ.
+aggiungere quattro pull-up I²C da 4,7 kΩ a 3V3 e quattro pull-down PWR_EN da 10 kΩ (D80).
 I quattro pull-up da 10 kΩ sugli OE dati restano. Sono valori iniziali da verificare
 con capacità bus, leakage, alimentazioni e pin del bootloader.
 
@@ -778,7 +769,7 @@ imposte e spedizione. Non trasferire automaticamente prezzo e stock fra le due v
 
 D75 chiude la selezione sui due -1 con I²C. -1A, AP22615B e UCS2112 restano alternative
 non adottate; non ne dipende l’avanzamento del progetto. Restano dimensionamento del circuito,
-pinout e collaudo. Nessuna BOM di produzione, modifica KiCad o acquisto è stato eseguito.
+collaudo. Nessuna BOM di produzione o acquisto è stato eseguito.
 
 ## Hub e MCU confermati con riferimento DigiKey
 
@@ -786,7 +777,7 @@ La soluzione confermata (D78) è **USB2517I-JZX + STM32G0B1CEU6 (UFQFPN48, versi
 Non richiede espansori GPIO, EEPROM, multiplexer I²C o quarzo MCU. Conserva due bus
 I²C hardware e riduce il MCU da 64 a 48 pin. La maggiore Flash della variante CE
 non è un requisito: il codice è scelto per la disponibilità verificata a pezzo singolo.
-La selezione non è ancora applicata allo schema; l’adeguamento è a cura dell’utente.
+Applicata nello schema v0.3 (D79).
 
 ### Hub
 
@@ -812,7 +803,7 @@ eliminazione non è conteggiata come risparmio automatico per gli altri hub.
 |---|---|
 | **STM32G0B1CEU6**, UFQFPN48 7 × 7 mm | Scelto (D78): due I²C indipendenti, USB HID e bootloader USB senza quarzo esterno, tutti i comandi richiesti e quattro GPIO liberi. Pad centrale a massa obbligatorio; montaggio a rifusione/aria calda, coerente con hub e controller già QFN. |
 | STM32G0B1CCT6 / CBT6 / CET6, LQFP48 | Stessa assegnazione funzionale dei 48 pin nella versione GP, più agevoli da saldare. Esauriti nelle pagine DigiKey consultate; non presentarli come disponibili. Possibile alternativa se tornano a stock, con footprint diverso. |
-| STM32G0B1RET6, LQFP64 | Rimane nello schema attuale; non necessario per il conteggio GPIO semplificato. |
+| STM32G0B1RET6, LQFP64 | MCU dello schema v0.2; non necessario per il conteggio GPIO semplificato. |
 | STM32G0B0 | Il bootloader USB richiede HSE esterno: aggiunge componenti rispetto al G0B1. |
 | STM32U083CCT6 | USB e bootloader DFU senza quarzo possibili, ma più collegamenti di alimentazione e minore margine di pin; il codice consultato su DigiKey è esaurito. Nessun vantaggio complessivo dimostrato. |
 

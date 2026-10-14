@@ -1,27 +1,25 @@
 # Architettura
 
-L'architettura funzionale segue i requisiti semplificati D60–D66 e le decisioni D68–D78: controllo delle porte
+L'architettura funzionale segue i requisiti semplificati D60–D66 e le decisioni D68–D81: controllo delle porte
 e riavvio temporizzato, senza misura dei consumi, delle tensioni delle porte/5V_SYS o delle CC
-d'ingresso. **Schema e PCB esistenti sono ancora da adeguare; lo schema è a cura dell’utente.** I dettagli di componente
-indicati come "nello schema attuale" descrivono il circuito presente, non una nuova selezione.
+d'ingresso. Lo schema v0.3 la applica (D79); il PCB è ancora quello della v0.2 e va adeguato.
 D75 sceglie due UCS2114-1-V/LX con due bus I²C indipendenti e quattro PI3USB4002A.
-La scarica automatica va configurata all’avvio; pinout e circuito di supporto restano da
-dimensionare, con 400 ms come durata iniziale della scarica da validare.
+La scarica automatica va configurata all’avvio, con 400 ms come durata iniziale da validare.
 Componenti e alternative: [componenti.md](componenti.md).
 **USB2517I-JZX con STM32G0B1CEU6 confermati (D78)**: HID multipiattaforma, cicli e impulsi
 autonomi, cinque pulsanti e LED porta con lampeggio guasti. La
 [variante USB4715](componenti.md#usb4715-senza-mcu-verifica-di-fattibilità) non è adottata.
 La selezione mantiene USB2517I-JZX e riduce il MCU a STM32G0B1CEU6 (UFQFPN48).
 Servono 37 segnali funzionali, inclusi i due bus I²C; restano quattro GPIO liberi oltre
-ai due pin riservati DBCC. [Pinout completo proposto](pinout-mcu.md#pinout-proposto-stm32g0b1ceu6-ufqfpn48).
+ai due pin riservati DBCC. [Pinout](pinout-mcu.md).
 
 All’avvio del firmware le quattro porte sono abilitate di fabbrica, con accensioni
 sfalsate, salvo default diversi salvati (D74). Reset e bootloader restano da verificare
-elettricamente sul pinout definitivo.
+elettricamente sul prototipo.
 
 ## Schema a blocchi funzionale
 
-La numerazione DS seguente è quella dello schema attuale e sarà rivista con il hub scelto.
+Numerazione delle porte downstream (DS) del USB2517.
 
 ```
 USB-C PWR IN, alimentatore richiesto 5 V / 3 A
@@ -31,10 +29,10 @@ USB-C PWR IN, alimentatore richiesto 5 V / 3 A
 
 USB-C UPSTREAM → HUB USB 2.0 USB2517I-JZX
   VBUS upstream → VBUS_DET (hub/MCU, conservato)
-  DS1..DS4 → commutazione dati + VBUS + scarica → 4 USB-C
-  DS5      → non utilizzata (da disabilitare nella configurazione)
+  DS1..DS4 → PI3USB4002A (dati) + UCS2114 (VBUS e scarica) → 4 USB-C
+  DS5      → non utilizzata (disabilitata via SMBus)
   DS6      → STM32G0B1, USB HID (mai sezionato)
-  DS7      → non utilizzata (nessun header, D76)
+  DS7      → non utilizzata (disabilitata via SMBus, D76)
 
 MCU → comando logico e gestione guasti per porta
     → un LED e un pulsante per porta
@@ -91,22 +89,18 @@ non certifica elettricamente che la scheda si sia spenta o sia ripartita.
 
 ### Porte: stato solido, non relè
 
-La selezione è da rivedere per integrare commutazione VBUS, dati, scarica e protezioni,
-senza richiedere un sensore di corrente. Di seguito i componenti **nello schema attuale**:
+Commutazione VBUS, scarica e protezioni sono integrate nel controller delle porte, senza
+sensori di corrente:
 
-- **VBUS**: load switch **TI TPS2561A** (doppio canale, VSON-10 3×3): 2,5 A continui per canale,
-  FAULT per canale (open-drain, deglitch 9 ms), soft-start, 44 mΩ, blocco della corrente inversa.
-  Una **sola resistenza ILIM per chip** imposta il limite di entrambi i canali, indipendenti tra
-  loro: I_OS(nom) = 56000 / R_ILIM(kΩ) mA. Con **R_ILIM = 24,3 kΩ 1 %** il limite è 2,1–2,5 A
-  (2,3 A tipico) per canale, verificato sul datasheet (SLVSB28, tabella EC). Su U6, che serve solo
-  la USB-A (secondo canale disabilitato), **R62 = 33,2 kΩ 1 %**: 1,52–1,85 A dalle formule
-  I_OS(min/max) del datasheet, perché il connettore USB-A è da 1,5 A (D54). Tre chip coprono le
-  5 porte con un canale di scorta. Il TPS2561A **non ha la scarica dell'uscita**: per porta un
-  MOSFET N (AO3400) con 100 Ω verso GND, pilotato dal pin DIS del MCU.
-  Il circuito di scarica va rivalutato con il controller scelto (D61); non è più comandato
-  in base a una misura di VBUS. Senza scarica attiva i condensatori possono mantenere alimentata
-  la scheda a lungo.
-  Alternativa a pin: **TPS25221** (SOT-23-6), ma 2 A continui, al limite del requisito RF-5.
+- **VBUS**: due switch doppi **Microchip UCS2114-1-V/LX** (VQFN-20 3×3, D75), U4 per le porte 1-2
+  su I2C1 e U5 per le porte 3-4 su I2C2, entrambi all'indirizzo fisso 0x57. Lo strap
+  **COMM_ILIM = 27 kΩ 1 %** seleziona il modo SMBus, PWR_EN attivi alti e il limite ILIM7
+  **2,50–2,90 A** per porta. RON massimo 30 mΩ: a 2 A ~60 mV e ~120 mW per canale. Blocco della
+  corrente inversa (soglia tipica 150 mV), ALERT# open-drain per porta, **scarica automatica di
+  VBUS** (100 Ω interni) abilitata dal MCU all'avvio con EN_VBUS_DISCHG e timer di 400 ms:
+  nessun MOSFET o GPIO di scarica. Disaccoppiamento: 100 nF su VDD e 1 µF per coppia di pin VS;
+  BOOST# non usato, a massa. I PWR_EN hanno pull-down da 10 kΩ (D80): porte spente al reset e
+  nel bootloader. Dettagli e alternative in [componenti.md](componenti.md#raccomandazione-per-le-quattro-porte-ucs2114-e-pi3usb4002a).
 - **D+/D-**: **Diodes PI3USB4002A** (UQFN-10 1,5×2 mm): interruttore USB 2.0 (banda 1 GHz, 5 Ω)
   con EN alto = linee in alta impedenza, così l'hub vede il distacco. Il lato connettore regge
   24 V e si apre da solo sopra 4,75 V: un corto D+/D- su VBUS in una scheda in prova o in un cavo
@@ -125,9 +119,9 @@ Capacità maggiori possono richiedere più tempo; nessuna attesa spegne una sorg
 
 Durata della scarica e durata del ciclo sono vincoli distinti: lasciare una porta spenta o
 richiedere un ciclo lungo non deve mantenere una scarica attiva oltre i limiti del circuito.
-La rete discreta attuale da 100 Ω / 0,25 W arriva a circa 0,28 W con 5,25 V: i limiti per
-alimentazione esterna e cicli ripetuti vanno verificati, oppure gestiti dal controller scelto.
-Il default e l'intervallo configurabile restano da validare insieme alla scarica.
+Nell'UCS2114 la scarica è temporizzata dal controller, che la interrompe e segnala errore se
+VBUS resta alta (sorgente esterna). Il default e l'intervallo configurabile restano da
+validare insieme alla scarica.
 
 Resta un relè per una sola linea ausiliaria su due boccole a banana (D66).
 
@@ -154,7 +148,6 @@ definitivi e il LED unico:
 
 Le quattro USB-C conservano 2 A sulla singola porta; non sono correnti disponibili
 contemporaneamente su tutte le porte. Hub e MCU sono alimentati solo dalla 5V_SYS (D32).
-Lo shunt d'ingresso R5 e quelli delle porte, con U7/U8 INA3221, sono da rimuovere (D60).
 
 **Gestione dei guasti (D64/D73).** Un guasto porta segnalato blocca la porta in OFF
 e interrompe l’eventuale ciclo, con LED lampeggiante; il MCU attende un tentativo esplicito
@@ -166,7 +159,8 @@ un budget impostabile. Un sovraccarico complessivo può far intervenire alimenta
 spegnere l'intero hub: non si garantisce la continuità delle altre porte. Le azioni del MCU
 dipendono dai guasti realmente segnalati e dal fatto che la logica resti alimentata.
 
-**Protezione d'ingresso.** Nello schema attuale: TVS **SMAJ20A** ed eFuse **TPS259470A** (U13, D21). Le protezioni restano richieste; la rimozione dello shunt R5 è da applicare:
+**Protezione d'ingresso.** TVS **SMAJ20A** ed eFuse **TPS259470A** (U13, D21), la cui uscita
+è direttamente la 5V_SYS (rete `+5V`), senza shunt:
 - stacca l'uscita sopra 5,84 V (riaccende sotto 5,3 V) e sotto 4,0 V, con un solo partitore
   (R30/R31/R32); lo zener D4 tiene il pin EN sotto il suo massimo (6,5 V) fino a 28 V d'ingresso;
 - limite di corrente 3,5 A (R33), transitori ammessi fino a ~8 ms (C12), ripartenza automatica;
@@ -182,7 +176,7 @@ dipendono dai guasti realmente segnalati e dal fatto che la logica resti aliment
 
 Caduta aggiuntiva: ~28 mΩ, cioè ~0,1 V a 3 A.
 
-**Limiti della catena d'ingresso (D31).** Nello schema attuale il massimo assoluto dell'eFuse è 28 V. La SMAJ20A non conduce fino a 20 V, inizia a 22,2–23,4 V e limita a ~25 V con
+**Limiti della catena d'ingresso (D31).** Il massimo assoluto dell'eFuse è 28 V. La SMAJ20A non conduce fino a 20 V, inizia a 22,2–23,4 V e limita a ~25 V con
 1 A, ~26 V con 2 A, ~28 V con 5 A, 32,4 V alla corrente di prova di 12,3 A (10/1000 µs). La
 protezione è quindi **garantita in continuo fino a 20 V**; sopra ~23 V la TVS conduce: fino a ~5 A tiene
 l'ingresso sotto i 28 V dell'eFuse, con un alimentatore più potente si sacrifica. Le prove impulsive da 10/1000 µs riguardano linee lunghe o di rete,
@@ -194,9 +188,8 @@ in conduzione già a ~6,4 V e con un alimentatore da 12–20 V collegato per err
 che l'eFuse possa staccare; con la SMAJ20A è l'eFuse a staccare la 5V_SYS e, tolto l'alimentatore
 sbagliato, tutto riparte. Sulle VBUS delle porte non c'è TVS: una scarica da 8 kV (~1,2 µC) sui
 22 µF della porta alza la tensione di ~0,05 V, lo stacco di un cavo sotto carico di pochi decimi
-di volt, i picchi negativi li ferma il diodo interno del MOSFET di scarica; contro una
-tensione continua rimandata da una scheda una TVS non serve (brucerebbe) e una da 5 V limiterebbe
-comunque sopra i 7 V massimi del TPS2561A.
+di volt; contro una tensione continua rimandata da una scheda una TVS non serve (brucerebbe)
+e una da 5 V limiterebbe comunque sopra i 6 V massimi assoluti dell'UCS2114.
 
 **Logica (D32).** 3V3 da LDO a basso dropout (**AP7361C-33E**, 1 A, SOT-223) alimentato dalla
 5V_SYS tramite lo Schottky D2: la logica si alimenta solo dall'alimentatore e senza alimentatore
@@ -228,16 +221,18 @@ configurazione via resistenze o SMBus, regolatore 1,8 V interno). Il package si 
 aria calda o piastra riscaldante e stencil: i pad perimetrali sono sotto il bordo e il pad
 centrale è la massa e va saldato; con il solo saldatore è un ripiego (pad centrale scaldato dai
 via termici sul retro). 7 porte coprono 4 USB-C + 1 porta interna per il MCU,
-due porte non utilizzate (DS5 e DS7). L’header di scorta e la sua alimentazione dedicata
-sono da eliminare (D76).
+due porte non utilizzate (DS5 e DS7), senza header di scorta (D76).
 
 Dettagli verificati sul datasheet (DS00001598C) e sull'errata (DS80000628A):
 
-- **PRTPWR** del hub non usati: l'abilitazione delle porte è del MCU. I **FAULT** dei load switch
-  (open-drain) vanno sia al MCU sia agli ingressi **OCS_N** del hub, che hanno pull-up interno:
-  l'host riceve così la notifica standard di sovracorrente senza componenti in più.
+- **PRTPWR** del hub non usati: l'abilitazione delle porte è del MCU. Gli **ALERT#** degli
+  UCS2114 (open-drain, pull-up esterni da 10 kΩ) vanno sia al MCU sia agli ingressi
+  **OCS1_N…OCS4_N** del hub: l'host riceve così la notifica standard di sovracorrente.
+  OCS5_N non è collegato (pull-up interno).
 - **Configurazione via SMBus** (CFG_SEL = 001, indirizzo 0x2C): il MCU scrive VID/PID, stringhe,
-  porta 6 "non rimovibile" (il MCU stesso), corrente massima, e poi comanda l'attach. CFG_SEL0 è
+  porta 6 "non rimovibile" (il MCU stesso), disabilitazione delle porte 5 e 7, corrente massima,
+  e poi comanda l'attach. Gli strap di disabilitazione delle porte non servono: con CFG_SEL 001
+  e 101 sono disattivati, e senza firmware DS5/DS7 risultano solo porte vuote. CFG_SEL0 è
   il pin SCL (alto per il pull-up I2C), CFG_SEL1 è a massa, **CFG_SEL2 lo pilota il MCU** prima di
   rilasciare il reset: basso = SMBus (001), alto = default interni con dynamic power (101), che è
   anche lo stato del pull-up per il bring-up senza firmware.
@@ -272,28 +267,27 @@ Dettagli verificati sul datasheet (DS00001598C) e sull'errata (DS80000628A):
   la configurazione via SMBus il pin 45 può diventare l'uscita SUSP_IND.
 - RBIAS 12,0 kΩ 1 %; quarzo 24 MHz YXC X322524MOB4SI (C_L 12 pF) con 15 pF C0G (D19; il hub tollera ±350 ppm); 1,8 V dal
   regolatore interno (VDD18, VDD18PLL con 1 µF ciascuno); TEST a massa; slug a massa.
-- Mappa prevista: 1–4 → USB-C, 5 disabilitata, 6 → MCU, 7 → header interno.
-  Nello schema esistente DS5 serve ancora la USB-A da eliminare.
-  Quattro porte esterne più il MCU richiedono almeno cinque downstream: un hub a quattro
+- Mappa: 1–4 → USB-C, 5 disabilitata, 6 → MCU, 7 disabilitata; D+/D− di DS5 e DS7 non
+  collegati. Quattro porte esterne più il MCU richiedono almeno cinque downstream: un hub a quattro
   porte non basta. La ricerca di alternative è in [componenti.md](componenti.md#ricerca-per-la-versione-semplificata-d60d66).
 
 Alternativa saldabile a mano: **FE2.1** (LQFP-48), documentazione scarsa ma diffusissimo.
 
-### MCU di controllo: STM32G0B1RET6
+### MCU di controllo: STM32G0B1CEU6
 
 Scelto tra gli STM32 per questi motivi:
 
 - **USB FS device senza quarzo** (HSI48 + CRS). Ha anche la periferica **UCPD**: non serve in v1
   (nessuna negoziazione PD) ma lascia aperta la variante ad alta potenza senza cambiare MCU.
-- **LQFP-64**, saldabile a mano, ~60 GPIO: il MCU resta quello attuale. Pin liberati dalle
-  misure e numero di segnali richiesti dalle porte saranno valutati con il controller scelto;
-  non si decide ora una variante di MCU. Il [pinout](pinout-mcu.md) descrive i collegamenti
-  presenti nello schema, ancora da adeguare.
+- **UFQFPN48** 7 × 7 mm con pad esposto (D78): due I²C hardware, tutti i 37 segnali richiesti
+  e quattro GPIO liberi; montaggio ad aria calda o piastra, come hub e controller delle porte.
+  Collegamenti in [pinout-mcu.md](pinout-mcu.md).
 
 - 512 kB flash / 144 kB RAM: largo per stack USB + logica, e per uno stack PD futuro.
-- Disponibile su LCSC (C2829307, ~2,7 $) e su Mouser/DigiKey.
+- Su DigiKey 497-STM32G0B1CEU6-ND.
 
-Il modello **STM32G0B1RCT6** (256 kB) è equivalente se più disponibile.
+Le versioni LQFP48 (STM32G0B1CCT6/CET6) hanno la stessa assegnazione dei pin ma un'impronta
+diversa; le varianti N non sono compatibili (pin 30/31 di alimentazione).
 
 Interfacce USB esposte:
 - **HID** con usage page vendor: il canale di controllo, senza driver.
@@ -331,22 +325,20 @@ dal circuito, non da una verifica software.
 
 L'annuncio standard USB con Rp da 56 kΩ resta invariato. Il limite fisico per porta è distinto
 dall'annuncio e non garantisce la disponibilità simultanea delle correnti massime. I condensatori
-e le protezioni locali saranno verificati insieme al controller; lo schema attuale mantiene
-22 µF + 100 nF per porta e altri 100 µF sulla USB-A.
+e le protezioni locali vanno verificati sul prototipo; ogni porta ha 22 µF + 100 nF su VBUS.
 
 ### Relè ausiliario
 
 Specifica contatti: **max 16 V, max 3 A**. Un relè **SPDT** con bobina 5 V (es. Omron G5Q-1,
 Songle SRD-05VDC-SL-C: 10 A nominali, ampio margine) pilotato da un ULN2003V12 con tre canali in
-parallelo per relè (diodi di ricircolo integrati). Su pannello, per ogni canale, **due boccole a banana da 4 mm su COM e NC**: la linea
+parallelo (diodi di ricircolo integrati); gli altri canali hanno gli ingressi a massa. Su pannello **due boccole a banana da 4 mm su COM e NC**: la linea
 è **normalmente collegata** e la bobina si eccita solo per staccarla. Così lo stacco dura il tempo
 di un impulso, e se l'hub perde alimentazione o si blocca la linea torna collegata (comportamento
 sicuro per una scheda in prova). Il contatto NO è portato su un **ponticello a saldare** interno:
 spostandolo la seconda boccola diventa NO per un eventuale uso "normalmente aperto".
 Nel protocollo i comandi parlano di linea ("collegata / staccata", "stacca per N ms"), non di
-bobina. Un LED, acceso quando la linea è staccata, e un pulsante per il canale mantenuto:
-ogni pressione alterna la linea, collegata o staccata (RF-17). Il secondo relè e i suoi comandi sono ancora nello schema da adeguare;
-il canale fisico da mantenere e il relativo pinout saranno definiti con il layout.
+bobina. Un LED (D90, dal comando RLY1), acceso quando la linea è staccata, e un pulsante (SW1):
+ogni pressione alterna la linea, collegata o staccata (RF-17).
 
 **Margine sulla bobina (D33).** Il G5Q-1 da 5 V (63 Ω, 80 mA) scatta garantito con 3,75 V a 23 °C
 di bobina; la resistenza cresce con la temperatura (~0,4 %/°C) e con la bobina a 40 °C servono
@@ -368,7 +360,7 @@ stencil**, non con il solo saldatore.
 | Strategia | JLCPCB monta | A mano (unico fornitore) | Tipi extended | Attrezzatura a mano |
 |---|---|---|---|---|
 | **A. JLCPCB monta tutto l'SMD** | tutto: basic + ~8–11 extended | solo through-hole: connettori, relè, boccole, pulsanti | 8–11 (~25–35 €) | saldatore |
-| **B. Ibrida** | basic + il QFN più critico: **USB2517** | STM32 LQFP-64, UCS2114 e PI3USB4002A, LDO, ULN2003V12 e tutto il through-hole, da Mouser | 1 (~3 €) | saldatore; aria calda per i QFN del controller scelto |
+| **B. Ibrida** | basic + il QFN più critico: **USB2517** | STM32 UFQFPN48, UCS2114 e PI3USB4002A, LDO, ULN2003V12 e tutto il through-hole, da Mouser | 1 (~3 €) | saldatore; aria calda per i QFN del controller scelto |
 | **C. Tutto a mano, stessi componenti (scelta)** | solo i basic (passivi, diodi, MOSFET) o niente | tutto, compreso USB2517 | 0 | aria calda o piastra + stencil, lente, test di continuità |
 | **D. Tutto a mano, solo package a pin** | solo i basic o niente | tutto, con hub **FE2.1** (LQFP-48), controller delle porte a pin da verificare | 0 | saldatore |
 
@@ -393,9 +385,9 @@ ripiego se la rifusione dell'hub dà problemi. La D è il ripiego se non si vuol
 
 ## Protezioni (uso in laboratorio)
 
-La rimozione delle misure non elimina le protezioni hardware. Nello schema attuale restano
-eFuse/TVS all'ingresso, limitatori TPS2561A, switch protetti PI3USB4002A e USBLC6-2SC6 upstream;
-l'eventuale controller integrato deve essere verificato per le funzioni richieste.
+La rimozione delle misure non elimina le protezioni hardware: eFuse/TVS all'ingresso,
+limitazione di corrente e blocco inverso negli UCS2114, switch protetti PI3USB4002A e
+USBLC6-2SC6 upstream. Le prestazioni vanno verificate sul prototipo.
 
 | Rischio | Comportamento richiesto o limite |
 |---|---|
@@ -403,7 +395,7 @@ l'eventuale controller integrato deve essere verificato per le funzioni richiest
 | Sovraccarico totale | Protezioni d'ingresso/alimentatore; possibile spegnimento di tutto l'hub |
 | Sovratensione o picco all'ingresso | Conservare eFuse, TVS e avvio dolce; limiti del circuito come descritti sopra |
 | Corto dei dati su VBUS o scarica ESD | Protezione hardware; verificarne le prestazioni con il nuovo controller e il layout |
-| Ritorno di alimentazione da una scheda | Conservare il blocco inverso; nessuna diagnosi software mediante INA3221. Sorgente esterna 5 V nominali con tolleranza (D72); comportamento acceso/spento da verificare sul controller |
+| Ritorno di alimentazione da una scheda | Blocco inverso negli UCS2114; nessuna diagnosi software tramite misure. Sorgente esterna 5 V nominali con tolleranza (D72); comportamento acceso/spento da verificare sul controller |
 | Sorgente esterna sulle porte | Nessuna misura preventiva di VBUS o di corrente inversa; non garantiti rilevamento e riavvio della scheda. Permanenza indefinita senza danni richiesta (D71), con sorgente da 5 V nominali e tolleranza (D72), non 12/20 V; la scarica può interrompersi automaticamente |
 | Corrente verso il PC tramite VBUS upstream | Nessun collegamento fra 5V_SYS e VBUS upstream (D32) |
 | Guasto sulle boccole | Contatti max 16 V / 3 A; proteggere il circuito esterno, snubber opzionali |
