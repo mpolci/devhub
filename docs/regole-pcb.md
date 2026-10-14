@@ -155,11 +155,12 @@ KiCad calcola lo spessore includendo la mask: 1,6167.
   pattern;
 - eccezioni circoscritte alle impronte: 0,15 fra i pad di U13 (passo 0,45) e 0,19 fra pad GND
   e fori di centraggio dei GCT USB4105;
-- fanout del USB2517: fra tratti USB interamente dentro le aree di regola `USB_FANOUT_U2`
-  (a ridosso dei pin delle porte e dei pin 53–56) la distanza minima è 0,15 invece di 0,75,
-  perché le coppie adiacenti escono da pad a 1 mm di passo;
-- piste vicine al USB2517: fra le piste USB e le piste di altre reti interamente dentro l'area di
-  regola `U2_FANOUT` (pad di U2 più circa 1,5 mm) la distanza minima è 0,2 invece di 0,75: a
+- fanout del USB2517: un'unica area di regola `U2_FANOUT`, quadrato di 21 mm centrato su U2,
+  che comprende disaccoppiamenti e RBIAS con le loro piste. Fra tratti USB dentro l'area la distanza minima è 0,15
+  invece di 0,75, perché le coppie adiacenti escono da pad a 1 mm di passo. Per il MCU
+  vale lo stesso con l'area `U3_FANOUT`, quadrato di 19 mm centrato su U3 (USB_MCU su PA11/PA12);
+- piste vicine al USB2517 e al MCU: fra le piste USB e le piste di altre reti che toccano
+  `U2_FANOUT` o `U3_FANOUT` la distanza minima è 0,2 invece di 0,75: a
   passo 0,5 i pad di alimentazione, quarzo, PLL e CFG_SEL2 sono accanto a quelli delle coppie
   (D58);
 - uscita dei pin CC dai connettori USB-C: fra le piste USB e le piste CC (`CC1`, `CC2`, `CC1_UP`,
@@ -172,7 +173,7 @@ KiCad calcola lo spessore includendo la mask: 1,6167.
 
 **Zone e aree di regola** nel PCB: piano GND `GND_In2` su tutto In2.Cu; area
 `RELAY1_CONTACTS` senza riempimenti su tutti i layer, sotto contatti del relè, ponticello,
-snubber e boccole; aree `USB_FANOUT_U2`, `U2_FANOUT`, `USBC_FANOUT` e `SW_FANOUT` usate solo
+snubber e boccole; aree `U2_FANOUT`, `U3_FANOUT`, `USBC_FANOUT` e `SW_FANOUT` usate solo
 dalle regole sopra, spostate insieme al proprio componente nel piazzamento v0.3: vanno
 ricontrollate dopo la rifinitura. Piano +3V3 `3V3_In1` su tutto In1.Cu (priorità 2), con le
 isole VBUS delle porte sotto i connettori a priorità più alta; piccole zone VBUS delle porte su
@@ -342,7 +343,7 @@ Le indicazioni seguenti specificano il piazzamento dei componenti già presenti 
 | Switch VBUS U4/U5 | C60/C63, 100 nF su VDD; C61/C62 e C64/C65, 1 µF sulle coppie VS; R60/R61 su COMM_ILIM; R62–R65 pull-up ALERT# | 100 nF presso VDD (pin 8), 1 µF presso ciascuna coppia VS (6/7 e 9/10) con ritorno GND corto; resistenza COMM_ILIM presso il pin 3; pin VS e VBUS duplicati uniti con rame largo; area termica collegata al pin 17 |
 | Hub U2 | 100 nF 0402: C27 (pin 46), C25 (5), C38 (10), C28 (52), C26 (57), C30 (64), C29 (24); 1 µF: C31 condiviso dei VDDA33 (vicino al pin 57), C32 (24); 1 µF C33 su VDD18 (25), C35 su VDD18PLL (62) | Ogni condensatore presso il proprio pin, il 100 nF più vicino del 1 µF, collegato al pad con una pista sullo stesso lato (niente via fra pad e condensatore) e ritorno GND corto; per i pin 5, 10 e 57, fra coppie USB, vale l'area `U2_FANOUT` (D58) |
 | Supervisore U12 | C37, 100 nF 0402 | Presso il pin VDD di U12, non del hub |
-| MCU U3 | C41, 100 nF; C40, 4,7 µF; C42, 100 nF | C41 il più vicino al pin VDD/VDDA (6), con ritorno su VSS (7) e sul pad esposto (49); C40 subito dietro; C42 per VREF+ (pin 5) accanto a C41. VBAT (pin 4) senza condensatore proprio (D57) |
+| MCU U3 | C41, 100 nF 0402; C40, 4,7 µF; C42, 100 nF 0402; C46, 100 nF 0402 su NRST | C41 il più vicino al pin VDD/VDDA (6), con ritorno su VSS (7) e sul pad esposto (49); C40 subito dietro; C42 per VREF+ (pin 5) accanto a C41. VBAT (pin 4) senza condensatore proprio (D57) |
 | LDO U1 | C8 in ingresso; C9/C10 in uscita | C8 presso IN/GND, C9/C10 presso OUT/GND, con anelli corti; la vicinanza di D2 non deve togliere spazio a condensatori e rame di dissipazione |
 | VBUS delle porte | C102…C402 da 22 µF e C103…C403 da 100 nF | Presso VBUS/GND del rispettivo connettore; collocare il ceramico piccolo con il percorso più corto. Non raggruppare tutte le capacità nella zona dei load switch |
 

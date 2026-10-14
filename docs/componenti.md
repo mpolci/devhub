@@ -45,7 +45,8 @@ solo per le boccole Cliff, che Mouser non ha. Elenco completo, equivalenze e cos
 
 Package scelti per usare il magazzino (D45): C106-C406 1 µF 25 V in 0603. I 100 nF di
 disaccoppiamento di U2 e U12 sono 0402 (ID 217, Yageo CC0402KRX7R7BB104), per stare accanto ai
-pin fra le coppie USB (D58). I condensatori di riserva C3/C4 sono elettrolitici SMD Panasonic
+pin fra le coppie USB (D58); lo stesso pezzo si usa per C41, C42 e C46 del MCU U3, davanti ai pin a
+passo 0,5 mm (D88). I condensatori di riserva C3/C4 sono elettrolitici SMD Panasonic
 EEE-FK1C221XP (220 µF 16 V, Ø 6,3 × 7,7 mm), non a magazzino (D86).
 
 ## Componenti nello schema

@@ -4876,7 +4876,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 128.27 127 0)
 			(hide yes)
 			(show_name no)
@@ -4909,7 +4909,7 @@
 				)
 			)
 		)
-		(property "warehouse" "235"
+		(property "warehouse" "217"
 			(at 128.27 127 0)
 			(hide yes)
 			(show_name no)
@@ -4920,7 +4920,7 @@
 				)
 			)
 		)
-		(property "lcsc" "C1591"
+		(property "lcsc" "C60474"
 			(at 128.27 127 0)
 			(hide yes)
 			(show_name no)
@@ -4931,7 +4931,7 @@
 				)
 			)
 		)
-		(property "mouser" "187-CL10B104KB8NNNC"
+		(property "mouser" "603-CC402KRX7R7BB104"
 			(at 128.27 127 0)
 			(hide yes)
 			(show_name no)
@@ -4942,7 +4942,7 @@
 				)
 			)
 		)
-		(property "digikey" "1276-1000-1-ND"
+		(property "digikey" "311-1338-1-ND"
 			(at 128.27 127 0)
 			(hide yes)
 			(show_name no)
@@ -5750,7 +5750,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 195.58 100.33 0)
 			(hide yes)
 			(show_name no)
@@ -5783,7 +5783,7 @@
 				)
 			)
 		)
-		(property "warehouse" "235"
+		(property "warehouse" "217"
 			(at 195.58 100.33 0)
 			(hide yes)
 			(show_name no)
@@ -5794,7 +5794,7 @@
 				)
 			)
 		)
-		(property "lcsc" "C1591"
+		(property "lcsc" "C60474"
 			(at 195.58 100.33 0)
 			(hide yes)
 			(show_name no)
@@ -5805,7 +5805,7 @@
 				)
 			)
 		)
-		(property "mouser" "187-CL10B104KB8NNNC"
+		(property "mouser" "603-CC402KRX7R7BB104"
 			(at 195.58 100.33 0)
 			(hide yes)
 			(show_name no)
@@ -5816,7 +5816,7 @@
 				)
 			)
 		)
-		(property "digikey" "1276-1000-1-ND"
+		(property "digikey" "311-1338-1-ND"
 			(at 195.58 100.33 0)
 			(hide yes)
 			(show_name no)
@@ -7041,7 +7041,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 152.4 116.84 0)
 			(hide yes)
 			(show_name no)
@@ -7074,7 +7074,7 @@
 				)
 			)
 		)
-		(property "warehouse" "235"
+		(property "warehouse" "217"
 			(at 152.4 116.84 0)
 			(hide yes)
 			(show_name no)
@@ -7085,7 +7085,7 @@
 				)
 			)
 		)
-		(property "lcsc" "C1591"
+		(property "lcsc" "C60474"
 			(at 152.4 116.84 0)
 			(hide yes)
 			(show_name no)
@@ -7096,7 +7096,7 @@
 				)
 			)
 		)
-		(property "mouser" "187-CL10B104KB8NNNC"
+		(property "mouser" "603-CC402KRX7R7BB104"
 			(at 152.4 116.84 0)
 			(hide yes)
 			(show_name no)
@@ -7107,7 +7107,7 @@
 				)
 			)
 		)
-		(property "digikey" "1276-1000-1-ND"
+		(property "digikey" "311-1338-1-ND"
 			(at 152.4 116.84 0)
 			(hide yes)
 			(show_name no)

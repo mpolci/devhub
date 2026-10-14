@@ -49,23 +49,26 @@
    (condition "A.hasNetclass('USB_DIFF') && A.Type == 'Track' && (B.Type == 'Track' || B.Type == 'Zone') && !A.isCoupledDiffPair()")
 )
 
-# Fanout del USB2517: pad a passo 0,5 e coppie adiacenti a 1 mm di passo, la
-# distanza di 0,75 non è ottenibile all'uscita dai pad. Vale solo fra tratti USB
-# interamente dentro le aree di regola USB_FANOUT_U2, a ridosso dei pin.
+# Fanout del USB2517 (U2) e del MCU (U3): pad a passo 0,5, la distanza di 0,75 non è
+# ottenibile all'uscita dai pad. Vale fra tratti USB dentro le aree di regola
+# U2_FANOUT (quadrato di 21 mm centrato su U2, con disaccoppiamenti e RBIAS) e
+# U3_FANOUT (quadrato di 19 mm centrato su U3). Le condizioni guardano
+# solo l'oggetto già sulla scheda (B): durante lo sbroglio il router valuta la pista
+# nuova con un oggetto provvisorio, e gli angoli delle coppie, non accoppiati, finivano
+# sotto la regola dei 0,75.
 
-(rule "USB fanout USB2517"
+(rule "USB fanout U2 e U3"
    (constraint clearance (min 0.15mm))
-   (condition "A.hasNetclass('USB_DIFF') && B.hasNetclass('USB_DIFF') && A.insideArea('USB_FANOUT_U2') && B.insideArea('USB_FANOUT_U2')")
+   (condition "A.hasNetclass('USB_DIFF') && B.hasNetclass('USB_DIFF') && (B.insideArea('U2_FANOUT') || B.insideArea('U3_FANOUT'))")
 )
 
-# Pad del USB2517 vicini alle coppie (alimentazioni, quarzo, PLL, CFG_SEL2): a passo 0,5
-# le piste che escono dai pad non possono stare a 0,75 dalle coppie. Le piste di altre
-# reti interamente dentro l'area di regola U2_FANOUT (pad di U2 più circa 1,5 mm) possono
-# stare a 0,2.
+# Pad di U2 e U3 vicini alle coppie (alimentazioni, quarzo, PLL, CFG_SEL2, GPIO accanto a
+# PA11/PA12): a passo 0,5 le piste che escono dai pad non possono stare a 0,75 dalle
+# coppie. Le piste di altre reti che toccano U2_FANOUT o U3_FANOUT possono stare a 0,2.
 
-(rule "USB e piste vicine a U2"
+(rule "USB e piste vicine a U2 e U3"
    (constraint clearance (min 0.2mm))
-   (condition "A.hasNetclass('USB_DIFF') && B.Type == 'Track' && !B.hasNetclass('USB_DIFF') && B.enclosedByArea('U2_FANOUT')")
+   (condition "A.hasNetclass('USB_DIFF') && B.Type == 'Track' && !B.hasNetclass('USB_DIFF') && (B.insideArea('U2_FANOUT') || B.insideArea('U3_FANOUT'))")
 )
 
 # Uscita dei connettori USB-C: CC1 (A5) è a 0,5 mm dal pad B7 della coppia e il ramo
