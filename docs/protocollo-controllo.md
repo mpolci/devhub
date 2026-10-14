@@ -24,6 +24,9 @@ finalizzati con il controller scelto. Non si assegnano misure fittizie o zeri a 
 - Il MCU governa VBUS e dati con un unico comando logico; la sequenza interna del controller
   è ammessa. Non esiste il parametro `on_delay_ms`.
 
+Lo stato di fabbrica è tutte le porte abilitate (D74). I default salvati sostituiscono
+questa impostazione; le accensioni restano sfalsate. Il relè parte a riposo, linea collegata.
+
 ## Comandi e risposte
 
 | cmd | Nome | Parametri | Risposta |
@@ -50,6 +53,15 @@ La scarica non deve restare attiva senza limiti solo perché la porta resta spen
 chiede un'attesa lunga. Non si attende una soglia misurata di VBUS e non si genera un errore
 "sorgente esterna" per un timeout di misura. Fine ciclo significa completamento della
 sequenza temporizzata, non conferma del reset della scheda.
+
+## Ripristino delle porte dopo guasto (D73)
+
+Un guasto hardware segnalato interrompe il ciclo e porta VBUS e dati in OFF, con LED
+lampeggiante. La scomparsa del segnale non riabilita la porta. Un comando esplicito
+di riabilitazione da PC o una pressione del pulsante permette un nuovo tentativo;
+un guasto persistente o ricorrente riporta la porta in OFF con LED lampeggiante.
+La cancellazione del flag non deve innescare autonomamente la riaccensione.
+Il dettaglio di `CLEAR_FAULT` e della sequenza di riarmo dipende dal controller scelto.
 
 ## Eventi
 

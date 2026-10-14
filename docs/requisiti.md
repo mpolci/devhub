@@ -7,9 +7,10 @@ ricollegare il cavo per recuperare un dispositivo bloccato. Devhub esegue questa
 dal PC, in modo scriptabile, e permette di gestire le porte e un relè ausiliario.
 Non è uno strumento per misurare consumi o tensioni.
 
-Questi requisiti includono le semplificazioni D60–D66 e le decisioni D68–D70 in
+Questi requisiti includono le semplificazioni D60–D66 e le decisioni D68–D75 in
 [domande-aperte.md](domande-aperte.md). Lo schema e il PCB presenti nel repository devono
-ancora essere adeguati; il controller delle porte non è ancora scelto.
+ancora essere adeguati; D75 seleziona UCS2114-1-V/LX e PI3USB4002A per le porte,
+con due bus I²C indipendenti e scarica automatica configurata all’avvio.
 Restano MCU separato, controllo HID e cicli autonomi; la variante senza MCU non è adottata.
 Il modello del hub è da scegliere: USB2517 non è un requisito (D69).
 
@@ -36,7 +37,11 @@ Il modello del hub è da scegliere: USB2517 non è un requisito (D69).
   da confermare con il circuito scelto e sul prototipo. Si conta dal comando di disabilitazione
   di VBUS e comprende la scarica, senza attesa di una soglia misurata. Durata della scarica e
   intervallo configurabile devono rispettare i limiti del circuito, anche a porta lasciata
-  spenta o in presenza di alimentazione esterna. Capacità molto elevate possono richiedere
+  spenta o in presenza di alimentazione esterna. Una scheda autoalimentata deve poter
+  restare collegata indefinitamente senza danneggiare devhub, anche se sostiene VBUS:
+  la scarica può interrompersi automaticamente (D71). La sorgente esterna ammessa è
+  da 5 V nominali con tolleranza (D72); il massimo operativo numerico va fissato nel
+  dimensionamento. Non è richiesta tolleranza della VBUS downstream a 12 o 20 V. Capacità molto elevate possono richiedere
   attese maggiori; una sorgente esterna non viene eliminata aumentando l'attesa.
 - **RF-5** Ogni porta fornisce 5 V con almeno 2 A erogabili sulla singola porta USB-C,
   con **limitazione hardware della corrente**
@@ -56,6 +61,8 @@ Il modello del hub è da scegliere: USB2517 non è un requisito (D69).
   disabilitate, tramite una porta interna non sezionabile, finché hub e MCU sono alimentati.
 - **RF-9** Comandi: stato globale, stato logico e guasti hardware delle porte, on/off,
   ciclo con durata, comando e stato dei relè, impostazione dello stato di default all'accensione.
+  Di fabbrica tutte le porte vengono abilitate dopo l’avvio, con accensioni sfalsate;
+  è possibile salvare una configurazione diversa per porta (D74).
   Lo stato riportato non è una verifica elettrica della VBUS o del riavvio del dispositivo.
 - **RF-10** Libreria Python generica e multipiattaforma, con CLI per macOS costruita sopra
   (es. `devhub port 2 cycle --ms 1000`).
@@ -81,6 +88,9 @@ Il modello del hub è da scegliere: USB2517 non è un requisito (D69).
   le segnalazioni di guasto disponibili dall'hardware, senza misurare consumi, calcolare budget
   o scegliere la porta più energivora. La protezione da sovraccarico è hardware: un sovraccarico
   complessivo può interrompere l'intero hub. Non è garantita la continuità delle altre porte.
+  Dopo un guasto hardware segnalato della porta, il MCU interrompe l’eventuale ciclo,
+  disabilita VBUS e dati e mantiene il LED lampeggiante (D73). Il ripristino richiede
+  un tentativo esplicito da pulsante o PC; se il guasto persiste, la porta torna bloccata.
 - **RF-16 — Eliminato (D32).** Hub e MCU sono alimentati solo dall'alimentatore esterno;
   senza alimentatore l'hub non è visibile dal PC.
 

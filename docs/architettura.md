@@ -1,15 +1,23 @@
 # Architettura
 
-L'architettura funzionale segue i requisiti semplificati D60–D66 e le decisioni D68–D70: controllo delle porte
+L'architettura funzionale segue i requisiti semplificati D60–D66 e le decisioni D68–D78: controllo delle porte
 e riavvio temporizzato, senza misura dei consumi, delle tensioni delle porte/5V_SYS o delle CC
-d'ingresso. **Schema e PCB esistenti sono ancora da adeguare.** I dettagli di componente
+d'ingresso. **Schema e PCB esistenti sono ancora da adeguare; lo schema è a cura dell’utente.** I dettagli di componente
 indicati come "nello schema attuale" descrivono il circuito presente, non una nuova selezione.
-Controller delle porte, scarica e corrispondente pinout restano da definire.
+D75 sceglie due UCS2114-1-V/LX con due bus I²C indipendenti e quattro PI3USB4002A.
+La scarica automatica va configurata all’avvio; pinout e circuito di supporto restano da
+dimensionare, con 400 ms come durata iniziale della scarica da validare.
 Componenti e alternative: [componenti.md](componenti.md).
-**Hub con MCU separato confermato (D68); modello del hub da scegliere (D69)**: HID multipiattaforma, cicli e impulsi
+**USB2517I-JZX con STM32G0B1CEU6 confermati (D78)**: HID multipiattaforma, cicli e impulsi
 autonomi, cinque pulsanti e LED porta con lampeggio guasti. La
 [variante USB4715](componenti.md#usb4715-senza-mcu-verifica-di-fattibilità) non è adottata.
-Un MCU più piccolo si valuterà solo dopo aver definito i segnali dei controller porta.
+La selezione mantiene USB2517I-JZX e riduce il MCU a STM32G0B1CEU6 (UFQFPN48).
+Servono 37 segnali funzionali, inclusi i due bus I²C; restano quattro GPIO liberi oltre
+ai due pin riservati DBCC. [Pinout completo proposto](pinout-mcu.md#pinout-proposto-stm32g0b1ceu6-ufqfpn48).
+
+All’avvio del firmware le quattro porte sono abilitate di fabbrica, con accensioni
+sfalsate, salvo default diversi salvati (D74). Reset e bootloader restano da verificare
+elettricamente sul pinout definitivo.
 
 ## Schema a blocchi funzionale
 
@@ -21,12 +29,12 @@ USB-C PWR IN, alimentatore richiesto 5 V / 3 A
   VBUS → TVS + eFuse → 5V_SYS → alimentazione porte e relè
                          └─→ Schottky + LDO 3,3 V → logica
 
-USB-C UPSTREAM → HUB USB 2.0 da scegliere (USB2517 nello schema attuale)
+USB-C UPSTREAM → HUB USB 2.0 USB2517I-JZX
   VBUS upstream → VBUS_DET (hub/MCU, conservato)
   DS1..DS4 → commutazione dati + VBUS + scarica → 4 USB-C
   DS5      → non utilizzata (da disabilitare nella configurazione)
   DS6      → STM32G0B1, USB HID (mai sezionato)
-  DS7      → header interno di scorta
+  DS7      → non utilizzata (nessun header, D76)
 
 MCU → comando logico e gestione guasti per porta
     → un LED e un pulsante per porta
@@ -148,7 +156,10 @@ Le quattro USB-C conservano 2 A sulla singola porta; non sono correnti disponibi
 contemporaneamente su tutte le porte. Hub e MCU sono alimentati solo dalla 5V_SYS (D32).
 Lo shunt d'ingresso R5 e quelli delle porte, con U7/U8 INA3221, sono da rimuovere (D60).
 
-**Gestione dei guasti (D64).** Le accensioni multiple sono sfalsate per contenere l'inrush,
+**Gestione dei guasti (D64/D73).** Un guasto porta segnalato blocca la porta in OFF
+e interrompe l’eventuale ciclo, con LED lampeggiante; il MCU attende un tentativo esplicito
+da pulsante o PC. Non è richiesta una funzione latch-off integrata nel controller.
+ Le accensioni multiple sono sfalsate per contenere l'inrush,
 con intervallo da verificare sul circuito. Restano limitazione hardware e segnali di guasto;
 il firmware non calcola consumi o budget, non sceglie la porta più energivora e non espone
 un budget impostabile. Un sovraccarico complessivo può far intervenire alimentatore/eFuse e
@@ -217,8 +228,8 @@ configurazione via resistenze o SMBus, regolatore 1,8 V interno). Il package si 
 aria calda o piastra riscaldante e stencil: i pad perimetrali sono sotto il bordo e il pad
 centrale è la massa e va saldato; con il solo saldatore è un ripiego (pad centrale scaldato dai
 via termici sul retro). 7 porte coprono 4 USB-C + 1 porta interna per il MCU,
-una porta non utilizzata e 1 di scorta su un header interno a 4 pin (VBUS, D-, D+, GND), non sezionato e
-alimentato direttamente dalla 5V_SYS con un fusibile ripristinabile.
+due porte non utilizzate (DS5 e DS7). L’header di scorta e la sua alimentazione dedicata
+sono da eliminare (D76).
 
 Dettagli verificati sul datasheet (DS00001598C) e sull'errata (DS80000628A):
 
@@ -357,7 +368,7 @@ stencil**, non con il solo saldatore.
 | Strategia | JLCPCB monta | A mano (unico fornitore) | Tipi extended | Attrezzatura a mano |
 |---|---|---|---|---|
 | **A. JLCPCB monta tutto l'SMD** | tutto: basic + ~8–11 extended | solo through-hole: connettori, relè, boccole, pulsanti | 8–11 (~25–35 €) | saldatore |
-| **B. Ibrida** | basic + il QFN più critico: **USB2517** | STM32 LQFP-64, controller delle porte da scegliere, LDO, ULN2003V12 e tutto il through-hole, da Mouser | 1 (~3 €) | saldatore; aria calda per i QFN del controller scelto |
+| **B. Ibrida** | basic + il QFN più critico: **USB2517** | STM32 LQFP-64, UCS2114 e PI3USB4002A, LDO, ULN2003V12 e tutto il through-hole, da Mouser | 1 (~3 €) | saldatore; aria calda per i QFN del controller scelto |
 | **C. Tutto a mano, stessi componenti (scelta)** | solo i basic (passivi, diodi, MOSFET) o niente | tutto, compreso USB2517 | 0 | aria calda o piastra + stencil, lente, test di continuità |
 | **D. Tutto a mano, solo package a pin** | solo i basic o niente | tutto, con hub **FE2.1** (LQFP-48), controller delle porte a pin da verificare | 0 | saldatore |
 
@@ -392,8 +403,8 @@ l'eventuale controller integrato deve essere verificato per le funzioni richiest
 | Sovraccarico totale | Protezioni d'ingresso/alimentatore; possibile spegnimento di tutto l'hub |
 | Sovratensione o picco all'ingresso | Conservare eFuse, TVS e avvio dolce; limiti del circuito come descritti sopra |
 | Corto dei dati su VBUS o scarica ESD | Protezione hardware; verificarne le prestazioni con il nuovo controller e il layout |
-| Ritorno di alimentazione da una scheda | Conservare il blocco inverso; nessuna diagnosi software mediante INA3221. Tensioni ammesse e comportamento acceso/spento da verificare sul controller |
-| Sorgente esterna sulle porte | Nessuna misura preventiva di VBUS o di corrente inversa; non garantiti rilevamento e riavvio della scheda. Verificare anche i limiti termici della scarica |
+| Ritorno di alimentazione da una scheda | Conservare il blocco inverso; nessuna diagnosi software mediante INA3221. Sorgente esterna 5 V nominali con tolleranza (D72); comportamento acceso/spento da verificare sul controller |
+| Sorgente esterna sulle porte | Nessuna misura preventiva di VBUS o di corrente inversa; non garantiti rilevamento e riavvio della scheda. Permanenza indefinita senza danni richiesta (D71), con sorgente da 5 V nominali e tolleranza (D72), non 12/20 V; la scarica può interrompersi automaticamente |
 | Corrente verso il PC tramite VBUS upstream | Nessun collegamento fra 5V_SYS e VBUS upstream (D32) |
 | Guasto sulle boccole | Contatti max 16 V / 3 A; proteggere il circuito esterno, snubber opzionali |
 | Anelli di massa | GND USB comune: nessun isolamento galvanico delle porte USB |
@@ -404,8 +415,8 @@ di alimentazione. Il LED lampeggia per il guasto, senza indicare una tensione mi
 
 ## Rischi / punti aperti tecnici
 
-- Scegliere il controller e verificarne distacco dati/VBUS, sequenza, correnti, protezioni,
-  scarica e comportamento con MCU in reset o bootloader; nessun componente nuovo è approvato.
+- Dimensionare il circuito D75 (UCS2114-1-V/LX e PI3USB4002A) e verificarne distacco
+  dati/VBUS, sequenza, correnti, protezioni, scarica e stato al reset/bootloader.
 - Validare default del ciclo (indicativamente 1 s), intervallo configurabile e durata della
   scarica, con capacità note e condizioni di alimentazione esterna. La prova non estende
   la garanzia a qualsiasi capacità o scheda autoalimentata.

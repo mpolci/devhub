@@ -2,7 +2,7 @@
 
 ## Decise
 
-Le decisioni D60–D66 e D68–D70 definiscono i requisiti correnti e prevalgono sulle parti
+Le decisioni D60–D66 e D68–D75 definiscono i requisiti correnti e prevalgono sulle parti
 incompatibili delle decisioni precedenti. Schema, PCB, pinout e BOM descrivono ancora
 l'implementazione da adeguare; non è ancora scelto un nuovo integrato per le porte.
 
@@ -21,7 +21,7 @@ l'implementazione da adeguare; non è ancora scelto un nuovo integrato per le po
 | D11 | Fornitore | si decide alla fine, a componenti finalizzati |
 | D12 | Licenze | hardware **CERN-OHL-W 2.0**; firmware, libreria e CLI **MIT** |
 | D13 | VID/PID USB | VID 0x1209 (pid.codes) con PID di test durante lo sviluppo; PID definitivo da richiedere a pid.codes alla pubblicazione |
-| D14 | Porta hub di scorta (DS7) | su header interno a 4 pin (VBUS, D-, D+, GND), non sezionata |
+| D14 | Porta hub di scorta (DS7) — superata da D76 | Header eliminato; nessuna uscita USB di scorta. |
 | D15 | Scatola | stampata in 3D su misura; tutti i connettori saldati sul PCB, boccole a banana in versione da PCB; connettori sui due lati corti (banco: porte, pulsanti, boccole; retro: upstream e alimentazione); pulsanti e LED  sulla faccia superiore del PCB (D42) |
 | D16 | Reset del hub | supervisore **MCP120T-300** open-drain su RESET_N con pull-up, in wired-OR con il MCU (open-drain, ora su PF1: D34): il hub non dipende dal firmware e resta acceso durante reset e DFU del MCU |
 | D17 | Regolatore 3,3 V | LDO **AP7361C-33E** (1 A, SOT-223) al posto dell'AP2112K in SOT-23-5 |
@@ -30,7 +30,7 @@ l'implementazione da adeguare; non è ancora scelto un nuovo integrato per le po
 | D20 | Condensatori d'ingresso | invariati (2 × 220 µF + 2 × 10 µF): il picco all'inserzione lo elimina l'avvio dolce dell'eFuse |
 | D21 | Protezione d'ingresso | eFuse **TPS259470A**: stacca sopra 5,84 V e sotto 4,0 V, limite 3,5 A, avvio dolce ~5 ms, FLT al MCU (PB1) |
 | D22 | Switch dati delle porte | **PI3USB4002A** al posto del TS3USB30E: il lato connettore regge 24 V e si apre sopra 4,75 V (corti D+/D- su VBUS) |
-| D23 | Fornitore | orientamento verso DigiKey (non ancora definitivo, vedi D11); le alternative trovate sono in `componenti.md` |
+| D23 | Fornitore — precisata da D77 | DigiKey è il fornitore di riferimento; alternative in `componenti.md`. |
 | D24 | LED per porta | due: alimentata (verde) e fault (rosso); lo stato delle linee dati non ha un LED |
 | D25 | TVS | sull'ingresso **SMAJ20A** (non conduce fino a 20 V, l'eFuse gestisce le sovratensioni); sulle VBUS delle porte nessuna TVS e nessuna piazzola: bastano i 22 µF + 100 nF |
 | D26 | Pulsanti | uno per porta e uno per relè (SW1/SW2 aggiunti); ogni pressione alterna lo stato: porta accesa/spenta con alimentazione e dati sempre insieme, linea del relè collegata/staccata (RF-17) |
@@ -78,18 +78,24 @@ l'implementazione da adeguare; non è ancora scelto un nuovo integrato per le po
 | D68 | Conferma MCU, controllo autonomo e pannello | Mantenere un hub con MCU separato e USB HID (modello hub da scegliere, D69), cicli e impulsi temporizzati eseguiti dal MCU. STM32G0B1RET6 resta il riferimento; un package più piccolo è valutabile solo dopo la scelta dei controller porta e il conteggio GPIO. Conservare cinque pulsanti (quattro USB e uno relè) e un LED per porta pilotato dal MCU, con lampeggio guasti; sette LED complessivi. Confermati quattro USB-C, un relè con due boccole COM/NC e header interno di scorta. La variante USB4715 senza MCU, con o senza TCA9535, non è adottata: la ricerca resta fra le alternative valutate. Supera l’indirizzo di valutazione D67; nessuna modifica a schema/PCB in questa fase. |
 | D69 | Modello del hub non vincolato | USB2517 è il componente dello schema esistente, non un requisito. Scegliere il hub più utile per la soluzione con MCU separato, valutando porte necessarie, supporti esterni, consumi, package, costo, reperibilità e configurazione. Restano i requisiti funzionali confermati; D68 non impone USB2517. |
 | D70 | Scarica automatica e semplicità del circuito | La scarica attiva VBUS può attivarsi automaticamente alla disabilitazione della porta, anche integrata nel controller; non sono richiesti GPIO DIS o controllo separato dal MCU. Scegliere la soluzione complessivamente più semplice per componenti, collegamenti e firmware, nel rispetto delle protezioni e dei limiti di scarica D61. Il MCU gestisce il tempo fra spegnimento e riaccensione della porta; non deve necessariamente comandare la scarica. |
+| D71 | Permanenza di una scheda alimentata esternamente | Deve essere possibile lasciare collegata indefinitamente una scheda alimentata esternamente senza danneggiare devhub, anche a porta disabilitata e con VBUS sostenuta dalla scheda. La scarica può interrompersi automaticamente: non è richiesta dissipazione continua né controllo DIS dal MCU. Restano blocco inverso e protezioni hardware; ambito della tensione esterna definito da D72. Non implica lo spegnimento della scheda autoalimentata. |
+| D72 | Sorgente esterna a 5 V sulla VBUS downstream | La tolleranza continua D71 riguarda sorgenti da 5 V nominali con tolleranza. Non è richiesta protezione della VBUS downstream da 12 o 20 V accidentali; non aggiungere circuiti solo per coprire tali tensioni. Fissare il massimo operativo numerico nel dimensionamento. Restano blocco inverso, limitazione di corrente, ESD e protezione dati già richiesti; la protezione dell’ingresso alimentatore è distinta. |
+| D73 | Ripristino manuale dopo guasto porta | Quando riceve un guasto hardware della porta, il MCU interrompe l’eventuale ciclo, disabilita VBUS e dati e mantiene il LED lampeggiante. Nessuna riaccensione automatica alla scomparsa del segnale: serve un tentativo esplicito di riabilitazione da pulsante o PC. Se il guasto persiste o ricompare, la porta torna disabilitata con LED lampeggiante. Non è obbligatorio un controller latch-off: la protezione immediata resta hardware e il blocco persistente può essere gestito dal MCU finché alimentato e operativo. |
+| D74 | Stato di fabbrica delle porte | Tutte e quattro le porte abilitate dopo l’avvio del firmware, con accensioni sfalsate per l’inrush. Resta possibile salvare una configurazione diversa per porta. Lo stato durante reset/bootloader è una verifica elettrica distinta. |
+| D75 | Controller delle quattro porte | Scelti due UCS2114-1-V/LX, uno per coppia di porte, con due bus I²C indipendenti per il comune indirizzo 0x57; mantenuti quattro PI3USB4002A per i dati. La variante -1A non viene utilizzata perché non reperita. Abilitare e verificare la scarica automatica via I²C all’avvio; 400 ms come impostazione iniziale da validare. Strap 27 kΩ / 1%, enable VBUS e dati separati sotto un comando logico, nessun MOSFET o GPIO DIS esterno. Il firmware mantiene il blocco manuale dei guasti; misura corrente e charge rationing non utilizzati. Schema/PCB da adeguare dopo hub e pinout MCU, verifiche elettriche e collaudo restano necessari. |
+
+| D76 | Eliminazione header USB di scorta | Nessun header USB downstream di scorta. Servono cinque porte fisiche del hub: quattro USB-C e la connessione interna al MCU. Supera D14 e i riferimenti allo header in D66/D68. Con USB2517, DS5 e DS7 sono inutilizzate; eliminare connettore e alimentazione dedicata dallo schema. |
+| D77 | Fornitore di riferimento | DigiKey per selezione e confronto dei componenti, verificando codice esatto, acquisto a pezzo singolo e disponibilità effettiva. La presenza a catalogo non implica disponibilità. Supera l’indicazione provvisoria di D23; restano utilizzabili i componenti già a magazzino secondo D45. |
+
+| D78 | Hub e MCU confermati | Scelti USB2517I-JZX e STM32G0B1CEU6, versione GP in UFQFPN48, con DigiKey come riferimento. Due bus I²C indipendenti per gli UCS2114; hub sul primo bus a 0x2C. Nessun header USB di scorta. La selezione chiude il confronto D69 e sostituisce il riferimento MCU a 64 pin di D68. Il pinout a 48 pin è documentato come assegnazione da applicare; l’adeguamento dello schema è a cura dell’utente. |
 
 ## Aperte
 
-- Scegliere il modello di hub (D69): quattro USB-C, porta interna MCU e header di scorta
-  richiedono sei downstream nella configurazione corrente. USB2517 è un candidato di riferimento.
-- Scelta del controller delle porte per accorpare VBUS, dati e scarica: confronto e priorità in
-  [componenti.md](componenti.md#ricerca-per-la-versione-semplificata-d60d66). Nessun componente
-  nuovo è approvato. Verificare corrente, protezioni, distacco di dispositivi autoalimentati,
-  sequenza interna, guasti segnalati e stato al reset/bootloader.
-- Dopo la scelta dei controller porta, verificare il conteggio GPIO e l’eventuale riduzione
-  del package STM32, mantenendo HID, SWD e gestione del bootloader.
+- Dimensionare e validare il circuito scelto D75: due UCS2114-1-V/LX e quattro PI3USB4002A,
+  capacità, scarica automatica, guasti, ritorno di alimentazione e stato al reset/bootloader.
+- Applicare e verificare elettricamente il pinout proposto a 48 pin: due I²C, HID, SWD,
+  UART, reset e bootloader. Quattro GPIO restano liberi; nessun espansore necessario.
 - Definire durata sicura della scarica, default e intervallo ammesso del ciclo sul circuito
   definitivo; il secondo proposto non è una garanzia per qualsiasi capacità o alimentazione esterna.
-- Adeguare schema e PCB, aggiornando poi pinout, BOM, costi, regole specifiche e bilancio di
+- Adeguare lo schema a cura dell’utente (D78), poi PCB, pinout, BOM, costi, regole specifiche e bilancio di
   alimentazione. Confermare la gestione dei guasti in base ai segnali realmente disponibili.

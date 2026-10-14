@@ -1,8 +1,10 @@
 # Componenti candidati
 
 **Stato della selezione:** le tabelle sotto documentano componenti e alternative dello schema
-attuale, ancora da adeguare alle decisioni D60–D66. Non è approvato alcun nuovo controller.
-**D68 conferma un hub con MCU separato; il modello del hub è da scegliere (D69)**. Restano cinque pulsanti e LED USB con lampeggio guasti.
+attuale, ancora da adeguare. **D75 sceglie due UCS2114-1-V/LX con due bus I²C e quattro
+PI3USB4002A** per le porte; la scelta non è ancora applicata in KiCad.
+**Hub/MCU confermati (D78): USB2517I-JZX + STM32G0B1CEU6, UFQFPN48**, dettagli sotto.
+Nessun header USB di scorta (D76); DigiKey è il fornitore di riferimento (D77). Restano cinque pulsanti e LED USB con lampeggio guasti.
 La [variante USB4715 senza MCU](#usb4715-senza-mcu-verifica-di-fattibilità) è un’alternativa
 non adottata; TCA9535 non è previsto nella soluzione corrente.
 
@@ -10,10 +12,10 @@ non adottata; TCA9535 non è previsto nella soluzione corrente.
 |---|---|
 | Misure | Eliminare U7/U8 INA3221, R5/R65–R69 e supporti dedicati; nessun sensore o partitore sostitutivo per porte/5V_SYS |
 | CC d'ingresso | Eliminare lettura ADC e R3/R4/C1/C2; mantenere Rd R1/R2 |
-| Porte | Valutare integrazione di switch VBUS, dati, scarica e protezioni; sensore di corrente non richiesto; sequenza interna e scarica automatica ammesse, nessun GPIO DIS obbligatorio; priorità alla semplicità complessiva (D70) |
+| Porte | Due UCS2114-1-V/LX con due bus I²C e scarica automatica configurata all’avvio, più quattro PI3USB4002A (D75); eliminare le scariche discrete e i GPIO DIS |
 | LED USB | Quattro LED comandati dal MCU; eliminare la coppia della USB-A e uno dei due LED per ciascuna USB-C; riferimenti da definire |
 | Uscite e pannello | Quattro USB-C, un relè, due boccole COM/NC, cinque pulsanti e sette LED complessivi; rimuovere la USB-A e il secondo canale relè (D66) |
-| Logica e ingresso | Hub da scegliere (D69); USB2517 e STM32G0B1RET6 sono i riferimenti nello schema; possibile MCU più piccolo dopo il conteggio GPIO; conservare le protezioni richieste |
+| Logica e ingresso | Confermati USB2517I-JZX e STM32G0B1CEU6 a 48 pin; nello schema resta STM32G0B1RET6 a 64 pin. Conservare le protezioni richieste |
 
 La selezione richiede verifica di corrente per porta, distacco dei dati con dispositivi
 autoalimentati, blocco inverso, ESD, guasti disponibili, scarica e stato al reset.
@@ -25,12 +27,10 @@ assemblaggio JLCPCB al momento della verifica (ottobre 2026): va **riconfermato 
 dell'ordine**, cambia spesso. "A mano" indica se il package si salda con il solo saldatore ("sì"), se richiede aria calda
 o piastra riscaldante più stencil ("aria calda"), o se è sconsigliato anche così ("no").
 
-Vincolo di approvvigionamento: i componenti saldati a mano vanno presi da un **unico fornitore**
-(Mouser o DigiKey o LCSC). I componenti sono stati scelti per funzione e datasheet, non per
-catalogo: LCSC è stato verificato solo quando era in gioco il montaggio JLCPCB. Tutti i
-componenti principali qui sotto sono di produttori di prima fascia (Microchip, ST, TI) e sono gli
-stessi pezzi su qualsiasi distributore; Mouser, DigiKey e LCSC li hanno tutti.
-Le alternative reperibili solo su LCSC (FE1.1s, GL850G, FE2.1) sono indicate come tali.
+Fornitore di riferimento: **DigiKey (D77)**. La selezione considera il codice esatto e
+l’acquisto a pezzo singolo; disponibilità e prezzo vanno riconfermati prima dell’ordine.
+I riferimenti agli altri distributori nelle tabelle documentano alternative e componenti
+presenti nello schema/magazzino, non garantiscono reperibilità presso DigiKey.
 I componenti della variante ad alta potenza (TCPP01-M12, STUSB4500, LM61495) sono
 descritti in [architettura.md](architettura.md#variante-ad-alta-potenza-non-in-v1) e non fanno
 parte della v1.
@@ -133,10 +133,12 @@ non una graduatoria generale dei prodotti. I valori tipici non sono garanzie di 
 
 ### Esito e priorità
 
-La prima soluzione da dimensionare è **AP22615 + PI3USB4002A per porta**: integra la scarica
-nel ramo di alimentazione mantenendo la protezione dati già prevista. È una raccomandazione
-condizionata alla verifica termica della scarica e del limite di corrente, non una scelta
-conclusa. Non emerge dalla ricerca un singolo chip già verificato per tutti i requisiti.
+La scelta D75 è **2 UCS2114-1-V/LX con due bus I²C + 4 PI3USB4002A**. La -1A autonoma
+resta un’alternativa non adottata per reperibilità. La
+[proposta dettagliata](#raccomandazione-per-le-quattro-porte-ucs2114-e-pi3usb4002a) confronta
+modalità autonoma e con I²C, componenti esterni, timer di scarica e limiti da collaudare. AP22615B rimane l’alternativa senza configurazione I²C, ma il
+[dimensionamento preliminare](#dimensionamento-preliminare-delle-porte-con-mcu) non chiude
+le garanzie di corrente e scarica con sorgente esterna.
 
 Per la massima integrazione, **TPS254900A-Q1** è il candidato più interessante, ma resta
 aperta la protezione inversa a porta accesa: non va sostituita con una semplice promessa
@@ -173,7 +175,7 @@ esterna per porta può annullare il vantaggio rispetto alla coppia proposta.
 | Diodes [AP22815](https://www.diodes.com/part/AP22815/) | Variante a limite fisso e scarica della stessa famiglia | Il limite fisso è meno adatto alla singola uscita del sistema da 3 A; preferibile AP22615 regolabile |
 | TI [TPS22950C](https://www.ti.com/tw/lit/gpn/tps22950), SLVSFJ2B, tab. 5, 9-1 e §9.3.4 | SOT-23-THIN-6, 3,2 A, limite regolabile, scarica e blocco inverso anche abilitato | La tabella 9-1 lascia FLT alto durante il corto limitato; segnala termica/inversione. RCB interviene dopo una corrente inversa circa 900 mA: non equivale a zero ritorno. VOUT massimo assoluto 6 V. **Non equivalente** a FLT del limitatore attuale |
 | TI [TPS2001E](https://www.ti.com/lit/ds/symlink/tps2001e.pdf) | 2 A, scarica, guasto e blocco inverso da disabilitato; limite fisso | Semplice, ma esattamente al requisito di corrente e senza blocco inverso continuo dichiarato: alternativa meno adatta alle schede alimentate esternamente |
-| Microchip [UCS2114](https://www.microchip.com/en-us/product/ucs2114) / [UCS2113](https://www.microchip.com/en-us/product/UCS2113) | Due canali di potenza, protezioni e misura integrata; UCS2113 dichiara 3 A continui per porta | Il doppio canale **non integra due switch dati USB**. Restano protezioni dati e verifica della scarica per il codice scelto; la telemetria non serve. Da rivalutare solo con un vantaggio di BOM dimostrato |
+| Microchip [UCS2114](https://www.microchip.com/en-us/product/ucs2114) / [UCS2113](https://www.microchip.com/en-us/product/UCS2113) | Due canali di potenza, protezioni e misura integrata; UCS2113 dichiara 3 A continui per porta | Il doppio canale **non integra due switch dati USB**. Restano protezioni dati e verifica della scarica per il codice scelto; la telemetria non serve. UCS2114 approfondito sotto: due chip di potenza; -1 richiede I²C, -1A può lavorare autonomamente con scarica già abilitata |
 
 La variante **TPS22950L** non ha RCB; non va ordinata come sostituta della C. Per la C,
 la documentazione conferma QOD a disabilitazione e RCB, ma il comportamento FLT impedisce
@@ -226,7 +228,7 @@ non basta; una cascata aggiunge circuito. Il
 integra hub a quattro porte e bridge USB verso GPIO/I2C/SPI/UART, ma questo non dimostra
 un firmware utente capace di HID, pulsanti, LED e cicli autonomi. Usarlo per eliminare
 il MCU richiederebbe provare quei requisiti e l'interfaccia multipiattaforma; non è una
-sostituzione adottata. **D68 conferma hub e MCU separato**, con modello del hub da scegliere (D69), controllo autonomo,
+sostituzione adottata. **D68 conferma hub e MCU separato**, con USB2517I-JZX e STM32G0B1CEU6 confermati (D78), controllo autonomo,
 pulsanti e lampeggio guasti. La [verifica USB4715](#usb4715-senza-mcu-verifica-di-fattibilità)
 resta disponibile come confronto con l’alternativa senza MCU.
 
@@ -524,3 +526,317 @@ e arresto del processo durante un ciclo. Windows ARM64 richiede una prova separa
 | EVB-USB4715 | [DigiKey](https://www.digikey.com/en/products/detail/microchip-technology/EVB-USB4715/8037697), [Mouser](https://www.mouser.com/en/ProductDetail/Microchip-Technology/EVB-USB4715?qs=f9yNj16SXrKRG%252BmSPibMRQ%3D%3D) | Piattaforma per la prova; nessun acquisto eseguito |
 
 Nessun prezzo o stock è assunto garantito; la BOM della variante non è ancora finalizzata.
+
+## Dimensionamento preliminare delle porte con MCU
+
+**Esito:** il comando comune consente di eliminare GPIO DIS e invertitori; AP22615B resta
+un candidato, non una selezione conclusa. La validazione deve riguardare il circuito completo,
+non solo la presenza delle funzioni nella descrizione commerciale.
+
+### Comando e componenti di supporto
+
+Proposta per ciascuna delle quattro porte:
+
+```
+5V_SYS → AP22615B → VBUS porta
+hub D+/D− → PI3USB4002A → D+/D− connettore
+MCU PORT_OFF ─┬─ EN attivo basso AP22615B
+             └─ EN PI3USB4002A (alto = dati aperti)
+AP22615B FLG → ingresso MCU con pull-up a 3V3
+```
+
+`PORT_OFF = 0` abilita la porta, `1` la disabilita; un pull-up esterno, inizialmente
+10 kΩ da dimensionare con leakage e stato dei pin, la tiene spenta durante il reset MCU.
+La scarica segue automaticamente lo spegnimento. Un GPIO per comando, uno per fault,
+uno per LED e uno per pulsante: **16 GPIO per le quattro porte**, esclusi relè e logica hub.
+I pin MCU devono evitare le funzioni che il bootloader attiva: il pull-up non neutralizza
+un'uscita del bootloader pilotata bassa.
+
+Il [PI3USB4002A, tabella EN e caratteristiche DC](https://www.diodes.com/datasheet/download/PI3USB4002A.pdf)
+conferma apertura dati con EN alto, soglia alta minima 1,2 V e bassa massima 0,6 V:
+si propone alimentazione 3V3 e comando a 3,3 V. Restano REF 1 µF / 25 V e disaccoppiamento.
+Il lato protetto C0 va al connettore, L0 al hub. La diagnostica FLG del load switch non
+rileva automaticamente i guasti dati gestiti internamente dal PI3USB4002A.
+
+### AP22615B: corrente e scarica
+
+Fonte: [DS41022 Rev. 7-2, pp. 2, 4–5, 12–14](https://www.diodes.com/datasheet/download/AP22815_615.pdf).
+Il limite tipico segue `ILIM = 6800 / R_LIM`, con resistenza in ohm. **2,74 kΩ dà circa
+2,48 A tipici**, ma la tabella elettrica specifica min/max solo ad altri valori di resistenza:
+non permette di affermare che questa impostazione garantisca 2 A su tutta la temperatura.
+Non estendere arbitrariamente una percentuale di tolleranza fra i punti pubblicati.
+
+La scarica è circa 100 Ω, caratterizzata tipicamente con OUT a 1 V; non è specificata una
+potenza continua ammessa per una sorgente esterna. Restano da confermare comportamento
+della scarica in OVP e copertura della protezione termica quando il chip è disabilitato.
+L'alta tensione ammessa su OUT non dimostra da sola questi comportamenti.
+Supporti: ingresso 1 µF, uscita 22 µF MLCC + 100 nF secondo l'applicazione, resistenza ILIM,
+pull-up comando e FLG; capacità effettiva e requisiti USB restano da dimensionare.
+
+Calcoli di confronto, non garanzie del componente:
+
+- Capacità totale ipotizzata 1022 µF, da 5 V a 0,8 V, scarica ideale 100 Ω: **187 ms**.
+- Sorgente esterna permanente 5,25 V su 100 Ω: **276 mW**, dissipazione che prosegue
+  indipendentemente dal tempo OFF configurato.
+- Una stima globale della temperatura del package non sostituisce il limite di potenza
+  della struttura interna di scarica. Non approvare il componente basandosi solo su tale stima.
+
+### Alternativa AP22652: vantaggi e limiti
+
+La [famiglia AP22652/53, DS41186 Rev. 5-2](https://www.diodes.com/datasheet/download/AP22652_AP22653_AP22652A_AP22653A.pdf)
+offre corrente continua massima 2,1 A, scarica tipica 600 Ω e formule min/max di ILIM.
+AP22652 è attivo basso; il suffisso A aggiunge latch-off e richiede una gestione guasti diversa.
+Con 12,1 kΩ / 1%, le formule danno circa **1,96–2,40 A**: questo valore non garantisce 2 A.
+La resistenza massima ON a temperatura estesa è 135 mΩ: a 2 A implica **0,27 V** di caduta
+e **0,54 W**. Con θJA di riferimento SOT26 = 120 °C/W, l'aumento stimato è **65 °C**;
+il layout e la temperatura ambiente diventano determinanti.
+La nota 9 descrive la scarica come disponibile per un tempo limitato senza quantificarlo:
+non assumere una durata infinita o configurabile dal MCU. Inoltre OUT ha massimo assoluto 6 V.
+
+Nel modello resistivo ideale, 1022 µF con 600 Ω richiedono **1,124 s** per passare da 5 V
+a 0,8 V; una sorgente da 5,25 V dissipa **46 mW**. Il carico termico della scarica diminuisce,
+ma non basta a preferire questa famiglia: margine di corrente, caduta e dissipazione in
+conduzione sono meno favorevoli. Non è una sostituzione già qualificata dell'AP22615B.
+
+### Esito per la scelta
+
+D73 richiede ripristino manuale dopo guasto, realizzabile nel MCU: non esclude di per sé
+controller auto-retry, purché la protezione hardware sia autonoma e il MCU possa rilevare
+il guasto e mantenere la porta disabilitata. Verificare durata/ritenzione del segnale FAULT.
+
+D71 richiede che la scheda autoalimentata possa restare collegata indefinitamente senza
+danni, anche a porta spenta: è ammessa l’interruzione automatica della scarica.
+D72 limita il requisito a 5 V nominali con tolleranza: 12/20 V sulla VBUS downstream non
+sono richiesti. Il massimo operativo numerico va fissato nel dimensionamento; non eliminare
+protezione dati, blocco inverso o protezioni d’ingresso sulla base di questa semplificazione.
+
+Non fissare ancora resistenza ILIM, default definitivo del ciclo o BOM di produzione.
+Per approvare AP22615B servono limiti documentati a circa 2,5 A e per la scarica con OUT
+sostenuta esternamente o per la sua interruzione automatica sicura, seguiti dalle prove sul circuito. Le informazioni mancanti non si
+ricavano da una curva tipica né dal solo test di un esemplare.
+Se la scarica integrata richiede supporti aggiuntivi, confrontarli con una scarica discreta
+automatica dimensionata per servizio continuo: D70 consente entrambe e privilegia il minor
+circuito completo. Nessuna richiesta al produttore è stata inviata e nessun componente
+nuovo è stato inserito in KiCad.
+
+## Raccomandazione per le quattro porte: UCS2114 e PI3USB4002A
+
+**Scelta D75: due UCS2114-1-V/LX con due bus I²C indipendenti e quattro PI3USB4002AZUAEX.**
+La -1A autonoma non è adottata per reperibilità. La scarica viene abilitata all’avvio
+e poi gestita dal timer interno, senza GPIO DIS. Nessuna modifica KiCad è stata ancora
+applicata. Il confronto con la modalità autonoma resta fra le alternative.
+
+### Indirizzi, varianti e reperibilità
+
+Il [datasheet DS20005743B, §§5.2, 7.2, 7.14.1 e ordinazione](https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/UCS2114-Data-Sheet-20005743B.pdf)
+non prevede pin o registro per cambiare l’indirizzo 0x57 della versione -1. Indirizzi diversi
+sono su richiesta al produttore; non presumere un codice -2 acquistabile. Il suffisso **A**
+abilita la scarica automatica di fabbrica. Strap **150 kΩ / 1%** seleziona modalità autonoma,
+enable attivi bassi e ILIM7 **2,50–2,90 A**. SMCLK/SMDATA inutilizzati vanno a massa.
+La scarica autonoma usa il default **200 ms**; per modificarlo serve SMBus.
+
+| Opzione | Comando/configurazione | Giudizio |
+|---|---|---|
+| Due UCS2114-1A-V/LX autonomi | Quattro enable comuni ai PI, nessun I²C | Non adottata: variante non reperita |
+| Due UCS2114-1-V/LX con indirizzo cambiato via firmware/resistenza | Non documentato | Non utilizzabile come soluzione progettuale |
+| UCS2114 con indirizzo speciale di fabbrica | Un bus, codice e condizioni commerciali da ottenere | Non basare il prototipo su una variante non reperita |
+| Due -1 su collegamenti I²C indipendenti | Configurazione e diagnosi separate | Scelta D75; preferire periferiche hardware, assegnazione da verificare nel pinout |
+| Due -1 sullo stesso bus, scritture simultanee | Entrambi ricevono le stesse scritture | Non raccomandato: ACK e letture sovrapposti non consentono verifica e diagnosi indipendenti; nessun riscontro trovato di uso supportato dal produttore |
+| Multiplexer/traduttore di indirizzo I²C | Un bus più un IC e relativi supporti | Aggiunge circuito per risolvere un problema evitabile con la variante autonoma |
+| UCS2112 con codici differenti | Altra famiglia, da verificare separatamente | Esclusa come nuova base: [Microchip la dichiara NRND](https://www.microchip.com/en-us/product/ucs2112) |
+
+La [pagina Arrow del codice -1A](https://www.arrow.com/en/products/ucs2114-1a-vlx/microchip-technology)
+riporta solo disponibilità del datasheet: **non prova stock o ordinabilità**. La variante
+compare anche nella [BOM ufficiale EVB-USB7252](https://ww1.microchip.com/downloads/en/DeviceDoc/EVB-USB7252-Evaluation-Kit-Users-Guide-50002977A.pdf),
+quindi non è una sigla ipotizzata. Non ne sono stati confermati prezzo, minimo d’ordine e
+consegna su Mouser/DigiKey/LCSC. Arrow resta un riferimento informativo, non un cambio
+automatico del vincolo di approvvigionamento. Nessuna richiesta al produttore è stata inviata.
+
+### Alternativa autonoma non adottata (-1A)
+
+```
+5V_SYS → UCS2114-1A A → VBUS porte 1–2
+       → UCS2114-1A B → VBUS porte 3–4
+hub DS1…4 → PI3USB4002A ×4 → D+/D− connettori
+MCU PORT_OFF[1…4] → PWR_EN del canale UCS e EN del PI corrispondente
+MCU ← ALERT[1…4]
+```
+
+Basso abilita VBUS e dati; alto li disabilita. Il [PI3USB4002A](https://www.diodes.com/datasheet/download/PI3USB4002A.pdf)
+ha EN alto = dati aperti. Si propone pull-up esterno da 10 kΩ a 3V3 per ciascun comando,
+con pin MCU che il bootloader non pilota. Dopo l’avvio il firmware abilita tutte le porte
+in modo sfalsato, salvo default diversi salvati; lo stato al reset resta distinto.
+Il MCU gestisce il ciclo complessivo e la memoria del guasto, non il timer della scarica.
+
+### Componenti e segnali dell’alternativa autonoma
+
+Valori iniziali di progetto, da verificare nello schema e sul layout:
+
+| Elemento | Quantità per quattro porte | Funzione |
+|---|---:|---|
+| UCS2114-1A-V/LX | 2 | Switch VBUS doppi con scarica automatica |
+| PI3USB4002AZUAEX | 4 | Switch dati e relative protezioni |
+| COMM_ILIM 150 kΩ / 1% | 2 | Modalità autonoma e soglia corrente |
+| Pull-up PORT_OFF 10 kΩ a 3V3 | 4 | Comando comune VBUS/dati, OFF al reset |
+| Pull-up ALERT 10 kΩ a 3V3 | 4 | Guasti per porta |
+| Disaccoppiamento VS 1 µF | 4 | Presso le coppie di pin VS |
+| Disaccoppiamento VDD 100 nF | 2 | VDD alla 5V_SYS |
+| VBUS 22 µF + 100 nF | 4 coppie | Base attuale; capacità effettiva e requisiti USB da validare |
+| REF PI 1 µF / 25 V e disaccoppiamento 100 nF | 4 coppie | Conservati |
+| Rp, connettori, pulsanti e LED | Come D66/D68 | Nessuna modifica funzionale ulteriore |
+
+I pin VS/VBUS duplicati e tutte le masse vanno collegati secondo il land pattern esatto;
+BOOST# inutilizzato va trattato secondo la tabella pin, senza pilotare il regolatore.
+Il [riferimento EVB-USB7216](https://ww1.microchip.com/downloads/en/DeviceDoc/EVB-USB7216-Evaluation-Kit-Users-Guide-50002970A.pdf)
+è utile per il circuito di supporto, ma non sostituisce il dimensionamento delle nostre USB-C.
+
+Segnali MCU: quattro comandi, quattro ALERT, quattro LED e quattro pulsanti = **16**.
+Rispetto alla proposta -1 con due bus e due comandi per porta si eliminano **otto segnali**,
+i quattro pull-up I²C e i quattro pull-down separati VBUS. Non servono invertitori o GPIO DIS.
+Il numero finale di passivi dipende dai disaccoppiamenti e dai pull-up eventualmente condivisi.
+
+### Corrente, guasti e scarica
+
+La tabella elettrica UCS2114 specifica RON massimo 30 mΩ per 4,75 V < VS < 5,25 V:
+a 2 A il calcolo dà **60 mV e 120 mW per canale**. Il limite ILIM7 lascia margine sui 2 A;
+non aumenta la corrente totale dell’alimentatore. Blocco inverso, ALERT e scarica temporizzata
+sono interni; la misura di corrente non viene utilizzata. La soglia inversa tipica 150 mV
+non significa corrente transitoria nulla.
+
+Il MCU memorizza il guasto prima di disabilitare la porta, mantiene PORT_OFF alto e LED
+lampeggiante, e attende il riarmo esplicito. Il riarmo non è automatico anche se il chip
+rimuove il proprio ALERT. Nessuna dipendenza da un latch-off interno configurabile.
+Non essendoci SMBus, si espone **guasto generico per porta**, senza inventare una causa
+specifica; questo rispetta il protocollo previsto. Non si riaggiungono misure o shunt.
+
+Il timer di 200 ms è il compromesso concreto della variante autonoma. Calcoli ideali
+con R = 100 Ω, V iniziale 5,25 V e soglia 0,75 V:
+
+| Capacità totale | Tempo calcolato |
+|---:|---:|
+| 122 µF | 24 ms |
+| 492 µF | 96 ms |
+| 1022 µF | 199 ms |
+| 2222 µF | 432 ms |
+
+Circa 1 mF non lascia margine; il tempo tipico non garantisce il funzionamento con quella
+capacità. Allungare `off_ms` non modifica la durata interna. Se la scarica non riesce,
+il controller segnala errore; il firmware non deve dichiarare completato con successo il ciclo.
+Questa limitazione richiede prove con capacità note, non una nuova scelta funzionale arbitraria.
+
+Una sorgente esterna può mantenere VBUS alta: il timer permette di terminare la scarica e
+segnalare errore. La porta può restare disabilitata fino alla rimozione della condizione;
+D71 non richiede di alimentare in parallelo due sorgenti. Verificare al banco termine della
+scarica e assenza di ripetizioni indesiderate a PORT_OFF alto, anche con entrambe le uscite
+sostenute esternamente, reset MCU e hub spento. Non assumere come tensione operativa il
+massimo assoluto 6 V del componente.
+
+### Circuito scelto: -1 con due bus I²C (D75)
+
+Due UCS2114-1-V/LX con strap 27 kΩ / 1%, uno per coppia di porte. Ciascuno usa un bus
+indipendente all’indirizzo 0x57; uno dei bus può essere condiviso con il hub se compatibile
+con il suo indirizzo e la sequenza di avvio. Nessun multiplexer o espansore aggiunto.
+I comandi VBUS sono attivi alti, gli OE dati attivi alti per l’apertura: restano separati
+e sono gestiti dalla stessa funzione firmware.
+
+Rispetto alla tabella dell’alternativa autonoma: sostituire -1A con -1 e 150 kΩ con 27 kΩ;
+aggiungere quattro pull-up I²C da 2,2 kΩ a 3V3 e quattro pull-down PWR_EN da 10 kΩ.
+I quattro pull-up da 10 kΩ sugli OE dati restano. Sono valori iniziali da verificare
+con capacità bus, leakage, alimentazioni e pin del bootloader.
+
+Conteggio MCU delle quattro porte: 4 EN VBUS + 4 OE dati + 4 ALERT + 4 LED + 4 pulsanti
++ 4 fili I²C = **24 segnali**, prima di eventuale condivisione bus. La tabella a 16 segnali
+riguarda soltanto la variante autonoma non adottata. Nessun GPIO DIS richiesto.
+
+All’avvio: PWR_EN bassi, dati aperti, risveglio dei controller, abilitazione di
+EN_VBUS_DISCHG, timer 400 ms e verifica per lettura; quindi default ON sfalsato.
+Mantenere disabilitati charge rationing e override software dei pin, evitando comandi
+DISCHG_LOAD senza timer. Dopo perdita dell’alimentazione del controller reinizializzare.
+La gestione D73 resta nel MCU. Il tempo 400 ms amplia il margine sui condensatori,
+ma non elimina la necessità di definire la capacità effettivamente supportata.
+
+### Risparmio e acquisto
+
+| Soluzione a quattro porte | IC | MOSFET di scarica | Package attivi |
+|---|---:|---:|---:|
+| 2 TPS2561A + 4 PI + scarica discreta | 6 | 4 | 10 |
+| 4 AP22615B + 4 PI | 8 | 0 | 8 |
+| 2 UCS2114, -1A o -1, + 4 PI | 6 | 0 | 6 |
+
+Spariscono le quattro resistenze 100 Ω / 1206 e le reti gate dedicate. Solo la variante
+autonoma evita anche i bus e i supporti I²C. Il conteggio non include USB-A, misure e secondo
+relè già eliminati dai requisiti: quei risparmi non derivano dal nuovo controller.
+
+| Codice | Evidenza di reperibilità al 14 ottobre 2026 |
+|---|---|
+| UCS2114-1A-V/LX | Documentato da Microchip; [Arrow](https://www.arrow.com/en/products/ucs2114-1a-vlx/microchip-technology) ha una scheda informativa senza acquisto verificato. Nessuno stock confermato sui fornitori previsti |
+| UCS2114-1-V/LX | [DigiKey](https://www.digikey.com/en/products/detail/microchip-technology/UCS2114-1-V-LX/7559473) e [Mouser](https://www.mouser.com/en/ProductDetail/Microchip-Technology/UCS2114-1-V-LX?qs=Mv7BduZupUhJ2ZX1kQ8ufw%3D%3D), pagine indicizzate: 3,28 USD a quantità 1 |
+| PI3USB4002AZUAEX | [DigiKey](https://www.digikey.com/en/products/detail/diodes-incorporated/PI3USB4002AZUAEX/13211366), pagina indicizzata: 1,34 USD a quantità 1; [Mouser](https://www.mouser.com/en/ProductDetail/Diodes-Incorporated/PI3USB4002AZUAEX?qs=DPoM0jnrROWZzdAafawHHw%3D%3D) a catalogo |
+
+**11,92 USD per sei IC è la stima della variante -1, non della -1A**; esclusi passivi,
+imposte e spedizione. Non trasferire automaticamente prezzo e stock fra le due varianti.
+
+D75 chiude la selezione sui due -1 con I²C. -1A, AP22615B e UCS2112 restano alternative
+non adottate; non ne dipende l’avanzamento del progetto. Restano dimensionamento del circuito,
+pinout e collaudo. Nessuna BOM di produzione, modifica KiCad o acquisto è stato eseguito.
+
+## Hub e MCU confermati con riferimento DigiKey
+
+La soluzione confermata (D78) è **USB2517I-JZX + STM32G0B1CEU6 (UFQFPN48, versione GP)**.
+Non richiede espansori GPIO, EEPROM, multiplexer I²C o quarzo MCU. Conserva due bus
+I²C hardware e riduce il MCU da 64 a 48 pin. La maggiore Flash della variante CE
+non è un requisito: il codice è scelto per la disponibilità verificata a pezzo singolo.
+La selezione non è ancora applicata allo schema; l’adeguamento è a cura dell’utente.
+
+### Hub
+
+| Candidato | Valutazione nel circuito completo |
+|---|---|
+| **USB2517I-JZX**, QFN64 9 × 9 mm | Scelto (D78). Cinque delle sette porte sono utilizzate; DS1–4 esterne, DS6 MCU, DS5/7 disabilitate. OCS separati dai comandi PRTPWR: gli ALERT possono raggiungere MCU e hub senza confondere un comando dell’host con un guasto. Configurazione sul bus I²C1 già necessario; nessuna EEPROM. Conservare quarzo 24 MHz e supervisore reset richiesto dall’errata. |
+| **USB4716-I/2GX**, VQFN56 7 × 7 mm | Alternativa valida e disponibile: cinque porte fisiche, quinta non rimovibile adatta al MCU, quarzo 25 MHz. Può avviarsi dai default con strap, senza memoria esterna. PRT_CTL/OCS condivisi diventano uscite basse quando l’host disabilita una porta: non collegarli direttamente agli ALERT letti dal MCU, altrimenti il comando può diventare un falso guasto persistente. Servirebbe separare i segnali o rivedere la notifica standard di overcurrent/configurazione. I pull-up SMBus all’avvio attivano inoltre l’attesa di configurazione: non è sostituibile sul bus condiviso senza rivedere il bootstrap. Il package minore non basta a semplificare questa architettura. |
+| USB4715 | Quattro porte fisiche downstream: insufficienti per quattro USB-C più MCU. La porta interna HFC non è una quinta coppia USB utilizzabile. |
+| USB4916 | Cinque porte, ma funzioni automotive/multihost e package a 64 pin non portano una semplificazione utile. |
+| USB2507 / TUSB2077A | Il primo è sconsigliato per nuovi progetti; il secondo è Full Speed, non soddisfa USB High Speed. |
+| Terminus FE2.1 / Genesys GL854G | Integrazione interessante, ma nessun codice DigiKey verificato nella ricerca. Non preferiti con D77. |
+
+**Motivazione:** mantenere USB2517 è una conclusione del confronto, non un vincolo.
+L’eliminazione dell’header consente un hub a cinque porte, ma non obbliga a sostituire
+quello a sette se il circuito di controllo risultante è più semplice. Sul USB2517 i
+PRTPWR restano scollegati: il MCU controlla direttamente UCS2114 e switch dati.
+Il supervisore consente anche la gestione documentata dei cali della 3,3 V; la sua
+eliminazione non è conteggiata come risparmio automatico per gli altri hub.
+
+### MCU
+
+| Candidato | Valutazione |
+|---|---|
+| **STM32G0B1CEU6**, UFQFPN48 7 × 7 mm | Scelto (D78): due I²C indipendenti, USB HID e bootloader USB senza quarzo esterno, tutti i comandi richiesti e quattro GPIO liberi. Pad centrale a massa obbligatorio; montaggio a rifusione/aria calda, coerente con hub e controller già QFN. |
+| STM32G0B1CCT6 / CBT6 / CET6, LQFP48 | Stessa assegnazione funzionale dei 48 pin nella versione GP, più agevoli da saldare. Esauriti nelle pagine DigiKey consultate; non presentarli come disponibili. Possibile alternativa se tornano a stock, con footprint diverso. |
+| STM32G0B1RET6, LQFP64 | Rimane nello schema attuale; non necessario per il conteggio GPIO semplificato. |
+| STM32G0B0 | Il bootloader USB richiede HSE esterno: aggiunge componenti rispetto al G0B1. |
+| STM32U083CCT6 | USB e bootloader DFU senza quarzo possibili, ma più collegamenti di alimentazione e minore margine di pin; il codice consultato su DigiKey è esaurito. Nessun vantaggio complessivo dimostrato. |
+
+Non sostituire automaticamente con le varianti **N**: i pin 30/31 diventano alimentazioni
+anziché PC6/PC7. Il [pinout proposto](pinout-mcu.md#pinout-proposto-stm32g0b1ceu6-ufqfpn48)
+usa entrambi per gli enable delle porte e comprende il pad centrale 49.
+
+### Approvvigionamento
+
+Verifica del 14 ottobre 2026, prezzi visualizzati sul sito DigiKey in USD, quantità 1,
+esclusi imposte e spedizione. Le scorte sono indicative e non riservate.
+
+| Codice produttore | Codice DigiKey e pagina | Riscontro |
+|---|---|---|
+| USB2517I-JZX | [638-1090-ND](https://www.digikey.com/en/products/detail/microchip-technology/USB2517I-JZX/2166042) | Disponibile, circa 9.600 pezzi; 6,71 USD |
+| STM32G0B1CEU6 | [497-STM32G0B1CEU6-ND](https://www.digikey.com/en/products/detail/stmicroelectronics/STM32G0B1CEU6/13693658) | Verificato direttamente nel browser: 2.234 pezzi; 5,80 USD |
+| USB4716-I/2GX | [150-USB4716-I/2GX-ND](https://www.digikey.com/en/products/detail/microchip-technology/USB4716-I-2GX/29780183) | Alternativa: verificati direttamente 260 pezzi, vendita da 1; 6,41 USD. Non confondere con USB4716/2GX commerciale senza stock |
+| STM32G0B1CCT6 | [497-STM32G0B1CCT6-ND](https://www.digikey.it/it/products/detail/stmicroelectronics/STM32G0B1CCT6/18086132) | Verificato direttamente: zero stock, lead time indicato 52 settimane; risultati indicizzati con stock non confermati |
+
+### Fonti della verifica
+
+- [USB2517, datasheet DS00001598C](https://ww1.microchip.com/downloads/aemDocuments/documents/UNG/ProductDocuments/DataSheets/USB2517-USB2517i-Data-Sheet-00001598C.pdf), errata DS80000628A conservata in `datasheets/`.
+- [USB4716, DS00005552C](https://ww1.microchip.com/downloads/aemDocuments/documents/NCS/ProductDocuments/DataSheets/USB4716-Data-Sheet-DS00005552.pdf): pin PRT_CTL/OCS, strap e sequenza di configurazione.
+- [Checklist USB4716](https://ww1.microchip.com/downloads/aemDocuments/documents/UNG/ProductDocuments/DesignChecklist/USB4716-Hardware-Design-Checklist-DS00005739.pdf): alimentazioni e reset.
+- [STM32G0B1, DS13560 Rev. 6](https://www.st.com/resource/en/datasheet/stm32g0b1cc.pdf): figura 6, pinout GP UFQFPN48 e tabelle delle funzioni alternative.
+- [ST AN2606](https://www.st.com/resource/en/application_note/an2606-introduction-to-system-memory-boot-mode-on-stm32-mcus-stmicroelectronics.pdf): periferiche e stati pin del bootloader; RM0444 per UCPD.
+- [USB2507](https://www.microchip.com/en-us/product/USB2507), [TUSB2077A](https://www.ti.com/product/TUSB2077A), [USB4916](https://www.microchip.com/en-us/product/usb4916): limiti delle alternative.

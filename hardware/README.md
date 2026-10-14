@@ -5,8 +5,8 @@ attuale e non incorporano ancora i [requisiti semplificati](../docs/requisiti.md
 Da eliminare anche la porta USB-A completa e il secondo canale relè con due boccole,
 pulsante e LED (D66). La configurazione prevista ha quattro USB-C e un solo relè.
 Da eliminare INA3221 e sei shunt, lettura/filtri CC d'ingresso e un LED con resistenza per
-USB-C mantenuta; Rd e VBUS_DET upstream restano. Controller delle porte, scarica e pilotaggio del LED
-unico sono da definire. Le tabelle e i risultati ERC/parità sotto riguardano lo schema
+USB-C mantenuta; Rd e VBUS_DET upstream restano. D75 seleziona due UCS2114-1-V/LX con due bus I²C e quattro PI3USB4002A;
+le scariche discrete sono da eliminare. Pinout e pilotaggio del LED unico sono da adeguare. Le tabelle e i risultati ERC/parità sotto riguardano lo schema
 esistente, non attestano una revisione hardware già completata.
 
 Progetto KiCad 10 (schema, PCB, BOM) dell'hub.

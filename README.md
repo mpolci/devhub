@@ -62,8 +62,10 @@ host/        strumento da riga di comando per il PC
 Requisiti semplificati definiti (D60–D66), MCU e pannello confermati (D68); schema elettrico v0.2 e PCB iniziato descrivono
 ancora l'implementazione da adeguare (vedi [hardware/README.md](hardware/README.md)).
 
-Il modello del hub resta da scegliere (D69): USB2517 è il riferimento dello schema, non un requisito.
+Confermati USB2517I-JZX e STM32G0B1CEU6 in UFQFPN48 (D78), con DigiKey come
+fornitore di riferimento. L’adeguamento dello schema è a cura dell’utente.
 
-Prossimo passo: scegliere hub e controller delle quattro porte, verificarne
-scarica e protezioni, poi adeguare schema, pinout, PCB e BOM. Un MCU più piccolo resta
+Controller porte scelti (D75): due UCS2114-1-V/LX con due bus I²C e quattro PI3USB4002A.
+Prossimo passo: scegliere hub e MCU/pinout, completare il dimensionamento di scarica
+e protezioni, poi adeguare schema, PCB e BOM. Un MCU più piccolo resta
 un’opzione da valutare dopo il conteggio dei segnali. USB4715 senza MCU non è adottato.

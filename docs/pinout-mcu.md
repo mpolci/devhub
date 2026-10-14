@@ -4,7 +4,8 @@
 D60–D66. CC1_ADC, CC2_ADC e INA_ALERT sono da eliminare; i segnali di comando porta e LED
 vanno riesaminati dopo la scelta del controller. Non sono già liberi nello schema.
 D66 elimina inoltre i segnali della porta 5 e del secondo canale relè; il canale fisico
-da conservare è da definire. La tabella non anticipa la nuova assegnazione.
+da conservare è da definire. La tabella non anticipa la nuova assegnazione; la proposta a 48 pin è riportata
+in fondo, separata dal pinout effettivamente cablato.
 VBUS_DET upstream, USB, SWD e gestione dei pin UCPD/bootloader restano necessari.
 
 Corrisponde allo schema `hardware/devhub/mcu.kicad_sch`: in caso di modifiche allo schema va aggiornata a mano.
@@ -95,3 +96,118 @@ I pin senza segnale sono liberi (no-connect nello schema).
 - Ciclo (D61/D62): durata dal comando di disabilitazione VBUS, inclusa la scarica, senza letture INA3221 o soglia 0,8 V. Default indicativo 1 s; durata della scarica e intervallo ammesso da validare sul controller. Nessun ritardo dati/VBUS configurabile e nessuna diagnosi firmware di sorgente esterna tramite misura.
 - VBUS_DET è su un pin FT (PB2), non TT: può avere tensione con il MCU spento (alimentatore staccato, PC collegato), e i pin TT non ammettono corrente iniettata verso VDD.
 - I nomi dei pin 43/44 sono quelli del simbolo KiCad: sono PA11/PA12 (USB), rimappabili su PA9/PA10.
+
+## Pinout proposto STM32G0B1CEU6 UFQFPN48
+
+**MCU confermato (D78); assegnazione proposta non ancora applicata a KiCad.**
+L’adeguamento dello schema è a cura dell’utente. La tabella a
+64 pin sopra resta il riferimento dello schema esistente. Questa assegnazione usa
+USB2517I-JZX, due UCS2114-1-V/LX e quattro PI3USB4002A; nessun header USB di scorta.
+
+Verifica su DS13560 Rev. 6, figura 6 (versione **GP**, senza suffisso N), tabelle GPIO/AF,
+AN2606 Rev. 70 e simbolo KiCad `STM32G0B1CEUx` (base `STM32G0B1C_B-C-E_Ux`).
+I 48 terminali hanno la stessa numerazione della versione GP LQFP48; in UFQFPN si
+aggiunge il pad esposto 49 a massa. Il footprint è diverso.
+
+| Pin | Nome | Segnale proposto | Funzione / stato sicuro |
+|---|---|---|---|
+| 1 | PC13 | BTN_P1 | Ingresso con pull-up, pulsante a massa |
+| 2 | PC14 | BTN_P2 | Ingresso con pull-up, nessun LSE |
+| 3 | PC15 | BTN_P3 | Ingresso con pull-up, nessun LSE |
+| 4 | VBAT | +3V3 | Nessuna batteria |
+| 5 | VREF+ | +3V3 | Disaccoppiamento 100 nF |
+| 6 | VDD/VDDA | +3V3 | 100 nF + 4,7 µF vicino ai pin di alimentazione |
+| 7 | VSS/VSSA | GND | Massa |
+| 8 | PF0 | LED_HOST | GPIO; nessun HSE |
+| 9 | PF1 | HUB_RST_N | Open-drain, wired-OR con supervisore; pull-up esterno |
+| 10 | PF2/NRST | NRST | SWD e condensatore di reset |
+| 11 | PA0 | EN_P1 | Alto = VBUS abilitata; pull-down esterno |
+| 12 | PA1 | EN_P2 | Alto = VBUS abilitata; pull-down esterno |
+| 13 | PA2 | UART_TX | USART2_TX, AF1, header UART mantenuto |
+| 14 | PA3 | UART_RX | USART2_RX, AF1 |
+| 15 | PA4 | FAULT_P4 | ALERT UCS_B canale 2, EXTI4, pull-up esterno |
+| 16 | PA5 | LED_P1 | Alto = acceso |
+| 17 | PA6 | — | Libero; in ROM bootloader SPI1_MISO può pilotare alto |
+| 18 | PA7 | LED_P2 | Alto = acceso |
+| 19 | PB0 | FAULT_P1 | ALERT UCS_A canale 1, EXTI0, pull-up esterno |
+| 20 | PB1 | EFUSE_FLT_N | Ingresso eFuse, EXTI1, pull-up esterno |
+| 21 | PB2 | VBUS_DET | Upstream / 2, ADC_IN10, pin FT_ea |
+| 22 | PB10 | I2C2_SCL | AF6, UCS_B a 0x57 |
+| 23 | PB11 | I2C2_SDA | AF6, UCS_B a 0x57 |
+| 24 | PB12 | BTN_P4 | Ingresso con pull-up, pulsante a massa |
+| 25 | PB13 | BTN_RLY1 | Ingresso con pull-up, pulsante a massa |
+| 26 | PB14 | OE_N_P3 | Alto = dati scollegati; pull-up esterno |
+| 27 | PB15 | LED_P3 | Alto = acceso; disattivare Rd UCPD1 |
+| 28 | PA8 | LED_P4 | Alto = acceso; disattivare Rd UCPD1 |
+| 29 | PA9/UCPD1_DBCC1 | UCPD1_DBCC1 | Riservato, 10 kΩ a massa, non cortocircuitare a GND |
+| 30 | PC6 | EN_P3 | Alto = VBUS abilitata; pull-down esterno |
+| 31 | PC7 | EN_P4 | Alto = VBUS abilitata; pull-down esterno |
+| 32 | PA10/UCPD1_DBCC2 | UCPD1_DBCC2 | Riservato, 10 kΩ a massa |
+| 33 | PA11 [PA9] | USB_MCU_DN | USB D−, hub DS6; nessuna rimappatura PA9 |
+| 34 | PA12 [PA10] | USB_MCU_DP | USB D+, hub DS6; nessuna rimappatura PA10 |
+| 35 | PA13 | SWDIO | Debug/programmazione |
+| 36 | PA14/BOOT0 | SWCLK | Debug; ingresso BOOT0 secondo option byte |
+| 37 | PA15 | HUB_CFG_SEL2 | Pull-up: default ROM hub; basso: configurazione SMBus |
+| 38 | PD0 | — | Libero; UCPD2_CC1 / FDCAN_RX nel bootloader |
+| 39 | PD1 | OE_N_P4 | Alto = dati scollegati; pull-up esterno, anche UCPD2_DBCC1 |
+| 40 | PD2 | RLY1 | Alto = bobina eccitata, COM/NC aperto; pull-down esterno, Rd UCPD2 da disattivare |
+| 41 | PD3 | FAULT_P2 | ALERT UCS_A canale 2, EXTI3; pull-up esterno, anche UCPD2_DBCC2 |
+| 42 | PB3 | OE_N_P1 | Alto = dati scollegati; pull-up esterno |
+| 43 | PB4 | OE_N_P2 | Alto = dati scollegati; pull-up esterno |
+| 44 | PB5 | FAULT_P3 | ALERT UCS_B canale 1, EXTI5; pull-up esterno |
+| 45 | PB6 | — | Libero; I2C1_SCL nel bootloader ROM |
+| 46 | PB7 | — | Libero; I2C1_SDA nel bootloader ROM |
+| 47 | PB8 | I2C1_SCL | AF6, UCS_A a 0x57 e USB2517 a 0x2C |
+| 48 | PB9 | I2C1_SDA | AF6, UCS_A a 0x57 e USB2517 a 0x2C |
+| 49 (EP) | VSS | GND | Pad esposto: saldatura a massa obbligatoria |
+
+### Bilancio e collegamenti
+
+**37 segnali funzionali + 2 DBCC riservati + 4 GPIO liberi + 4 alimentazioni + NRST =
+48 terminali**, oltre al pad esposto. I 37 segnali comprendono 24 per le porte (EN, OE,
+FAULT, LED, pulsanti e quattro fili I²C), relè e pulsante relè, LED host, guasto eFuse,
+VBUS upstream, due controlli hub, UART, USB e SWD.
+
+- I²C1: UCS_A per porte 1/2 e hub; I²C2: UCS_B per porte 3/4. Indirizzi a 7 bit.
+  Una coppia di pull-up a 3,3 V per bus; 4,7 kΩ come punto iniziale a 100 kHz,
+  da verificare con la capacità reale. Nessun conflitto fra i due dispositivi a 0x57.
+- Gli ALERT dei quattro canali raggiungono anche OCS1_N…OCS4_N del USB2517;
+  PRTPWR non comanda UCS2114. Pull-up ALERT esterni rendono il segnale definito
+  anche con hub in reset. Il MCU legge i registri UCS per distinguere i guasti.
+- EXTI0, EXTI3, EXTI5, EXTI4 per le quattro porte, EXTI1 per eFuse: nessun conflitto.
+  Pulsanti e HUB_RST_N letti in polling; non assegnare EXTI1 anche a PF1.
+- LED relè collegato al comando/driver relè, LED alimentazione passivo: nessun GPIO
+  aggiuntivo. Correnti dei cinque LED MCU da dimensionare entro i limiti per pin e totali.
+- Nessun GPIO DIS: la scarica UCS2114 è configurata all’avvio e parte automaticamente.
+  SWD e UART restano; l’eliminazione richiesta riguarda solo l’header USB di scorta.
+
+### Reset, avvio e bootloader
+
+Le uscite di potenza hanno pull-down e gli switch dati pull-up esterni: **durante reset
+VBUS disabilitata, dati scollegati, relè a riposo**. Dopo inizializzazione riuscita il
+firmware abilita tutte le porte con accensioni sfalsate, salvo default salvati (D74).
+Precaricare i registri di uscita prima di configurare i GPIO come uscite.
+
+Impostare UCPD1_STROBE e UCPD2_STROBE prima di usare PA8/PB15/PD2; la Rd del
+bootloader su PD2 mantiene il relè spento. Il relè è volutamente spostato su PD2,
+mentre PA4 è un ingresso guasto: nessuna uscita seriale della ROM può eccitare la bobina.
+PA4 è inizializzato dalla ROM come SPI1_NSS con pull-down; nel firmware rimuovere quel
+pull-down e verificare gli ALERT prima di abilitare gli interrupt.
+
+SPI1_MISO su PA6 resta libero. SPI2_MISO su PB14 e FDCAN_TX su PD1 possono andare alti
+nel bootloader: sono assegnati a OE_N e mantengono i dati scollegati. Gli EN PA0/PA1/PC6/PC7
+non sono usati dalle periferiche ROM. I LED possono avere transitori innocui durante DFU.
+USART1_TX su PA9 richiede il resistore DBCC da 10 kΩ, non un collegamento diretto a massa.
+
+In ROM I2C2 usa PB10/PB11 come **slave**, non invia configurazioni allo UCS_B. I2C1 ROM
+usa PB6/PB7, lasciati liberi; il bus applicativo PB8/PB9 non è usato dalla ROM.
+Il hub deve poter partire dai default quando il MCU è vuoto o in DFU: CFG_SEL2 alto
+per pull-up e reset rilasciato dal supervisore. Nel firmware conservare la sequenza
+SMBus già descritta, con bus fermo durante il rilascio del reset. Non resettare il hub
+nel normale salto al bootloader o al ritorno, per preservare il collegamento USB interno.
+
+PB2 mantiene il rilevamento upstream su pin FT: verificare il partitore alla massima
+VBUS upstream e con VDD = 0; nessun pull-up interno. USB usa HSI48 + CRS, senza HSE.
+Restano da verificare sullo schema definitivo e sul prototipo i transitori di avvio,
+la scarica con sorgente esterna, l’ingresso DFU, la corrente dei LED e i tempi I²C.
+La verifica del pinout non sostituisce ERC e confronto netlist dopo le modifiche KiCad.
