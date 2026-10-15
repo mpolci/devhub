@@ -10,8 +10,8 @@ hardware/bom/           BOM e file per l'assemblaggio (da fare)
 
 ## Stato: schema v0.3
 
-Lo schema applica i [requisiti semplificati](../docs/requisiti.md) e le decisioni D60–D87
-(dettaglio in D79): quattro porte USB-C, un relè, cinque pulsanti, un LED per porta. Il PCB
+Lo schema applica i [requisiti semplificati](../docs/requisiti.md) e le decisioni D60–D90
+(dettaglio in D79): quattro porte USB-C, un relè, cinque pulsanti, un LED per porta, LED del relè e di host. Il PCB
 da 100 × 100 mm ha il piazzamento iniziale ed è da sbrogliare (vedi sotto).
 
 Simboli delle librerie standard di KiCad più quelli di progetto in `lib/`; fogli gerarchici riusati per le
@@ -25,9 +25,9 @@ Fogli:
 |---|---|
 | `power_in` | USB-C di alimentazione a 5 V, Rd 5,1 kΩ su CC1/CC2 senza lettura, TVS, eFuse TPS259470A (U13), bulk, Schottky D2, LDO 3,3 V (AP7361C-33E, SOT-223) |
 | `hub` | USB2517, USB-C upstream con ESD, quarzo, RBIAS, supervisore di reset (U12) in wired-OR con il MCU, strap di configurazione, VBUS_DET; DS5, DS7 e OCS5_N non collegati. Switch VBUS: 2 × UCS2114-1-V/LX (U4 porte 1-2 su I2C1, U5 porte 3-4 su I2C2), strap COMM_ILIM 27 kΩ, disaccoppiamenti, pull-up degli ALERT# |
-| `mcu` | STM32G0B1CEU6 (UFQFPN48), decoupling, SWD (J4) e UART (J9) collegati a filo, pull-up dei due bus I²C, pull-down degli EN porta, pull-down dei DBCC dell'UCPD, LED di host collegato (unico LED di sistema) |
+| `mcu` | STM32G0B1CEU6 (UFQFPN48), decoupling, SWD (J4) e UART (J9) collegati a filo, pull-up dei due bus I²C, pull-down degli EN porta, pull-down dei DBCC dell'UCPD, LED di host collegato |
 | `port_c` ×4 | connettore, switch dati PI3USB4002A (con protezione ESD integrata), condensatori VBUS, Rp 56 kΩ, LED verde dal MCU, pulsante |
-| `relays` | ULN2003V12 (3 canali in parallelo), G5Q-1, ponticello NC/NO, boccole Cliff FCR7350, snubber DNP, pulsante SW1 |
+| `relays` | ULN2003V12 (3 canali in parallelo), G5Q-1, ponticello NC/NO, boccole Cliff FCR7350, snubber DNP, pulsante SW1, LED del relè D90 |
 
 Piedinatura del MCU: [../docs/pinout-mcu.md](../docs/pinout-mcu.md).
 
@@ -88,7 +88,8 @@ sinistro, v dal bordo frontale. Piazzamento iniziale fatto, sbroglio in corso.
 | J5 COM, J6 NC boccole | inferiore | u = 10 e 27; corpo a v = 11,85 come prima, manicotto a filo della faccia esterna della parete |
 | J401, J301, J201, J101 USB-C (porte 4…1) | inferiore | u = 46, 61, 76, 91; faccia d'innesto a filo del bordo frontale |
 | LED delle porte D402…D102 (verdi) | superiore | in asse con la porta, v = 2 |
-| D93 LED host | superiore | u = 18,5, v = 2, sopra la coppia di boccole |
+| D90 LED relè | superiore | u = 18,5, v = 2, sopra la coppia di boccole (D90) |
+| D93 LED host | superiore | u = 32,5, v = 98, sul retro accanto a J1 (D90) |
 | SW1, SW401…SW101 pulsanti | superiore | v = 14,5 (D87); SW1 al centro delle boccole (u = 18,5), gli altri in asse con le porte |
 | J1 alimentazione, J2 upstream | inferiore | u = 24 e 82, a filo del bordo posteriore |
 | H1–H4 fori M3 | — | H1 (4,5; 58) dietro il relè K1, H2 (95,5; 28), H3 (4,5; 95,5), H4 (95,5; 95,5) |

@@ -449,7 +449,8 @@ scelta funzionale per la bassa tensione prevista, non una qualifica d'isolamento
 Non ridurre le distanze del footprint del relè rispetto al land pattern del produttore.
 
 Tenere le piste COM/NC/NO larghe e corte fino ai ponticelli e alle boccole; controllare anche
-la portata di ponticelli, pad e thermal relief. Gli snubber DNP restano sul lato contatti.
+la portata di ponticelli, pad e thermal relief. Il ponticello JP2 ha pad 2,0 × 3,0 mm e striscia 1-2 da
+1,0 mm (D89): le piste da 2 mm entrano nei pad senza restringersi. Gli snubber DNP restano sul lato contatti.
 Bobine, ULN2003V12 e ritorni di ricircolo appartengono invece alla massa dell'hub: rendere
 compatto il loop bobina → driver → clamp/COM → alimentazione, lontano da quarzo e coppie USB.
 Non creare una separazione della massa logica per imitare l'isolamento dei contatti.

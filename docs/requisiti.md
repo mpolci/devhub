@@ -113,7 +113,7 @@ variante senza MCU non è adottata. Lo schema v0.3 applica questi requisiti (D79
 - **RNF-5** **Un solo LED per porta USB**, pilotato dal MCU: spento = disabilitata,
   acceso fisso = abilitata, lampeggiante = guasto. Il guasto ha priorità sull'indicazione di
   abilitazione; il dettaglio disponibile dall'hardware si legge dal PC. Il LED indica lo stato
-  logico, non la presenza misurata di VBUS. Fra i LED di sistema resta solo quello di host collegato: nessun LED del relè né di accensione (D82).
+  logico, non la presenza misurata di VBUS. LED di sistema: host collegato e relè (acceso a linea staccata); nessun LED di accensione (D82, D90).
 
 ## Fuori ambito (v1)
 

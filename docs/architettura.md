@@ -37,7 +37,7 @@ USB-C UPSTREAM → HUB USB 2.0 USB2517I-JZX
 
 MCU → comando logico e gestione guasti per porta
     → un LED e un pulsante per porta
-    → un relè con pulsante dedicato
+    → un relè con pulsante e LED dedicati
     → LED di host collegato
     → configurazione hub, SWD, UART
 ```
@@ -144,7 +144,7 @@ sul prototipo:
 | Voce | Valore indicativo |
 |---|---|
 | Hub USB2517 (3,3 V tramite LDO), quattro porte Hi-Speed e la porta Full-Speed del MCU | 0,33 A tipici (datasheet, 4 porte HS), ~0,37 A massimi stimati |
-| MCU, switch dati, cinque LED e pull-down EN sulla 3,3 V; UCS2114 sulla +5V | circa 0,03 A |
+| MCU, switch dati, sei LED e pull-down EN sulla 3,3 V; UCS2114 sulla +5V | circa 0,03 A |
 | Un relè eccitato | circa 0,08 A |
 | Disponibile alle porte | circa 2,5 A |
 
@@ -342,7 +342,7 @@ di un impulso, e se l'hub perde alimentazione o si blocca la linea torna collega
 sicuro per una scheda in prova). Il contatto NO è portato su un **ponticello a saldare** interno:
 spostandolo la seconda boccola diventa NO per un eventuale uso "normalmente aperto".
 Nel protocollo i comandi parlano di linea ("collegata / staccata", "stacca per N ms"), non di
-bobina. Un pulsante (SW1), senza LED dedicato (D82):
+bobina. Un LED (D90, dal comando RLY1), acceso quando la linea è staccata (D90), e un pulsante (SW1):
 ogni pressione alterna la linea, collegata o staccata (RF-17).
 
 **Margine sulla bobina (D33).** Il G5Q-1 da 5 V (63 Ω, 80 mA) scatta garantito con 3,75 V a 23 °C

@@ -1,0 +1,212 @@
+(footprint "SolderJumper-3_P2.4mm_Bridged12_Pad2.0x3.0mm"
+	(version 20260206)
+	(generator "pcbnew")
+	(generator_version "10.0")
+	(layer "F.Cu")
+	(descr "SMD Solder 3-pad Jumper for 3 A relay contacts, 2.0x3.0mm Pads, 0.4mm gap, pads 1-2 bridged with a 1.0mm copper strip")
+	(tags "net tie solder jumper bridged")
+	(property "Reference" "REF**"
+		(at 0 -2.6 0)
+		(layer "F.SilkS")
+		(uuid "96edf68b-cd33-44cc-b7a7-efe0b5243f1f")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "SolderJumper-3_P2.4mm_Bridged12_Pad2.0x3.0mm"
+		(at 0 2.8 0)
+		(layer "F.Fab")
+		(uuid "a7e396d2-bb8a-4089-8c4e-4b9edd811e93")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "261fe1fb-e0bd-445d-9646-741e95af31fd")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "c605f70e-ee8a-44ae-8b67-b106f35965d2")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(zone_connect 1)
+	(attr exclude_from_pos_files exclude_from_bom allow_soldermask_bridges)
+	(net_tie_pad_groups "1, 2")
+	(duplicate_pad_numbers_are_jumpers no)
+	(fp_poly
+		(pts
+			(xy -1.5 -0.5) (xy -0.9 -0.5) (xy -0.9 0.5) (xy -1.5 0.5)
+		)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill yes)
+		(layer "F.Cu")
+		(uuid "40254e92-c19c-4cac-b8b6-3ee25bb499d9")
+	)
+	(fp_rect
+		(start -1.5 -1.5)
+		(end 1.5 1.5)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill yes)
+		(layer "F.Mask")
+		(uuid "673357d0-6175-499e-8f88-d0c44de80844")
+	)
+	(fp_line
+		(start -3.65 -1.75)
+		(end 3.65 -1.75)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "119d73d0-90a6-48fb-aceb-a2de213252a9")
+	)
+	(fp_line
+		(start 3.65 -1.75)
+		(end 3.65 1.75)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "afa22064-741f-4918-92a5-4316ab4faec9")
+	)
+	(fp_line
+		(start 3.65 1.75)
+		(end -3.65 1.75)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "81014ef4-63df-4bd6-84c3-43462a681bae")
+	)
+	(fp_line
+		(start -3.65 1.75)
+		(end -3.65 -1.75)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "b19fdcff-b3b7-4d44-9fab-89a5a8e7d37e")
+	)
+	(fp_line
+		(start -2.7 2.2)
+		(end -2.4 1.9)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "1ed8a948-c4b4-4cb2-885b-a3be44dc689a")
+	)
+	(fp_line
+		(start -2.4 1.9)
+		(end -2.1 2.2)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "54018f70-01fb-479b-b2d2-71a7a6b42dda")
+	)
+	(fp_line
+		(start -2.7 2.2)
+		(end -2.1 2.2)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "8949ac71-5192-4eea-a654-e6523e6c3154")
+	)
+	(fp_line
+		(start -3.9 -2.0)
+		(end 3.9 -2.0)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "487dfdb2-1181-4e6a-9afd-59fe1caa4e11")
+	)
+	(fp_line
+		(start 3.9 -2.0)
+		(end 3.9 2.0)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "526cbbb2-f21a-49cc-aabc-70158b31d7f6")
+	)
+	(fp_line
+		(start 3.9 2.0)
+		(end -3.9 2.0)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "6066ca9f-4e92-41da-b28a-7e641537ab6a")
+	)
+	(fp_line
+		(start -3.9 2.0)
+		(end -3.9 -2.0)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "52b01bdb-024e-4ecd-aba7-728bfd653a6f")
+	)
+	(pad "1" smd rect
+		(at -2.4 0)
+		(size 2 3)
+		(layers "F.Cu" "F.Mask")
+		(uuid "e1e3bf17-eadf-4750-9608-934672089aa3")
+	)
+	(pad "2" smd rect
+		(at 0 0)
+		(size 2 3)
+		(layers "F.Cu" "F.Mask")
+		(uuid "d5863ca0-2c5a-4e64-b76b-8854740beb6a")
+	)
+	(pad "3" smd rect
+		(at 2.4 0)
+		(size 2 3)
+		(layers "F.Cu" "F.Mask")
+		(uuid "632416b3-c96a-4e40-a24c-ad999e90a22d")
+	)
+	(embedded_fonts no)
+)
