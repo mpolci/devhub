@@ -419,11 +419,11 @@ via termiche e apertura della pasta. Il pad esposto di U2 ha 16 via 0,60/0,30 a 
 1,35–1,40, aperte su entrambi i lati, con apertura della maschera 1:1 sul lato opposto (D50):
 verificare nei Gerber che le 16 aperture restino e, sul prototipo, saldatura e temperatura
 di U2. Per la produzione le via diventano "encroached" (punto 7 delle
-[verifiche prima della produzione](#verifiche-prima-della-produzione)). Il tab dell'AP7361C-33E
-(U1) è il pin 2, GND, e fa da dissipatore: l'LDO dissipa fino a 0,65–0,75 W nel caso peggiore
-(D56, [architettura.md](architettura.md)). Zona GND `U1_HEATSINK` sul tab, sul lato del componente (B.Cu), collegamento pieno al
+[verifiche prima della produzione](#verifiche-prima-della-produzione)). Il tab dell'AP7361C-33ER
+(U1) è il pin 2, OUT (+3V3, D91; tab = pin 2 secondo il datasheet AP7361), e fa da dissipatore: l'LDO dissipa fino a 0,65–0,75 W nel caso peggiore
+(D56, [architettura.md](architettura.md)). Zona +3V3 `U1_HEATSINK` sul tab, sul lato del componente (B.Cu), collegamento pieno al
 pad, ~1,4 cm² (lo spazio fra C8/C9, D2 e R1/R2), con 10 via 0,60/0,30 ai lati e sopra/sotto il
-tab verso il piano GND In2.Cu: obiettivo θJA ≤ ~60 °C/W. Il rame non va interrotto da piste di
+tab verso il piano +3V3 In1.Cu: obiettivo θJA ≤ ~60 °C/W. Il rame non va interrotto da piste di
 segnale; il pin 2 centrale va collegato al tab con una pista corta. Verificare nel case chiuso il caso peggiore: LDO, Schottky,
 eFuse, UCS2114 e relè eccitati; sul prototipo misurare la temperatura di U1 con le quattro porte
 Hi-Speed attive.

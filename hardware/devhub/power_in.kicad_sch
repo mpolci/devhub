@@ -1528,7 +1528,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Regulator_Linear:AP7361C-33E"
+		(symbol "devhub:AP7361C-33ER"
 			(pin_names
 				(offset 0.254)
 			)
@@ -1547,7 +1547,7 @@
 					)
 				)
 			)
-			(property "Value" "AP7361C-33E"
+			(property "Value" "AP7361C-33ER"
 				(at 0 3.175 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1581,7 +1581,7 @@
 					)
 				)
 			)
-			(property "Description" "1A Low Dropout regulator, positive, 3.3V fixed output, SOT-223"
+			(property "Description" "1A Low Dropout regulator, positive, 3.3V fixed output, SOT-223R (pin 1 GND, tab/pin 2 VO, pin 3 VI)"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1614,7 +1614,7 @@
 					)
 				)
 			)
-			(symbol "AP7361C-33E_0_1"
+			(symbol "AP7361C-33ER_0_1"
 				(rectangle
 					(start -5.08 -5.08)
 					(end 5.08 1.905)
@@ -1627,7 +1627,7 @@
 					)
 				)
 			)
-			(symbol "AP7361C-33E_1_1"
+			(symbol "AP7361C-33ER_1_1"
 				(pin power_in line
 					(at -7.62 0 0)
 					(length 2.54)
@@ -1638,7 +1638,7 @@
 							)
 						)
 					)
-					(number "1"
+					(number "3"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1656,7 +1656,7 @@
 							)
 						)
 					)
-					(number "2"
+					(number "1"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1674,7 +1674,7 @@
 							)
 						)
 					)
-					(number "3"
+					(number "2"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -7952,7 +7952,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Regulator_Linear:AP7361C-33E")
+		(lib_id "devhub:AP7361C-33ER")
 		(at 91.44 127 0)
 		(unit 1)
 		(body_style 1)
@@ -7972,7 +7972,7 @@
 				)
 			)
 		)
-		(property "Value" "AP7361C-33E"
+		(property "Value" "AP7361C-33ER"
 			(at 91.44 121.92 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8004,7 +8004,7 @@
 				)
 			)
 		)
-		(property "Description" "1A Low Dropout regulator, positive, 3.3V fixed output, SOT-223"
+		(property "Description" "1A Low Dropout regulator, positive, 3.3V fixed output, SOT-223R (pin 1 GND, tab/pin 2 VO, pin 3 VI)"
 			(at 91.44 127 0)
 			(hide yes)
 			(show_name no)
@@ -8026,7 +8026,7 @@
 				)
 			)
 		)
-		(property "lcsc" "C500795"
+		(property "lcsc" "C3743528"
 			(at 91.44 127 0)
 			(hide yes)
 			(show_name no)
@@ -8037,7 +8037,7 @@
 				)
 			)
 		)
-		(property "mouser" "621-AP7361C-33E-13"
+		(property "mouser" "621-AP7361C-33ER-13"
 			(at 91.44 127 0)
 			(hide yes)
 			(show_name no)
@@ -8048,7 +8048,7 @@
 				)
 			)
 		)
-		(property "digikey" "AP7361C-33E-13DICT-ND"
+		(property "digikey" "AP7361C-33ER-13DICT-ND"
 			(at 91.44 127 0)
 			(hide yes)
 			(show_name no)
@@ -8059,7 +8059,7 @@
 				)
 			)
 		)
-		(property "MPN lcsc" "AP7361C-33E-13"
+		(property "MPN lcsc" "AP7361C-33ER-13"
 			(at 91.44 127 0)
 			(hide yes)
 			(show_name no)
@@ -8070,7 +8070,7 @@
 				)
 			)
 		)
-		(property "MPN mouser" "AP7361C-33E-13"
+		(property "MPN mouser" "AP7361C-33ER-13"
 			(at 91.44 127 0)
 			(hide yes)
 			(show_name no)
@@ -8081,7 +8081,7 @@
 				)
 			)
 		)
-		(property "MPN digikey" "AP7361C-33E-13"
+		(property "MPN digikey" "AP7361C-33ER-13"
 			(at 91.44 127 0)
 			(hide yes)
 			(show_name no)

@@ -196,7 +196,7 @@ sbagliato, tutto riparte. Sulle VBUS delle porte non c'è TVS: una scarica da 8 
 di volt; contro una tensione continua rimandata da una scheda una TVS non serve (brucerebbe)
 e una da 5 V limiterebbe comunque sopra i 6 V massimi assoluti dell'UCS2114.
 
-**Logica (D32).** 3V3 da LDO a basso dropout (**AP7361C-33E**, 1 A, SOT-223) alimentato dalla
+**Logica (D32).** 3V3 da LDO a basso dropout (**AP7361C-33ER**, 1 A, SOT-223R con il tab su OUT, D91) alimentato dalla
 5V_SYS tramite lo Schottky D2: la logica si alimenta solo dall'alimentatore e senza alimentatore
 l'hub non si vede dal PC. D2 resta per abbassare la tensione sull'LDO e quindi la dissipazione
 (senza, ~0,15 W in più a 0,4 A). Carico 3,3 V fino a ~0,4 A (USB2517 con quattro porte

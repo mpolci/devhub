@@ -96,7 +96,7 @@ Spedizione: DigiKey Italia gratis sopra 75 €; il carrello Mouser da 33,98 CHF 
 | 45 | R81 … (7) | 5 | 100 Ω 1% 1206 | RC1206FR-07100RL |  | C137392 | 0,50 ×50 | 603-RC1206FR-07100RL | 0,43 | 311-100FRCT-ND | 0,45 |
 | 46 | R102 … (8) | 8 | 56 kΩ 1% 0603 | RC0603FR-0756KL |  | C114630 | 0,38 ×100 | 603-RC0603FR-0756KL | 0,69 | 311-56KHRCT-ND | 0,72 |
 | 47 | SW1 … (7) | 7 | Pulsante C&K PTS645 SMD 7 mm | PTS645SL70SMTR92 LFS |  | C285485 | 8,31 | 611-645SL70SMTR92LFS | 2,54 | CKN10820CT-ND | 2,66 |
-| 48 | U1 | 1 | LDO AP7361C-33E | AP7361C-33E-13 |  | C500795 | 0,73 | 621-AP7361C-33E-13 | 0,45 | AP7361C-33E-13DICT-ND | 0,46 |
+| 48 | U1 | 1 | LDO AP7361C-33ER | AP7361C-33ER-13 |  | C3743528 | 0,73 | 621-AP7361C-33ER-13 | 0,45 | AP7361C-33ER-13DICT-ND | 0,46 |
 | 49 | U2 | 1 | Hub USB2517I | USB2517I-JZX |  | C478081 | 4,06 | 886-USB2517I-JZX | 5,80 | 638-1090-ND | 5,89 |
 | 50 | U3 | 1 | MCU STM32G0B1RET6 | STM32G0B1RET6 |  | C2829307 | 6,08 | 511-STM32G0B1RET6 | 5,42 | 497-STM32G0B1RET6-ND | 5,51 |
 | 51 | U4, U5, U6 | 3 | Load switch TPS2561A | TPS2561ADRCR |  | C473357 | 4,69 | 595-TPS2561ADRCR | 4,16 | 296-43616-1-ND | 4,20 |
@@ -120,6 +120,7 @@ Spedizione: DigiKey Italia gratis sopra 75 €; il carrello Mouser da 33,98 CHF 
 - D4: su LCSC Diodes BZT52C5V1-7-F; su Mouser e DigiKey l'equivalente Vishay BZT52C5V1-G3-18
   (5,1 V, 500 mW, SOD-123, stessa impronta). Prezzi Mouser e DigiKey non riletti: sono quelli del
   BZT52C5V1-7-F.
+- U1: AP7361C-33ER-13 (SOT-223R, D91); prezzi non riletti, sono quelli dell'AP7361C-33E-13.
 - R62: 33,2 kΩ dopo la revisione 03 (D54). Prezzo Mouser non letto dal carrello: come le altre
   Yageo RC0603 a pezzo singolo. Nei totali per 10 schede su Mouser la variazione di R60-R62 è
   stimata nulla.
