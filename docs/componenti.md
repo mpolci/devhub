@@ -98,6 +98,8 @@ Con il montaggio a mano e un fornitore unico il catalogo si allarga. Per blocco:
 | USB-C upstream (×1) | GCT **USB4105-GF-A** | Rd 5,1 kΩ su CC1 e CC2 |
 | USB-C alimentazione (×1) | GCT **USB4105-GF-A** | solo CC1, CC2 (Rd 5,1 kΩ, nessuna lettura), VBUS, GND; 5 V / 3 A (il connettore regge 5 A) |
 | Pulsanti (×5: 4 porte, 1 relè) | C&K **PTS645SL70SMTR92 LFS**: tattile 6×6 SMD, terminali gull-wing, attuatore 7 mm (DigiKey) | sulla faccia superiore, premuti dal coperchio con estensore stampato; footprint KiCad `Button_Switch_SMD:SW_SPST_PTS645Sx43SMTR92`, comune a tutte le altezze della serie SMD (da verificare sul disegno C&K); ogni pressione alterna lo stato (RF-17) (D43) |
+| Test point GND (×2: TP1, TP10) | Keystone **5001**: anello miniatura nero, through-hole; Mouser 534-5001, DigiKey 36-5001-ND | massa per il coccodrillo della sonda, uno nell'alimentazione e uno vicino a MCU e hub; footprint KiCad `TestPoint:TestPoint_Keystone_5000-5004_Miniature`; LCSC C238122 (D92) |
+| Test point dei segnali (×12: TP2-TP9, TP11-TP14) | pad SMD tondo da 1,5 mm, senza componente | +5V, +3V3, I2C1/I2C2 SCL e SDA, HUB_RST_N, EFUSE_FLT_N, VBUS_P1-P4; footprint `TestPoint:TestPoint_Pad_D1.5mm`, fuori BOM e file di piazzamento (D92) |
 | LED (×6) | 0805 | uno verde per porta dal MCU (spento, fisso, lampeggiante per guasto, D81), uno verde del relè dal comando RLY1 (D90) e host collegato (arancio); nessun LED di accensione (D82) |
 
 ## Conteggio dei tipi "extended" per l'assemblaggio JLCPCB

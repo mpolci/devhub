@@ -480,8 +480,11 @@ condensatore sul PCB è meno determinante; il **debounce resta in firmware**, se
 - Identificare porte 1–4, PWR IN, UPSTREAM, COM e NC, pin 1 degli header, revisione PCB e polarità.
   Conservare le marcature leggibili anche a scheda montata, dove servono all'utente.
 - Prevedere accesso a GND, +5V, +3V3, reset hub/MCU, SWD, I2C, FLT e VBUS di ogni porta.
-  Preferire pad già accessibili; eventuali nuovi TP devono essere coerenti con lo schema.
-  Non aggiungere TP a stub sulle coppie USB.
+  SWD, NRST del MCU e UART sono su J4 e J9; il resto è sui test point dello schema (D92):
+  anelli GND TP1 (alimentazione) e TP10 (MCU e hub); pad TP2 +5V, TP3 +3V3,
+  TP4-TP7 I2C, TP8 HUB_RST_N, TP9 EFUSE_FLT_N, TP11-TP14 VBUS_P1-P4, ciascuno vicino alla
+  propria porta. Collegare i pad con piste corte alla rete, senza allungarla; sul lato
+  dei componenti (B.Cu) quando c'è spazio. Non aggiungere TP a stub sulle coppie USB.
 - Al primo avvio usare alimentazione limitata, verificare rail e reset, poi enumerazione hub
   e MCU. Provare ogni porta in Hi-Speed e Full-Speed, entrambi gli orientamenti USB-C,
   trasferimenti simultanei e cicli di stacco sotto carico.
