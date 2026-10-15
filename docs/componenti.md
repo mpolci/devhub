@@ -36,7 +36,9 @@ parte della v1.
 ## Codici fornitore e magazzino
 
 Ogni simbolo dello schema ha i campi `warehouse` (ID della riga nel foglio del magazzino),
-`lcsc`, `mouser` e `digikey`. Il magazzino si usa solo per articoli comprati da LCSC, TME,
+`lcsc`, `mouser` e `digikey`. I campi `MPN lcsc`, `MPN mouser` e `MPN digikey` riportano il codice del
+produttore del pezzo indicato da ciascun fornitore: coincidono, salvo dove il fornitore ha un
+equivalente (resistenze UNI-ROYAL/FOJAN a magazzino contro Yageo, K1, Y1, J9 e C81). Il magazzino si usa solo per articoli comprati da LCSC, TME,
 Mouser o DigiKey. Dove un fornitore non ha il pezzo scelto, il campo contiene un equivalente
 (resistenze Yageo al posto di UNI-ROYAL/FOJAN, Würth per gli
 header, ECS per il quarzo, G5Q-14 su LCSC, DMN3404L-7 su Mouser). Il campo `mouser` è vuoto

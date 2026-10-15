@@ -170,10 +170,13 @@ KiCad calcola lo spessore includendo la mask: 1,6167.
 - switch dati PI3USB4002A (U101-U401, passo 0,5): GND, REF, EN e VDD sono a 0,5 mm dai pad delle
   coppie; dentro le aree di regola `SW_FANOUT` (4 × 4 mm centrate su ogni switch) le piste di
   altre reti possono stare a 0,2 dalle coppie invece di 0,75.
+  Lo stesso vale per GND (pin 2) e VBUS_UP (pin 5) della protezione ESD D20 (USBLC6-2SC6,
+  passo 0,95), chiusi fra i pin della coppia upstream, dentro l'area di regola `ESD_FANOUT`
+  (4,8 × 5,6 mm su D20).
 
 **Zone e aree di regola** nel PCB: piano GND `GND_In2` su tutto In2.Cu; area
 `RELAY1_CONTACTS` senza riempimenti su tutti i layer, sotto contatti del relè, ponticello,
-snubber e boccole; aree `U2_FANOUT`, `U3_FANOUT`, `USBC_FANOUT` e `SW_FANOUT` usate solo
+snubber e boccole; aree `U2_FANOUT`, `U3_FANOUT`, `USBC_FANOUT`, `SW_FANOUT` e `ESD_FANOUT` usate solo
 dalle regole sopra, spostate insieme al proprio componente nel piazzamento v0.3: vanno
 ricontrollate dopo la rifinitura. Piano +3V3 `3V3_In1` su tutto In1.Cu (priorità 2), con le
 isole VBUS delle porte sotto i connettori a priorità più alta; piccole zone VBUS delle porte su

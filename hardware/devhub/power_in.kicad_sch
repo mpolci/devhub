@@ -3271,7 +3271,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10u"
+		(property "Value" "10u 0805"
 			(at 78.74 132.08 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3349,6 +3349,39 @@
 			)
 		)
 		(property "digikey" "490-18663-1-ND"
+			(at 76.2 130.81 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN lcsc" "GRM21BR61H106KE43L"
+			(at 76.2 130.81 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "GRM21BR61H106KE43L"
+			(at 76.2 130.81 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "GRM21BR61H106KE43L"
 			(at 76.2 130.81 0)
 			(hide yes)
 			(show_name no)
@@ -3474,7 +3507,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "68.1k 1%"
+		(property "Value" "68.1k 1% 0603"
 			(at 116.84 40.6399 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3552,6 +3585,39 @@
 			)
 		)
 		(property "digikey" "311-68.1KHRCT-ND"
+			(at 119.38 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN lcsc" "RC0603FR-0768K1L"
+			(at 119.38 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "RC0603FR-0768K1L"
+			(at 119.38 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "RC0603FR-0768K1L"
 			(at 119.38 39.37 0)
 			(hide yes)
 			(show_name no)
@@ -3754,7 +3820,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "953 1%"
+		(property "Value" "953 1% 0603"
 			(at 160.02 78.7399 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3842,6 +3908,39 @@
 				)
 			)
 		)
+		(property "MPN lcsc" "RC0603FR-07953RL"
+			(at 157.48 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "RC0603FR-07953RL"
+			(at 157.48 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "RC0603FR-07953RL"
+			(at 157.48 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "95013973-b452-5baa-94d0-1e03ffb29ea9")
 		)
@@ -3879,7 +3978,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "5.1k"
+		(property "Value" "5.1k 0603"
 			(at 63.5 88.9 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3957,6 +4056,39 @@
 			)
 		)
 		(property "digikey" "311-5.10KHRCT-ND"
+			(at 66.04 87.63 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN lcsc" "0603WAF5101T5E"
+			(at 66.04 87.63 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "RC0603FR-075K1L"
+			(at 66.04 87.63 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "RC0603FR-075K1L"
 			(at 66.04 87.63 0)
 			(hide yes)
 			(show_name no)
@@ -4169,6 +4301,39 @@
 				)
 			)
 		)
+		(property "MPN lcsc" "TPS259470ARPWR"
+			(at 147.32 40.64 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "TPS259470ARPWR"
+			(at 147.32 40.64 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "TPS259470ARPWR"
+			(at 147.32 40.64 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "5"
 			(uuid "9b08e7dc-c430-509e-a63c-e049713a27d1")
 		)
@@ -4230,7 +4395,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "2.2n"
+		(property "Value" "2.2n 0603"
 			(at 134.62 78.74 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4308,6 +4473,39 @@
 			)
 		)
 		(property "digikey" "1276-1110-1-ND"
+			(at 137.16 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN lcsc" "CL10B222KB8NNNC"
+			(at 137.16 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "CL10B222KB8NNNC"
+			(at 137.16 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "CL10B222KB8NNNC"
 			(at 137.16 77.47 0)
 			(hide yes)
 			(show_name no)
@@ -4598,6 +4796,39 @@
 				)
 			)
 		)
+		(property "MPN lcsc" "EEE-FK1C221XP"
+			(at 220.98 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "EEE-FK1C221XP"
+			(at 220.98 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "EEE-FK1C221XP"
+			(at 220.98 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "8217c865-4ed8-5eb0-928c-7a8605545e0d")
 		)
@@ -4711,6 +4942,39 @@
 			)
 		)
 		(property "digikey" "B340A-FDICT-ND"
+			(at 40.64 127 180)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN lcsc" "B340A-13-F"
+			(at 40.64 127 180)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "B340A-13-F"
+			(at 40.64 127 180)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "B340A-13-F"
 			(at 40.64 127 180)
 			(hide yes)
 			(show_name no)
@@ -4924,6 +5188,39 @@
 				)
 			)
 		)
+		(property "MPN lcsc" "SMAJ20A-13-F"
+			(at 66.04 39.37 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "SMAJ20A-13-F"
+			(at 66.04 39.37 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "SMAJ20A-13-F"
+			(at 66.04 39.37 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "884bfa68-1b3a-5e76-9833-23c9331022b4")
 		)
@@ -5040,7 +5337,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "20.5k 1%"
+		(property "Value" "20.5k 1% 0603"
 			(at 121.92 55.8799 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5118,6 +5415,39 @@
 			)
 		)
 		(property "digikey" "311-20.5KHRCT-ND"
+			(at 119.38 54.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN lcsc" "RC0603FR-0720K5L"
+			(at 119.38 54.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "RC0603FR-0720K5L"
+			(at 119.38 54.61 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "RC0603FR-0720K5L"
 			(at 119.38 54.61 0)
 			(hide yes)
 			(show_name no)
@@ -5254,6 +5584,39 @@
 				)
 			)
 		)
+		(property "MPN lcsc" "EEE-FK1C221XP"
+			(at 233.68 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "EEE-FK1C221XP"
+			(at 233.68 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "EEE-FK1C221XP"
+			(at 233.68 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "9bee9d86-7859-59c4-aada-856e7d0f8f60")
 		)
@@ -5369,7 +5732,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10u"
+		(property "Value" "10u 0805"
 			(at 209.55 40.6399 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5447,6 +5810,39 @@
 			)
 		)
 		(property "digikey" "490-18663-1-ND"
+			(at 205.74 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN lcsc" "GRM21BR61H106KE43L"
+			(at 205.74 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "GRM21BR61H106KE43L"
+			(at 205.74 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "GRM21BR61H106KE43L"
 			(at 205.74 39.37 0)
 			(hide yes)
 			(show_name no)
@@ -5572,7 +5968,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10u"
+		(property "Value" "10u 0805"
 			(at 194.31 40.6399 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5650,6 +6046,39 @@
 			)
 		)
 		(property "digikey" "490-18663-1-ND"
+			(at 190.5 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN lcsc" "GRM21BR61H106KE43L"
+			(at 190.5 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "GRM21BR61H106KE43L"
+			(at 190.5 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "GRM21BR61H106KE43L"
 			(at 190.5 39.37 0)
 			(hide yes)
 			(show_name no)
@@ -5853,7 +6282,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "5.1k"
+		(property "Value" "5.1k 0603"
 			(at 63.5 66.04 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5931,6 +6360,39 @@
 			)
 		)
 		(property "digikey" "311-5.10KHRCT-ND"
+			(at 66.04 64.77 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN lcsc" "0603WAF5101T5E"
+			(at 66.04 64.77 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "RC0603FR-075K1L"
+			(at 66.04 64.77 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "RC0603FR-075K1L"
 			(at 66.04 64.77 0)
 			(hide yes)
 			(show_name no)
@@ -6298,6 +6760,39 @@
 				)
 			)
 		)
+		(property "MPN lcsc" "BZT52C5V1-7-F"
+			(at 95.25 46.99 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "BZT52C5V1-7-F"
+			(at 95.25 46.99 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "BZT52C5V1-7-F"
+			(at 95.25 46.99 270)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "5400e2a7-f11f-5e33-8cb2-ef206fba213e")
 		)
@@ -6413,7 +6908,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "1u 25V"
+		(property "Value" "1u 25V 0603"
 			(at 176.53 40.6399 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6491,6 +6986,39 @@
 			)
 		)
 		(property "digikey" "1276-1184-1-ND"
+			(at 172.72 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN lcsc" "CL10B105KA8NNNC"
+			(at 172.72 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "CL10B105KA8NNNC"
+			(at 172.72 39.37 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "CL10B105KA8NNNC"
 			(at 172.72 39.37 0)
 			(hide yes)
 			(show_name no)
@@ -6781,6 +7309,39 @@
 				)
 			)
 		)
+		(property "MPN lcsc" "USB4105-GF-A"
+			(at 30.48 71.12 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "USB4105-GF-A"
+			(at 30.48 71.12 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "USB4105-GF-A"
+			(at 30.48 71.12 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "A1"
 			(uuid "32923beb-f2e3-5db1-8792-353dcf21916c")
 		)
@@ -6942,7 +7503,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10k"
+		(property "Value" "10k 0603"
 			(at 180.34 63.4999 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7020,6 +7581,39 @@
 			)
 		)
 		(property "digikey" "311-10.0KHRCT-ND"
+			(at 177.8 62.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN lcsc" "FRC0603F1002TS"
+			(at 177.8 62.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "RC0603FR-0710KL"
+			(at 177.8 62.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "RC0603FR-0710KL"
 			(at 177.8 62.23 0)
 			(hide yes)
 			(show_name no)
@@ -7144,7 +7738,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10n"
+		(property "Value" "10n 0603"
 			(at 149.86 78.74 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7222,6 +7816,39 @@
 			)
 		)
 		(property "digikey" "1276-1009-1-ND"
+			(at 147.32 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN lcsc" "CL10B103KB8NNNC"
+			(at 147.32 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "CL10B103KB8NNNC"
+			(at 147.32 77.47 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "CL10B103KB8NNNC"
 			(at 147.32 77.47 0)
 			(hide yes)
 			(show_name no)
@@ -7432,6 +8059,39 @@
 				)
 			)
 		)
+		(property "MPN lcsc" "AP7361C-33E-13"
+			(at 91.44 127 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "AP7361C-33E-13"
+			(at 91.44 127 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "AP7361C-33E-13"
+			(at 91.44 127 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "3ec095f1-f71e-5093-a039-948cdef456d4")
 		)
@@ -7472,7 +8132,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10u"
+		(property "Value" "10u 0805"
 			(at 109.22 132.08 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7560,6 +8220,39 @@
 				)
 			)
 		)
+		(property "MPN lcsc" "GRM21BR61H106KE43L"
+			(at 106.68 130.81 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "GRM21BR61H106KE43L"
+			(at 106.68 130.81 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "GRM21BR61H106KE43L"
+			(at 106.68 130.81 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "9eb7834d-25e9-5f1d-82f9-4ac10866122b")
 		)
@@ -7597,7 +8290,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "100n"
+		(property "Value" "100n 0603"
 			(at 119.38 132.08 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7675,6 +8368,39 @@
 			)
 		)
 		(property "digikey" "1276-1000-1-ND"
+			(at 116.84 130.81 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN lcsc" "CL10B104KB8NNNC"
+			(at 116.84 130.81 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "CL10B104KB8NNNC"
+			(at 116.84 130.81 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "CL10B104KB8NNNC"
 			(at 116.84 130.81 0)
 			(hide yes)
 			(show_name no)
@@ -7955,7 +8681,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "8.66k 1%"
+		(property "Value" "8.66k 1% 0603"
 			(at 116.84 48.2599 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8043,6 +8769,39 @@
 				)
 			)
 		)
+		(property "MPN lcsc" "0603WAF8661T5E"
+			(at 119.38 46.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "RC0603FR-078K66L"
+			(at 119.38 46.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "RC0603FR-078K66L"
+			(at 119.38 46.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "c4180057-945a-511c-b435-0c459aeddac8")
 		)
@@ -8080,7 +8839,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "100n 50V"
+		(property "Value" "100n 50V 0603"
 			(at 130.81 25.4 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8158,6 +8917,39 @@
 			)
 		)
 		(property "digikey" "1276-1000-1-ND"
+			(at 128.27 24.13 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN lcsc" "CL10B104KB8NNNC"
+			(at 128.27 24.13 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN mouser" "CL10B104KB8NNNC"
+			(at 128.27 24.13 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN digikey" "CL10B104KB8NNNC"
 			(at 128.27 24.13 0)
 			(hide yes)
 			(show_name no)

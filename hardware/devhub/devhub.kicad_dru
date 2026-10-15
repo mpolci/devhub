@@ -82,11 +82,13 @@
 
 # Switch dati PI3USB4002A (U101-U401, UQFN 1,5 x 2, passo 0,5): GND, REF, EN e VDD
 # sono a 0,5 mm dai pad delle coppie. Le piste di altre reti che escono da questi pin
-# possono stare a 0,2 dalle coppie, solo dentro le aree di regola SW_FANOUT.
+# possono stare a 0,2 dalle coppie, solo dentro le aree di regola SW_FANOUT. Lo stesso
+# vale per GND (pin 2) e VBUS_UP (pin 5) del USBLC6-2SC6 D20, fra i pin delle coppie
+# a passo 0,95, dentro l'area di regola ESD_FANOUT.
 
-(rule "USB e pin degli switch dati"
+(rule "USB e pin degli switch dati e di D20"
    (constraint clearance (min 0.2mm))
-   (condition "A.hasNetclass('USB_DIFF') && B.Type == 'Track' && !B.hasNetclass('USB_DIFF') && B.insideArea('SW_FANOUT')")
+   (condition "A.hasNetclass('USB_DIFF') && B.Type == 'Track' && !B.hasNetclass('USB_DIFF') && (B.insideArea('SW_FANOUT') || B.insideArea('ESD_FANOUT'))")
 )
 
 # -----------------------------------------------------------------------------
