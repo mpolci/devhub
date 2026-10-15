@@ -6738,7 +6738,7 @@
 				)
 			)
 		)
-		(property "mouser" "621-BZT52C5V1-F"
+		(property "mouser" "78-BZT52C5V1-G3-18"
 			(at 95.25 46.99 270)
 			(hide yes)
 			(show_name no)
@@ -6749,7 +6749,7 @@
 				)
 			)
 		)
-		(property "digikey" "BZT52C5V1-FDICT-ND"
+		(property "digikey" "112-BZT52C5V1-G3-18CT-ND"
 			(at 95.25 46.99 270)
 			(hide yes)
 			(show_name no)
@@ -6771,7 +6771,7 @@
 				)
 			)
 		)
-		(property "MPN mouser" "BZT52C5V1-7-F"
+		(property "MPN mouser" "BZT52C5V1-G3-18"
 			(at 95.25 46.99 270)
 			(hide yes)
 			(show_name no)
@@ -6782,7 +6782,7 @@
 				)
 			)
 		)
-		(property "MPN digikey" "BZT52C5V1-7-F"
+		(property "MPN digikey" "BZT52C5V1-G3-18"
 			(at 95.25 46.99 270)
 			(hide yes)
 			(show_name no)

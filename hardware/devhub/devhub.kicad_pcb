@@ -9849,7 +9849,7 @@
 				(justify mirror)
 			)
 		)
-		(property "mouser" "621-BZT52C5V1-F"
+		(property "mouser" "78-BZT52C5V1-G3-18"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -9863,7 +9863,7 @@
 				(justify mirror)
 			)
 		)
-		(property "digikey" "BZT52C5V1-FDICT-ND"
+		(property "digikey" "112-BZT52C5V1-G3-18CT-ND"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -9889,7 +9889,7 @@
 				)
 			)
 		)
-		(property "MPN mouser" "BZT52C5V1-7-F"
+		(property "MPN mouser" "BZT52C5V1-G3-18"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -9901,7 +9901,7 @@
 				)
 			)
 		)
-		(property "MPN digikey" "BZT52C5V1-7-F"
+		(property "MPN digikey" "BZT52C5V1-G3-18"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)

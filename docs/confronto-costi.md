@@ -64,7 +64,7 @@ Spedizione: DigiKey Italia gratis sopra 75 €; il carrello Mouser da 33,98 CHF 
 | 13 | C505 | 1 | 100 µF 16 V elettrolitico SMD 6,3×5,8 | EEE-FK1C101P | **184** | C128532 | 1,22 ×5 | 667-EEE-FK1C101P | 0,53 | PCE3783CT-ND | 0,54 |
 | 14 | D1 | 1 | TVS SMAJ20A, SMA | SMAJ20A-13-F | **221** | C134969 | 1,03 ×5 | 621-SMAJ20A-13-F | 0,36 | SMAJ20A-FDICT-ND | 0,42 |
 | 15 | D2 | 1 | Schottky 40 V 3 A, SMA | B340A-13-F |  | C85098 | 0,73 ×10 | 621-B340A-F | 0,50 | B340A-FDICT-ND | 0,47 |
-| 16 | D4 | 1 | Zener 5,1 V SOD-123 | BZT52C5V1-7-F |  | C151588 | 0,56 ×10 | 621-BZT52C5V1-F | 0,18 | BZT52C5V1-FDICT-ND | 0,18 |
+| 16 | D4 | 1 | Zener 5,1 V SOD-123 | BZT52C5V1-7-F / BZT52C5V1-G3-18 |  | C151588 | 0,56 ×10 | 78-BZT52C5V1-G3-18 | 0,18 | 112-BZT52C5V1-G3-18CT-ND | 0,18 |
 | 17 | D20 | 1 | ESD USBLC6-2SC6 | USBLC6-2SC6 | **277** | C7519 | 0,80 ×5 | 511-USBLC6-2SC6 | 0,51 | 497-5235-1-ND | 0,47 |
 | 18 | D90 … (8) | 8 | LED verde 0805 | LTST-C171GKT |  | C913075 | 0,56 ×20 | 859-LTST-C171GKT | 1,04 | 160-1423-1-ND | 1,04 |
 | 19 | D93 | 1 | LED arancio 0805 | LTST-C171KFKT |  | C284932 | 0,55 ×20 | 859-LTST-C171KFKT | 0,14 | 160-1425-1-ND | 0,14 |
@@ -117,6 +117,9 @@ Spedizione: DigiKey Italia gratis sopra 75 €; il carrello Mouser da 33,98 CHF 
   RC0603FR-07…L. R31 su LCSC è UNI-ROYAL perché la Yageo era esaurita.
 - D2: Diodes B340A-13-F (Schottky 40 V 3 A, SMA), presente su tutti e tre i fornitori.
   Il "SS34" di Vishay e onsemi è in SMC e non entra nel footprint.
+- D4: su LCSC Diodes BZT52C5V1-7-F; su Mouser e DigiKey l'equivalente Vishay BZT52C5V1-G3-18
+  (5,1 V, 500 mW, SOD-123, stessa impronta). Prezzi Mouser e DigiKey non riletti: sono quelli del
+  BZT52C5V1-7-F.
 - R62: 33,2 kΩ dopo la revisione 03 (D54). Prezzo Mouser non letto dal carrello: come le altre
   Yageo RC0603 a pezzo singolo. Nei totali per 10 schede su Mouser la variazione di R60-R62 è
   stimata nulla.
