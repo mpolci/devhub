@@ -1,7 +1,7 @@
 # Regole per la progettazione PCB
 
 **Ambito:** regole del PCB v0.3, 100 × 100 mm (D84), allineato allo schema v0.3 (D79–D83).
-Il piazzamento iniziale è fatto; sbroglio, zone e serigrafia sono da completare.
+Piazzamento, sbroglio e zone sono completi.
 
 Devhub usa un PCB a quattro strati da 1,6 mm con stackup **JLC04161H-7628**, lo stesso
 specificato per prog-board-native (D44). Le porte esterne sono USB 2.0 Hi-Speed a 480 Mbit/s;
@@ -178,10 +178,10 @@ KiCad calcola lo spessore includendo la mask: 1,6167.
 `RELAY1_CONTACTS` senza riempimenti su tutti i layer, sotto contatti del relè, ponticello,
 snubber e boccole; aree `U2_FANOUT`, `U3_FANOUT`, `USBC_FANOUT`, `SW_FANOUT` e `ESD_FANOUT` usate solo
 dalle regole sopra, spostate insieme al proprio componente nel piazzamento v0.3: vanno
-ricontrollate dopo la rifinitura. Piano +3V3 `3V3_In1` su tutto In1.Cu (priorità 2), con le
-isole VBUS delle porte sotto i connettori a priorità più alta; piccole zone VBUS delle porte su
-B.Cu, zona +3V3 sul pin 24 di U2 e `U1_HEATSINK`. Le zone di potenza della +5V sono da
-disegnare con lo sbroglio.
+ricontrollate dopo la rifinitura. Piano +3V3 `3V3_In1` su In1.Cu (priorità 3), con le isole
+VBUS delle porte sotto i connettori e la zona +5V lungo il bordo frontale verso U4/U5 (D93) a
+priorità più alta; piccole zone VBUS delle porte su B.Cu, zona +3V3 sul pin 24 di U2 e
+`U1_HEATSINK`; zone VBUS_IN e +5V su B.Cu fra J1, U13 e la dorsale verso il bordo frontale.
 
 Nelle condizioni dei file `.kicad_dru` di KiCad 10 i caratteri jolly si usano con `==`;
 `matches` e `Parent.Reference` non funzionano e un errore fa scartare l'intero file senza

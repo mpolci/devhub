@@ -4,7 +4,7 @@
 
 Le decisioni D60–D66 e D68–D87 definiscono i requisiti correnti e prevalgono sulle parti
 incompatibili delle decisioni precedenti. Lo schema v0.3 e il pinout le applicano (D79);
-il PCB da 100 × 100 mm (D84) ha il piazzamento iniziale, la BOM è da aggiornare.
+il PCB da 100 × 100 mm (D84) è sbrogliato.
 
 | # | Decisione | Scelta |
 |---|---|---|
@@ -100,6 +100,7 @@ il PCB da 100 × 100 mm (D84) ha il piazzamento iniziale, la BOM è da aggiornar
 | D90 | LED del relè | Ripristinato il LED del relè come in v0.2: D90 verde 0805 con R90 1 kΩ dal comando RLY1 (PD2) a GND, nel foglio del relè; acceso con bobina eccitata, cioè linea staccata, senza GPIO in più. D90 sta nella fila dei LED a u = 18,5, v = 2, in asse con SW1 fra le boccole; il LED host D93 sta sul retro a sinistra di J1 (u = 10, v = 90, faccia superiore), con R93 alla sua destra (u = 15). Sei LED complessivi: quattro di porta, relè e host. Supera il LED del relè eliminato da D82 e la posizione del LED host di D84 |
 | D91 | Variante dell'LDO U1 | **AP7361C-33ER** (SOT-223R) al posto dell'AP7361C-33E: stesso regolatore, l'unica variante a catalogo Mouser. Piedinatura invertita: pin 1 GND, pin 2 e tab OUT, pin 3 IN; impronta `SOT-223-3_TabPin2` invariata, simbolo `devhub:AP7361C-33ER`. Il datasheet dell'AP7361C (DS37274 Rev. 5-2, `datasheets/ap7361c.pdf`) non indica la rete del tab; quello dell'AP7361 (DS33626 Rev. 11-3, `datasheets/ap7361.pdf`, stessi package) numera il tab del disegno "SOT223/SOT223R" come pin 2, quindi nella variante R è OUT. Il tab è su +3V3: `U1_HEATSINK` diventa una zona +3V3 su B.Cu con le via verso il piano +3V3 In1.Cu invece che verso GND In2.Cu (D56). LCSC C3743528, Mouser 621-AP7361C-33ER-13, DigiKey AP7361C-33ER-13DICT-ND |
 | D92 | Test point | 14 test point nello schema, solo per le reti che non hanno già un punto comodo da sondare (SWD, NRST e UART restano su J4 e J9). Due anelli GND Keystone 5001 per la massa della sonda: TP1 nell'alimentazione, TP10 vicino al MCU e al hub; vicino alle porte la massa si prende dai connettori USB-C. Pad SMD da 1,5 mm, fuori BOM: TP2 +5V e TP3 +3V3 (avvio dolce dell'eFuse, rampe e cadute), TP4-TP7 I2C1/I2C2 (fronti e analizzatore logico), TP8 HUB_RST_N (tempo di reset), TP9 EFUSE_FLT_N (prove di guasto), TP11-TP14 VBUS_P1-P4 (scarica e tensione alla porta). Esclusi 5V_LOGIC, FAULT_P1-P4, VBUS_DET e le coppie USB |
+| D93 | +5V verso U4/U5 su In1.Cu | Deroga alla distribuzione della +5V sulle facce esterne ([regole-pcb.md](regole-pcb.md#funzione-dei-layer-e-ritorni-di-corrente)): vicino alle porte le facce esterne sono occupate da connettori, switch dati, LED e pulsanti. La +5V esce da U13 su una zona di B.Cu fino a x ≈ 100 mm e prosegue su una zona di In1.Cu lungo il bordo frontale, sotto la fila dei pulsanti, con le risalite fino alle via sotto U4 e U5; sopra la zona non passano coppie USB né il quarzo, il resto di In1.Cu resta piano +3V3. Con la sola pista da 2 mm su In1.Cu (0,5 oz) la caduta da U13 a U4 era di 146 mV a 3 A; con le zone, simulata in continua sul rame reale, è di 40 mV verso U4 e 25 mV verso U5. Nel caso peggiore, da U13 alla porta e ritorno, il solo rame vale ~69 mV per le porte 1–2 e ~54 mV per le porte 3–4 (+5V, VBUS e GND), sotto i 100 mV richiesti; esclusi eFuse, UCS2114 e il tratto J1–U13 |
 
 ## Aperte
 
@@ -109,8 +110,6 @@ il PCB da 100 × 100 mm (D84) ha il piazzamento iniziale, la BOM è da aggiornar
   reset e bootloader.
 - Definire durata sicura della scarica, default e intervallo ammesso del ciclo sul circuito
   definitivo; il secondo proposto non è una garanzia per qualsiasi capacità o alimentazione esterna.
-- Completare piazzamento fine e sbroglio del PCB (D84), poi BOM, costi e bilancio di
-  alimentazione.
-  Confermare la gestione dei guasti in base ai segnali realmente disponibili.
+- Confermare la gestione dei guasti in base ai segnali realmente disponibili.
 - Completare i codici fornitore mancanti: U4/U5 (UCS2114-1-V/LX), U3 su Mouser e LCSC,
   R60/R61 (27 kΩ 1 %) su LCSC; campi `warehouse` vuoti per i componenti non a magazzino.

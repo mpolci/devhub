@@ -204,8 +204,8 @@ Hi-Speed, più il resto della logica), ~0,36 A nell'uso tipico. Nel caso peggior
 è al massimo (5,25 V, fino a 5,5 V per il Type-C), le porte assorbono poco e all'LDO arrivano
 ~4,9–5,15 V: dissipa **0,65–0,75 W**, ~0,45 W nell'uso tipico. Con i 110 °C/W della piazzola
 minima la giunzione arriverebbe a ~120 °C a 40 °C ambiente, con poco margine dalla protezione
-termica (150 °C): il tab (GND) va usato come dissipatore, con rame e via verso i piani GND, per
-avere θJA ≤ ~60 °C/W, cioè ≤ ~85 °C di giunzione nel caso peggiore (D56,
+termica (150 °C): il tab (OUT, +3V3, D91) va usato come dissipatore, con rame e via verso il
+piano +3V3, per avere θJA ≤ ~60 °C/W, cioè ≤ ~85 °C di giunzione nel caso peggiore (D56,
 [regole-pcb.md](regole-pcb.md)). Scartato l'AP2112K in SOT-23-5, che con lo stesso carico
 rischiava la protezione termica (D17). Scartato anche un buck: dalla 5 V prenderebbe ~0,1 A in
 meno (~0,3 A invece di 0,4 A nel caso peggiore), non abbastanza per giustificare componenti,

@@ -101,13 +101,9 @@ MCU al centro; hub con quarzo e disaccoppiamenti al centro-destra; alimentazione
 bulk) dietro a sinistra; upstream con ESD e VBUS_DET dietro a destra; J4 (SWD) e J9 (UART) sul
 retro, fra J1 e J2.
 
-Sbroglio ripreso dalla v0.2 dove la posizione relativa dei componenti è invariata, traslato con
-il gruppo: coppie connettore–switch con l'anello USB-C, CC, REF, LED e VBUS di ogni porta;
-fanout, quarzo, RBIAS, VDD18, reset e disaccoppiamenti attorno a U2; upstream J2–D20 con CC e
-VBUS_DET; via verso i piani. I collegamenti fra gruppi diversi (coppie hub → switch dati, USB_MCU,
-I2C, FAULT, EN, alimentazioni) sono da completare: i tratti importati si fermano al bordo del
-gruppo. Piani: GND su In2.Cu (`GND_In2`), +3V3 su In1.Cu (`3V3_In1`) con isole VBUS sotto i
-connettori. Il PCB va modificato in KiCad dallo stato corrente, non rigenerato.
+Sbroglio completo. Piani: GND su In2.Cu (`GND_In2`), +3V3 su In1.Cu (`3V3_In1`) con isole VBUS
+sotto i connettori e una zona +5V lungo il bordo frontale verso U4/U5 (D93). Il PCB va
+modificato in KiCad dallo stato corrente, non rigenerato.
 
 Per il controllo di parità con lo schema da riga di comando:
 
