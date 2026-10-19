@@ -54,7 +54,7 @@ Distribuzione proposta per rispettare D42, con elettronica e connettori sulla fa
 | Layer | Uso previsto |
 |---|---|
 | F.Cu | LED, pulsanti, segnali lenti, distribuzione di potenza a zone; USB solo se necessario |
-| In1.Cu | Piano +3V3 (`3V3_In1`) su tutta la scheda, con isole VBUS delle porte sotto i connettori |
+| In1.Cu | Piano +3V3 (`3V3_In1`) su tutta la scheda, con isole VBUS delle porte sotto i connettori, la zona +5V verso U4/U5 (D93), brevi tratti di segnali lenti e il salto dell'incrocio della coppia Full-Speed (D94) |
 | In2.Cu | Piano GND continuo (`GND_In2`) su tutta la scheda; riferimento delle coppie USB su B.Cu |
 | B.Cu | Elettronica principale, coppie USB, collegamenti locali e zone di alimentazione |
 
@@ -271,9 +271,10 @@ Realizzazione nel PCB, tutte le coppie su B.Cu sopra il piano GND di In2.Cu:
   connettore"); l'accordo stretto resta sul resto del percorso.
 - Lato connettore: PI3USB4002A a 12 mm dal connettore, coppia diritta dai pad ai pin.
 - Upstream: USBLC6 D20 in linea fra J2 e il hub, canali secondo D52.
-- Porta 6 (MCU, Full-Speed): hub e MCU sono entrambi sulla faccia inferiore; se D+ e D−
-  si incrociano, l'incrocio con due via su una sola linea (D52) è ammesso a 12 Mbit/s; il DRC
-  conta anche la lunghezza delle via.
+- Porta 6 (MCU, Full-Speed): hub e MCU sono entrambi sulla faccia inferiore e numerano i pin
+  nello stesso verso, quindi D+ e D− si incrociano (D52): USB_MCU_DP salta su In1.Cu per 3,2 mm
+  con due via, ammesso a 12 Mbit/s, e il piano GND di In2.Cu resta continuo (D94). Il DRC conta
+  anche la lunghezza delle via: la differenza si pareggia su USB_MCU_DN con lo strumento di accordo.
 - Coppie parallele con la geometria nominale, senza compensazione di lunghezza: l'accordo
   D+/D− si fa con lo strumento di KiCad per le coppie differenziali.
 
@@ -503,7 +504,8 @@ modifica significativa. Il dettaglio di ciascun punto è nelle sezioni indicate.
   antipad in fila o aree dei contatti relè; controllo visivo su In2.Cu.
 - Differenza D+/D− ≤ 0,5 sul percorso completo fra endpoint, sommando i segmenti attraverso
   USBLC6 e PI3USB4002A: il DRC controlla solo ogni tratto separato.
-- Cambi di layer: stesso numero di via sui due conduttori e via GND vicine.
+- Cambi di layer: stesso numero di via sui due conduttori e via GND vicine; unica eccezione
+  l'incrocio della porta 6 Full-Speed (D94).
 - Nessuno stub, test point o tee; pin D+/D− duplicati dell'USB-C uniti subito al connettore.
 - Distanza connettore–PI3USB4002A conciliata fra ESD e integrità del segnale.
 - Lunghezza totale di ogni porta registrata; ripetere il calcolo d'impedenza se cambiano

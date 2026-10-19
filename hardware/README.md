@@ -81,7 +81,7 @@ nel progetto: stackup nel PCB, vincoli e netclass in `devhub.kicad_pro`, regole 
 
 `devhub.kicad_pcb`: 4 strati, profilo **100 × 100 mm** con angoli R3 (D84), allineato allo schema
 v0.3 (parità senza differenze). Vista dall'alto, fronte (lato banco) in basso; u dal bordo
-sinistro, v dal bordo frontale. Piazzamento iniziale fatto, sbroglio in corso.
+sinistro, v dal bordo frontale.
 
 | Cosa | Faccia | Posizione (u, v in mm) |
 |---|---|---|
@@ -89,10 +89,10 @@ sinistro, v dal bordo frontale. Piazzamento iniziale fatto, sbroglio in corso.
 | J401, J301, J201, J101 USB-C (porte 4…1) | inferiore | u = 46, 61, 76, 91; faccia d'innesto a filo del bordo frontale |
 | LED delle porte D402…D102 (verdi) | superiore | in asse con la porta, v = 2 |
 | D90 LED relè | superiore | u = 18,5, v = 2, sopra la coppia di boccole (D90) |
-| D93 LED host | superiore | u = 32,5, v = 98, sul retro accanto a J1 (D90) |
+| D93 LED host | superiore | u = 10, v = 90, sul retro a sinistra di J1, con R93 a u = 15 (D90) |
 | SW1, SW401…SW101 pulsanti | superiore | v = 14,5 (D87); SW1 al centro delle boccole (u = 18,5), gli altri in asse con le porte |
 | J1 alimentazione, J2 upstream | inferiore | u = 24 e 82, a filo del bordo posteriore |
-| H1–H4 fori M3 | — | H1 (4,5; 58) dietro il relè K1, H2 (95,5; 28), H3 (4,5; 95,5), H4 (95,5; 95,5) |
+| H1–H4 fori M3 | — | H1 (20; 44,2) a destra del relè K1, dentro l'area dei contatti (D95), H2 (95,5; 28), H3 (4,5; 95,5), H4 (95,5; 95,5); anello di rame da 6,4 mm, senza rete |
 
 Gruppi funzionali sulla faccia inferiore, traslati dal piazzamento v0.2 con le rispettive aree
 di regola: porte con switch dati e condensatori dietro i connettori; U4/U5 UCS2114 dietro i

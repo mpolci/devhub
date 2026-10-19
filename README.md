@@ -63,6 +63,7 @@ Requisiti semplificati definiti (D60–D66). Hub USB2517I-JZX, MCU STM32G0B1CEU6
 (D78), due UCS2114-1-V/LX con due bus I²C e quattro PI3USB4002A per le porte (D75), con
 DigiKey come fornitore di riferimento.
 
-Schema elettrico v0.3 allineato ai requisiti (D79–D83); PCB 100 × 100 mm (D84) con
-piazzamento iniziale, sbroglio da fare, poi la BOM (vedi [hardware/README.md](hardware/README.md)). Restano da
-completare il dimensionamento della scarica e le verifiche sul prototipo.
+Schema elettrico v0.3 allineato ai requisiti (D79–D83); PCB 100 × 100 mm a quattro strati (D84)
+completo di piazzamento, sbroglio e zone (D84–D95), pronto per il prototipo (vedi
+[hardware/README.md](hardware/README.md)). Restano da fare BOM e file di assemblaggio, il
+dimensionamento della scarica e le verifiche sul prototipo.
