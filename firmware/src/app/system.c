@@ -24,7 +24,22 @@ static request_t request;
 static uint32_t request_at;
 static uint8_t last_flags;
 
+// True when the core and clock tree are in their reset state. A start through
+// the ROM bootloader's "leave" jump is not: it keeps the bootloader's vector
+// table, interrupts, SysTick and clocks.
+static bool started_from_reset(void) {
+    return SCB->VTOR == 0 && NVIC->ISER[0] == 0 && !(SysTick->CTRL & SysTick_CTRL_ENABLE_Msk) &&
+           (RCC->CFGR & RCC_CFGR_SWS) == 0;
+}
+
 void system_early(void) {
+    // The "flash empty" flag is only re-evaluated at power-on: after the first
+    // programming it would send every later reset back to the bootloader.
+    FLASH->ACR &= ~FLASH_ACR_PROGEMPTY;
+
+    if (!started_from_reset()) {
+        NVIC_SystemReset(); // restart cleanly from the main flash
+    }
     if (boot_magic != BOOT_MAGIC) {
         return;
     }

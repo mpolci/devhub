@@ -70,12 +70,15 @@ static void clock_init(void) {
 
 static void adc_init(void) {
     __HAL_RCC_ADC_CLK_ENABLE();
+    // Kernel clock 16 MHz / 16: the 160.5-cycle sample then lasts 160 µs,
+    // enough for the 50 kΩ source impedance of the VBUS_DET divider.
+    ADC1_COMMON->CCR = (ADC1_COMMON->CCR & ~ADC_CCR_PRESC) | (7u << ADC_CCR_PRESC_Pos);
     ADC1->CR = ADC_CR_ADVREGEN;
     HAL_Delay(1);
     ADC1->CR |= ADC_CR_ADCAL;
     while (ADC1->CR & ADC_CR_ADCAL) {
     }
-    ADC1->SMPR = 7; // 160.5 cycles: the divider is 100 kΩ
+    ADC1->SMPR = 7; // 160.5 cycles
     ADC1->ISR = ADC_ISR_ADRDY;
     ADC1->CR |= ADC_CR_ADEN;
     while (!(ADC1->ISR & ADC_ISR_ADRDY)) {

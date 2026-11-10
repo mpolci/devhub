@@ -14,6 +14,7 @@
 #include "drivers/i2c_bus.h"
 #include "drivers/ucs2114.h"
 #include "drivers/usb2517.h"
+#include "stm32g0xx_hal.h"
 #include "usb/usb_dev.h"
 
 #define MAX_ARGS 5
@@ -241,6 +242,70 @@ static void cmd_ucs(int argc, char **argv) {
     }
 }
 
+static void cmd_io(int argc, char **argv) {
+    // Raw GPIO registers, for checking levels and pin modes.
+    static const struct {
+        char name;
+        GPIO_TypeDef *port;
+    } gpios[] = {{'A', GPIOA}, {'B', GPIOB}, {'C', GPIOC}, {'D', GPIOD}, {'F', GPIOF}};
+    for (uint8_t i = 0; i < sizeof gpios / sizeof gpios[0]; i++) {
+        const GPIO_TypeDef *g = gpios[i].port;
+        P("GPIO%c IDR=%04lX ODR=%04lX MODER=%08lX PUPDR=%08lX\r\n", gpios[i].name, (unsigned long)g->IDR,
+          (unsigned long)g->ODR, (unsigned long)g->MODER, (unsigned long)g->PUPDR);
+    }
+}
+
+static void cmd_pin(int argc, char **argv) {
+    // pin <port letter><number>, e.g. "pin B0": read the pin as an input with
+    // the internal pull-up and then the pull-down, and restore its mode. A pin
+    // that follows both pulls is floating (unsoldered or undriven net).
+    static const char letters[] = "ABCDF";
+    GPIO_TypeDef *const ports[] = {GPIOA, GPIOB, GPIOC, GPIOD, GPIOF};
+    const char *l = argc == 2 ? strchr(letters, argv[1][0]) : NULL;
+    int n = l ? atoi(&argv[1][1]) : -1;
+    if (!l || !*l || n < 0 || n > 15) {
+        usage_error();
+        return;
+    }
+    GPIO_TypeDef *g = ports[l - letters];
+    uint32_t moder = g->MODER, pupdr = g->PUPDR, mask = 3u << (2 * n);
+    int level = (g->IDR >> n) & 1;
+    g->MODER = moder & ~mask; // input
+    g->PUPDR = (pupdr & ~mask) | (1u << (2 * n));
+    board_delay_ms(2);
+    int up = (g->IDR >> n) & 1;
+    g->PUPDR = (pupdr & ~mask) | (2u << (2 * n));
+    board_delay_ms(2);
+    int down = (g->IDR >> n) & 1;
+    g->PUPDR = pupdr;
+    g->MODER = moder;
+    P("P%c%d: level %d, with pull-up %d, with pull-down %d -> %s\r\n", *l, n, level, up, down,
+      up != down ? "floating" : up ? "held high" : "held low");
+}
+
+static void cmd_i2c(int argc, char **argv) {
+    // i2c <1|2> scan
+    int bus = argc == 3 ? index_arg(argv[1], I2C_BUS_COUNT) : -1;
+    if (bus < 0 || !eq(argv[2], "scan")) {
+        usage_error();
+        return;
+    }
+    if (bus == I2C_BUS_1 && !hub_ctrl_i2c1_available()) {
+        P("I2C bus 1 is held by the hub reset sequence\r\n");
+        return;
+    }
+    P("bus %d:", bus + 1);
+    uint8_t found = 0;
+    for (uint8_t addr = 0x08; addr < 0x78; addr++) {
+        if (i2c_probe((i2c_bus_t)bus, addr)) {
+            P(" 0x%02X", addr);
+            found++;
+        }
+        board_watchdog_kick();
+    }
+    P("%s\r\n", found ? "" : " no device answers");
+}
+
 static void cmd_defaults(int argc, char **argv) {
     // defaults | defaults set <hex mask> | defaults save
     if (argc == 3 && eq(argv[1], "set")) {
@@ -279,6 +344,9 @@ static const command_t commands[] = {
     {"led", "<n>|host on|off, led auto", cmd_led},
     {"btn", "", cmd_btn},
     {"gpio", "en|data <n> 0|1 (raw, bypasses the port logic)", cmd_gpio},
+    {"io", "(raw GPIO registers)", cmd_io},
+    {"pin", "<A-F><0-15> (pull-up/pull-down test of one pin)", cmd_pin},
+    {"i2c", "<1|2> scan", cmd_i2c},
     {"reset", "", cmd_reset},
     {"dfu", "", cmd_dfu},
 };

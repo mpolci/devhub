@@ -5,8 +5,9 @@ Firmware del MCU di controllo (STM32G0B1CEU6), in C con CMake e arm-none-eabi-gc
 Stack (D96): HAL di STM32CubeG0 e TinyUSB per il dispositivo composito HID + CDC; nessun
 RTOS, ciclo principale cooperativo con tick da 1 ms.
 
-**Stato:** il codice di tutte le funzioni elencate sotto è scritto, compila e supera i test su
-PC della logica; non è ancora stato eseguito sul prototipo. Il collaudo sulla scheda segue
+**Stato:** il firmware gira sul prototipo Rev A: hub configurato via SMBus, HID e console
+verificati, aggiornamento via DFU funzionante. Il collaudo delle singole funzioni e le
+anomalie hardware trovate sono in
 [../docs/lavorazioni/piano-firmware.md](../docs/lavorazioni/piano-firmware.md).
 
 ## Funzioni
@@ -66,6 +67,7 @@ elenca. I principali:
 | `hub [status\|reset\|dump]` | stato del hub, nuova sequenza di reset e configurazione |
 | `ucs <1\|2> id\|init\|status\|dump` | controller delle porte 1-2 e 3-4: identificazione, registri |
 | `led`, `btn`, `gpio en\|data <n> 0\|1` | collaudo di LED, pulsanti e singoli segnali delle porte |
+| `io`, `pin <porta><n>`, `i2c <1\|2> scan` | registri GPIO, prova di un pin con pull-up e pull-down interni, scansione di un bus I²C |
 | `defaults [set <maschera hex>\|save]` | porte abilitate all'accensione |
 | `reset`, `dfu` | riavvio, ingresso nel bootloader |
 

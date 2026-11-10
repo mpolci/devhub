@@ -3,8 +3,7 @@
 Lato PC, in Python: libreria `devhub` e comando `devhub`, sopra `hidapi`. Protocollo in
 [../docs/protocollo-controllo.md](../docs/protocollo-controllo.md), versione 0.1.
 
-**Stato:** libreria e CLI di base scritte e provate con un trasporto simulato; non ancora
-provate con il dispositivo reale.
+**Stato:** libreria e CLI di base provate con un trasporto simulato e sul prototipo Rev A.
 
 ## Installazione
 

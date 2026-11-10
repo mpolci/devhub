@@ -117,8 +117,10 @@ void hub_ctrl_task(uint32_t now) {
             t0 = now;
             state = ST_SETTLE;
         } else if (elapsed(now, RELEASE_TIMEOUT_MS)) {
+            // Keep waiting, but let the ports start: they do not need the hub.
             LOG("hub: HUB_RST_N stuck low");
-            t0 = now; // keep waiting; nothing else can be done
+            ready = true;
+            t0 = now;
         }
         break;
 

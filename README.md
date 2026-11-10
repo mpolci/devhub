@@ -68,5 +68,6 @@ completo (D84–D95, vedi [hardware/README.md](hardware/README.md)). Il prototip
 montato: al banco sono verificate le alimentazioni, l'enumerazione del hub senza firmware e
 il collegamento al MCU. Firmware ([firmware/README.md](firmware/README.md)) e libreria
 Python con CLI ([host/README.md](host/README.md)) sono scritti secondo D96–D101 e il
-protocollo 0.1, e superano i test su PC; non sono ancora stati eseguiti sul prototipo.
-Restano il collaudo sulla scheda, il dimensionamento della scarica e le verifiche elettriche.
+protocollo 0.1: il firmware gira sul prototipo, con hub configurato, controllo HID, console
+e aggiornamento via DFU verificati. Restano il collaudo delle singole funzioni, alcune
+saldature del MCU da sistemare, il dimensionamento della scarica e le verifiche elettriche.

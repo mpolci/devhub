@@ -6,21 +6,44 @@ protocollo, pinout, decisioni D96–D101); in caso di differenze prevalgono quel
 
 ## Stato
 
-Il codice degli incrementi 1–10 è scritto in `firmware/` e `host/`: compila, e la logica
-indipendente dall'hardware (porte, relè, protocollo, libreria Python) supera i test su PC.
-**Nessun incremento è ancora verificato sulla scheda**: le verifiche descritte sotto restano
-tutte da fare, nell'ordine indicato, usando la console. Durante la scrittura non era
-collegata una sonda al prototipo.
+Il codice degli incrementi 1–10 è scritto in `firmware/` e `host/`; la logica indipendente
+dall'hardware supera i test su PC. Sul prototipo Rev A, collegato via USB e programmato via
+DFU, sono state fatte le prove possibili senza strumenti, dalla console sulla seriale
+virtuale e dalla libreria Python.
 
-Punti da guardare per primi al banco, perché decisi sulla carta:
+Verificato sulla scheda:
 
-- numerazione delle porte del hub dopo la disabilitazione di DS5 e DS7 (porta 6 dichiarata
-  non rimovibile con il numero fisico) e stringhe del hub;
-- temporizzazione I²C a 100 kHz con clock a 16 MHz e risveglio degli UCS2114;
-- comportamento di ALERT# mascherato (D98) e ripresa del controller dopo una tensione di
-  ritorno;
-- salto al bootloader ST da firmware e stato dei pin in DFU;
-- banco singolo o doppio della flash per il record dei default.
+- DFU con flash vuota attraverso il hub; ingresso nel bootloader da firmware (`dfu`) con il
+  hub che resta acceso e configurato; riprogrammazione senza sonda.
+- Avvio dopo il "leave" di dfu-util: il bootloader salta al firmware senza reset, lasciando
+  vettori, interrupt e clock propri; il firmware lo riconosce e si riavvia da solo.
+- Sequenza di reset e configurazione SMBus del hub: enumera con VID/PID e stringhe del
+  progetto; il MCU compare sulla porta 6 come dispositivo composito HID + CDC su macOS; un
+  reset software del MCU non resetta il hub.
+- Controller U4 (porte 1-2) su I2C1: identificato, scarica automatica 400 ms e maschera di
+  ALERT# scritte e rilette, limite 2,67 A dallo strap.
+- Protocollo HID con la CLI: `info`, `status`, ciclo temporizzato di una porta, impulso del
+  relè, default, errori sui parametri. Test `pytest -m board`: 3 su 6 passano, gli altri
+  falliscono solo per la porta 1 (vedi sotto).
+
+Anomalie hardware trovate (prova `pin` della console: un pin che segue sia il pull-up sia
+il pull-down interno è flottante):
+
+| Pin MCU | Rete | Atteso | Trovato | Effetto |
+|---|---|---|---|---|
+| 19, PB0 | FAULT_P1 | alto, pull-up R62 | flottante | la porta 1 va in guasto generico appena accesa |
+| 20, PB1 | EFUSE_FLT_N | alto, pull-up R34 | flottante | segnalazione di guasto ingresso sempre attiva |
+| 23, PB11 | I2C2_SDA | alto, pull-up R51 | flottante | controller U5 (porte 3-4) irraggiungibile: niente scarica automatica né cause di guasto su quelle porte |
+| 21, PB2 | VBUS_DET | ~2,5 V | lettura ~1,45 V | da ricontrollare dopo la riparazione |
+
+Sono pin consecutivi sullo stesso lato del MCU (19–23, con il 22 PB10 regolare): la causa
+più probabile sono saldature mancanti su quel lato; in alternativa mancano R62, R34 e R51.
+
+Ancora da verificare al banco, perché richiedono strumenti o l'osservazione della scheda:
+LED e pulsanti, VBUS e scarica sui test point, relè sui contatti, accensione sfalsata,
+guasti reali (corto, sorgente esterna) e comportamento di ALERT# mascherato (D98), numero
+di porte e porta non rimovibile nel descrittore del hub, watchdog, default in flash, UART
+di J9.
 
 ## Punto di partenza
 
