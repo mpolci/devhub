@@ -346,6 +346,13 @@ static void cmd_dfu(int argc, char **argv) {
     system_request_bootloader();
 }
 
+static void cmd_hang(int argc, char **argv) {
+    // Watchdog test: stop servicing the main loop.
+    P("blocking the main loop: the watchdog should reset the MCU in about 2 s\r\n");
+    for (;;) {
+    }
+}
+
 static void cmd_help(int argc, char **argv);
 
 static const command_t commands[] = {
@@ -367,6 +374,7 @@ static const command_t commands[] = {
     {"i2c", "<1|2> scan", cmd_i2c},
     {"reset", "", cmd_reset},
     {"dfu", "", cmd_dfu},
+    {"hang", "(watchdog test: blocks the main loop)", cmd_hang},
 };
 
 static void cmd_help(int argc, char **argv) {

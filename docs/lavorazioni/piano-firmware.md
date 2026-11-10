@@ -70,6 +70,10 @@ sia con `CYCLE_PORT` da 1 s inviato dalla CLI. Il hub si presenta al Mac con cin
 le quattro esterne e, sulla quinta, il dispositivo di controllo (la porta 6 fisica
 rinumerata dopo la disabilitazione di DS5 e DS7).
 
+Watchdog: con il comando `hang` della console, che blocca il ciclo principale, il MCU si
+riavvia dopo circa 2,5 s con causa di reset "watchdog"; il hub non viene resettato e le
+quattro porte ripartono sfalsate secondo i default.
+
 Nota sui registri dell'UCS2114: con entrambi gli enable bassi il controller dorme e i
 registri di stato (0Fh, 10h, 13h) si leggono con valori diversi da quelli a controller
 sveglio; non vanno interpretati in quella condizione.

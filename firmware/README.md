@@ -70,7 +70,7 @@ elenca. I principali:
 | `led`, `btn`, `gpio en\|data <n> 0\|1` | collaudo di LED, pulsanti e singoli segnali delle porte |
 | `io`, `pin <porta><n>`, `i2c <1\|2> scan` | registri GPIO, prova di un pin con pull-up e pull-down interni, scansione di un bus I²C |
 | `defaults [set <maschera hex>\|save]` | porte abilitate all'accensione |
-| `reset`, `dfu` | riavvio, ingresso nel bootloader |
+| `reset`, `dfu`, `hang` | riavvio, ingresso nel bootloader, blocco del ciclo principale per provare il watchdog |
 
 ## Sorgenti
 
