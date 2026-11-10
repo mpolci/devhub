@@ -88,7 +88,7 @@ class Devhub:
         try:
             return HidTransport(devices[0]["path"])
         except OSError as exc:
-            raise DevhubError(f"cannot open the device: {exc}") from exc
+            raise DevhubError(f"cannot open the device ({exc}); is another program using it?") from exc
 
     def close(self) -> None:
         self._t.close()

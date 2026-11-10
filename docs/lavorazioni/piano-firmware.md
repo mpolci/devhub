@@ -23,29 +23,29 @@ Verificato sulla scheda:
 - Controller U4 (porte 1-2) su I2C1: identificato, scarica automatica 400 ms e maschera di
   ALERT# scritte e rilette, limite 2,67 A dallo strap.
 - Protocollo HID con la CLI: `info`, `status`, ciclo temporizzato di una porta, impulso del
-  relè, default, errori sui parametri. Test `pytest -m board`: 3 su 6 passano, gli altri
-  falliscono solo per la porta 1 (vedi sotto).
+  relè, default, errori sui parametri.
 
-Anomalie hardware trovate (prova `pin` della console: un pin che segue sia il pull-up sia
-il pull-down interno è flottante):
+- Dopo la ripassata delle saldature di U3: FAULT_P1 (PB0) ed EFUSE_FLT_N (PB1) regolari, la
+  porta 1 resta accesa e la segnalazione di guasto ingresso è rientrata. Tutti e sei i test
+  `pytest -m board` passano: accensione e spegnimento delle quattro porte, ciclo da 1 s
+  eseguito dal MCU, accensioni sfalsate, impulso del relè, default.
+- Record dei default in flash: salvataggi ripetuti e rilettura dopo il riavvio; `REBOOT`
+  da PC; eventi di porta e relè ricevuti con i tempi attesi (impulso da 200 ms, ciclo da
+  600 ms).
+- La versione provata comprende le correzioni della revisione del codice (banco flash,
+  sequenza dell'ADC, variabili persistenti fuori dalla RAM del bootloader, coda dei report,
+  sorveglianza del reset del hub, recupero del bus I²C).
+
+Anomalie hardware ancora aperte (prova `pin` della console: un pin che segue sia il pull-up
+sia il pull-down interno è flottante):
 
 | Pin MCU | Rete | Atteso | Trovato | Effetto |
 |---|---|---|---|---|
-| 19, PB0 | FAULT_P1 | alto, pull-up R62 | flottante | la porta 1 va in guasto generico appena accesa |
-| 20, PB1 | EFUSE_FLT_N | alto, pull-up R34 | flottante | segnalazione di guasto ingresso sempre attiva |
-| 23, PB11 | I2C2_SDA | alto, pull-up R51 | flottante | controller U5 (porte 3-4) irraggiungibile: niente scarica automatica né cause di guasto su quelle porte |
-| 21, PB2 | VBUS_DET | ~2,5 V | lettura ~1,45 V | da ricontrollare dopo la riparazione |
+| 23, PB11 | I2C2_SDA | alto, pull-up R51 da 4,7 kΩ | flottante: va basso con il solo pull-down interno | controller U5 (porte 3-4) irraggiungibile: le porte si accendono, ma senza scarica automatica né cause di guasto |
 
-Sono pin consecutivi sullo stesso lato del MCU (19–23, con il 22 PB10 regolare): la causa
-più probabile sono saldature mancanti su quel lato; in alternativa mancano R62, R34 e R51.
-
-Dopo queste prove il codice è stato riletto da un revisore indipendente e corretto
-(selezione del banco flash per il record dei default, sequenza dell'ADC, variabili che
-sopravvivono al reset spostate fuori dalla RAM usata dal bootloader, spazio riservato alle
-risposte nella coda dei report, sorveglianza del reset del hub anche durante la
-configurazione, recupero del bus I²C). **Questa versione non è ancora stata riprogrammata
-sulla scheda**: la prima cosa da fare è caricarla e ripetere le prove qui sopra, poi
-`defaults save` due volte di seguito e `devhub reboot`.
+PB10 (I2C2_SCL, pin 22) è regolare. Restano da controllare la saldatura del pin 23, R51 e
+la continuità fra il pin e il pin SMDATA di U5. VBUS_DET legge 5,5–5,6 V con il PC
+collegato: da confrontare con un multimetro, il valore reale atteso è intorno a 5 V.
 
 Ancora da verificare al banco, perché richiedono strumenti o l'osservazione della scheda:
 LED e pulsanti, VBUS e scarica sui test point, relè sui contatti, accensione sfalsata,

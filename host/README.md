@@ -44,6 +44,9 @@ devhub reboot
 devhub bootloader
 ```
 
+Su macOS un solo programma alla volta può aprire il dispositivo: con `devhub watch` in
+esecuzione gli altri comandi non riescono ad aprirlo.
+
 `-s <seriale>` sceglie il dispositivo. Codice di uscita 0 se tutto va bene, 1 su errore,
 2 quando `status` trova una porta bloccata per guasto.
 
