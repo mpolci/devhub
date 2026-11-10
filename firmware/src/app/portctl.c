@@ -151,6 +151,7 @@ void portctl_task(uint32_t now) {
             chips[i].next_poll = now + POLL_MS;
         }
         (void)board_port_alert_edges(); // edges seen before ALERT# was masked are stale
+        now = board_millis(); // the controller set-up above took tens of milliseconds
         ports_startup(defaults_get(), now);
         started = true;
     }

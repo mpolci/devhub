@@ -41,12 +41,11 @@ Verificato sulla scheda:
 
 Punti aperti dalle prove:
 
-- **Guasto generico delle porte 1 e 2 all'accensione.** Visto una volta dopo un ciclo di
-  alimentazione con entrambi i controller presenti; un nuovo comando di accensione le
-  riabilita senza problemi, e non si ripete dopo un reset software né dopo `hub reset`.
-  Il comando `log` della console conserva ora i messaggi di avvio, con la maschera di
-  ALERT# e i registri di stato letti al momento del guasto: va riletto dopo un ciclo di
-  alimentazione.
+- **Guasto generico delle porte 1 e 2 all'accensione.** Visto una sola volta, alla prima
+  accensione dopo la ripassata del pin 23; non riprodotto al ciclo di alimentazione
+  successivo (log di avvio regolare, quattro porte accese), né dopo reset software o
+  `hub reset`. Causa non determinata: se si ripresenta, il comando `log` mostra la maschera
+  di ALERT# e i registri di stato letti al momento del guasto.
 - VBUS_DET legge 5,5–5,6 V con il PC collegato: da confrontare con un multimetro, il valore
   reale atteso è intorno a 5 V.
 
