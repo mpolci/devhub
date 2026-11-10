@@ -12,6 +12,7 @@
 #endif
 
 #define TX_QUEUE_LEN 16
+#define TX_RESERVED_FOR_RESPONSES 2 // events never fill the whole queue
 
 static const proto_sys_t *sys;
 static uint8_t txq[TX_QUEUE_LEN][PROTO_REPORT_SIZE];
@@ -45,6 +46,9 @@ void proto_tx_pop(void) {
 }
 
 void proto_event(uint8_t evt, const uint8_t *data, uint8_t len) {
+    if (tx_count >= TX_QUEUE_LEN - TX_RESERVED_FOR_RESPONSES) {
+        return;
+    }
     uint8_t *r = tx_alloc();
     if (!r) {
         return;

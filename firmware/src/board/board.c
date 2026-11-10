@@ -83,6 +83,12 @@ static void adc_init(void) {
     ADC1->CR |= ADC_CR_ADEN;
     while (!(ADC1->ISR & ADC_ISR_ADRDY)) {
     }
+    // Single channel, selected once: a conversion may only start after the
+    // channel configuration is acknowledged (CCRDY).
+    ADC1->ISR = ADC_ISR_CCRDY;
+    ADC1->CHSELR = 1u << VBUS_DET_ADC_CHANNEL;
+    while (!(ADC1->ISR & ADC_ISR_CCRDY)) {
+    }
 }
 
 void board_init(void) {
@@ -223,7 +229,6 @@ bool board_i2c1_scl_level(void) {
 }
 
 uint16_t board_vbus_det_mv(void) {
-    ADC1->CHSELR = 1u << VBUS_DET_ADC_CHANNEL;
     ADC1->ISR = ADC_ISR_EOC;
     ADC1->CR |= ADC_CR_ADSTART;
     uint32_t t0 = HAL_GetTick();
@@ -312,8 +317,10 @@ void EXTI4_15_IRQHandler(void) {
 void HardFault_Handler(void) {
     // Leave the board in its safe state and let the watchdog restart it.
     for (uint8_t i = 0; i < BOARD_N_PORTS; i++) {
+        PIN_OE_N[i].port->BSRR = PIN_OE_N[i].pin;
         PIN_EN[i].port->BRR = PIN_EN[i].pin;
     }
+    PIN_RLY1.port->BRR = PIN_RLY1.pin;
     for (;;) {
     }
 }

@@ -56,11 +56,11 @@ bool flash_store_save(uint8_t version, const void *data, uint8_t len) {
     memcpy(buf.r.data, data, len);
     buf.r.crc = crc32((const uint8_t *)&buf.r, offsetof(record_t, crc));
 
-    // Page index inside its bank: with the dual-bank option the last page of
-    // the device is page 127 of bank 2, otherwise page 255 of the only bank.
+    // Page index inside its bank: on a dual-bank device the last page is
+    // page 127 of bank 2, otherwise page 255 of the only bank.
     FLASH_EraseInitTypeDef erase = {.TypeErase = FLASH_TYPEERASE_PAGES, .NbPages = 1};
 #if defined(FLASH_DBANK_SUPPORT)
-    if (FLASH->OPTR & FLASH_OPTR_DUAL_BANK) {
+    if (FLASH_BANK_NB == 2U) { // 512 kB parts are always dual-bank (RM0444 3.3.2)
         erase.Banks = FLASH_BANK_2;
         erase.Page = ((STORE_ADDR - FLASH_BASE) / FLASH_PAGE_SIZE) - FLASH_PAGE_NB; // FLASH_PAGE_NB is per bank
     } else
@@ -73,6 +73,7 @@ bool flash_store_save(uint8_t version, const void *data, uint8_t len) {
     bool ok = false;
     uint32_t page_error = 0;
     HAL_FLASH_Unlock();
+    __HAL_FLASH_CLEAR_FLAG(FLASH_SR_CLEAR); // stale error flags would fail the erase
     if (HAL_FLASHEx_Erase(&erase, &page_error) == HAL_OK) {
         ok = true;
         for (uint32_t i = 0; i < 6 && ok; i++) {

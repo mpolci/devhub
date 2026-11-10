@@ -21,6 +21,8 @@
 #define INT_KEEP_OUT 0x10
 #define INT_BACK_V 0x02
 #define INT_OV_LIM 0x01
+// Interrupt status 1 only
+#define INT1_TSD_LOW 0x08
 // Interrupt status 2 only
 #define INT2_RESET 0x20
 #define INT2_TSD_HIGH 0x08
@@ -127,6 +129,9 @@ bool ucs2114_read_events(i2c_bus_t bus, ucs2114_events_t *ev) {
     ev->ch[0] = decode(s1);
     ev->ch[1] = decode(s2);
     ev->was_reset = (s2 & INT2_RESET) != 0;
+    if (s1 & INT1_TSD_LOW) {
+        ev->ch[0] |= UCS_EVT_TEMP_WARNING;
+    }
     if (s2 & INT2_TSD_HIGH) { // die over-temperature: both channels shut down
         ev->ch[0] |= UCS_EVT_OVERTEMP;
         ev->ch[1] |= UCS_EVT_OVERTEMP;

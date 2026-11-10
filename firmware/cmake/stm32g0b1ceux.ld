@@ -9,7 +9,8 @@ _Min_Stack_Size = 0x1000;
 
 MEMORY
 {
-  RAM   (xrw) : ORIGIN = 0x20000000, LENGTH = 144K
+  RAM   (xrw) : ORIGIN = 0x20000000, LENGTH = 144K - 64
+  NOINIT (rw) : ORIGIN = 0x20023FC0, LENGTH = 64
   FLASH (rx)  : ORIGIN = 0x08000000, LENGTH = 510K
   STORE (r)   : ORIGIN = 0x0807F800, LENGTH = 2K
 }
@@ -101,14 +102,15 @@ SECTIONS
     __bss_end__ = _ebss;
   } >RAM
 
-  /* Survives resets (not power loss): reboot requests and hub state. */
+  /* Survives resets (not power loss): reboot requests and hub state. Kept at
+     the top of RAM: the ROM bootloader uses the first 16 kB (AN2606). */
   .noinit (NOLOAD) :
   {
     . = ALIGN(4);
     *(.noinit)
     *(.noinit*)
     . = ALIGN(4);
-  } >RAM
+  } >NOINIT
 
   ._user_heap_stack :
   {

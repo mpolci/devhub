@@ -109,6 +109,10 @@ void hub_ctrl_task(uint32_t now) {
             board_hub_reset_drive(false);
             t0 = now;
             state = ST_WAIT_RELEASE;
+        } else if (!ready && elapsed(now, hold_ms + RELEASE_TIMEOUT_MS)) {
+            // SCL stuck low: the hub stays in reset, but the ports can start.
+            LOG("hub: I2C1 SCL stuck low");
+            ready = true;
         }
         break;
 
@@ -125,6 +129,12 @@ void hub_ctrl_task(uint32_t now) {
         break;
 
     case ST_SETTLE:
+        if (!board_hub_reset_level()) {
+            // The supervisor pulled the reset again before the download ended.
+            LOG("hub: reset during start-up");
+            begin_reset(now, HOLD_UNEXPECTED_MS, use_defaults);
+            break;
+        }
         if (use_defaults) {
             if (elapsed(now, DEFAULTS_SETTLE_MS)) {
                 LOG("hub: running with internal defaults");

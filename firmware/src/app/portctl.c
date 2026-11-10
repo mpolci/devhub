@@ -113,6 +113,9 @@ static void service_chip(uint8_t chip, uint8_t alerted) {
     for (uint8_t ch = 0; ch < 2; ch++) {
         uint8_t port = (uint8_t)(chip * 2 + ch);
         uint8_t cause = fault_cause(ev.ch[ch]);
+        if (!cause && (alerted & (1u << ch)) && (ev.ch[0] & UCS_EVT_TEMP_WARNING)) {
+            cause = PORT_FAULT_OVERTEMP; // first thermal threshold asserting ALERT#
+        }
         if (cause || (alerted & (1u << ch))) {
             ports_fault(port, cause); // no readable cause: generic fault
         }
@@ -143,6 +146,7 @@ void portctl_task(uint32_t now) {
             portctl_chip_init(i);
             chips[i].next_poll = now + POLL_MS;
         }
+        (void)board_port_alert_edges(); // edges seen before ALERT# was masked are stale
         ports_startup(defaults_get(), now);
         started = true;
     }

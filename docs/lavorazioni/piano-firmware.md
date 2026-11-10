@@ -39,6 +39,14 @@ il pull-down interno è flottante):
 Sono pin consecutivi sullo stesso lato del MCU (19–23, con il 22 PB10 regolare): la causa
 più probabile sono saldature mancanti su quel lato; in alternativa mancano R62, R34 e R51.
 
+Dopo queste prove il codice è stato riletto da un revisore indipendente e corretto
+(selezione del banco flash per il record dei default, sequenza dell'ADC, variabili che
+sopravvivono al reset spostate fuori dalla RAM usata dal bootloader, spazio riservato alle
+risposte nella coda dei report, sorveglianza del reset del hub anche durante la
+configurazione, recupero del bus I²C). **Questa versione non è ancora stata riprogrammata
+sulla scheda**: la prima cosa da fare è caricarla e ripetere le prove qui sopra, poi
+`defaults save` due volte di seguito e `devhub reboot`.
+
 Ancora da verificare al banco, perché richiedono strumenti o l'osservazione della scheda:
 LED e pulsanti, VBUS e scarica sui test point, relè sui contatti, accensione sfalsata,
 guasti reali (corto, sorgente esterna) e comportamento di ALERT# mascherato (D98), numero

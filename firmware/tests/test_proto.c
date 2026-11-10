@@ -252,8 +252,17 @@ static void test_ignores_other_reports_and_queue_overflow(void) {
         n++;
         proto_tx_pop();
     }
-    CHECK_EQ(n, 16);
+    CHECK_EQ(n, 14);
     CHECK_EQ(first, 0); // oldest kept, newest dropped
+
+    // A full event backlog still leaves room for a command response.
+    for (int i = 0; i < 40; i++) {
+        proto_event(EVT_POWER_CHANGED, (const uint8_t[]){(uint8_t)i}, 1);
+    }
+    uint8_t cmd[PROTO_REPORT_SIZE] = {REPORT_ID_COMMAND, CMD_GET_DEFAULTS, 9};
+    proto_handle(cmd, sizeof cmd);
+    r = next_of(REPORT_ID_RESPONSE);
+    CHECK(r != NULL && r[1] == CMD_GET_DEFAULTS && r[2] == 9);
 }
 
 int main(void) {

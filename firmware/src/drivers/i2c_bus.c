@@ -20,8 +20,32 @@ static void pins(i2c_bus_t bus, bool i2c_mode) {
     HAL_GPIO_Init(GPIOB, &init);
 }
 
+// A slave interrupted in the middle of a read can hold SDA low: clock it out.
+static void recover(i2c_bus_t bus) {
+    uint16_t scl = (bus == I2C_BUS_1) ? GPIO_PIN_8 : GPIO_PIN_10;
+    uint16_t sda = (bus == I2C_BUS_1) ? GPIO_PIN_9 : GPIO_PIN_11;
+    GPIO_InitTypeDef init = {.Pin = sda, .Mode = GPIO_MODE_INPUT, .Pull = GPIO_NOPULL};
+    HAL_GPIO_Init(GPIOB, &init);
+    if (HAL_GPIO_ReadPin(GPIOB, sda) == GPIO_PIN_SET) {
+        return;
+    }
+    HAL_GPIO_WritePin(GPIOB, scl, GPIO_PIN_SET);
+    init.Pin = scl;
+    init.Mode = GPIO_MODE_OUTPUT_OD;
+    HAL_GPIO_Init(GPIOB, &init);
+    for (uint8_t i = 0; i < 9 && HAL_GPIO_ReadPin(GPIOB, sda) == GPIO_PIN_RESET; i++) {
+        HAL_GPIO_WritePin(GPIOB, scl, GPIO_PIN_RESET);
+        for (volatile uint32_t d = 0; d < 40; d++) {
+        }
+        HAL_GPIO_WritePin(GPIOB, scl, GPIO_PIN_SET);
+        for (volatile uint32_t d = 0; d < 40; d++) {
+        }
+    }
+}
+
 void i2c_bus_init(i2c_bus_t bus) {
     I2C_HandleTypeDef *h = &handles[bus];
+    recover(bus);
     if (bus == I2C_BUS_1) {
         __HAL_RCC_I2C1_CLK_ENABLE();
         __HAL_RCC_I2C1_FORCE_RESET();

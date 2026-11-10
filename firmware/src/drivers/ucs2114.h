@@ -15,6 +15,7 @@
 #define UCS_EVT_BACK_VOLTAGE 0x08
 #define UCS_EVT_VBUS_LOW 0x10
 #define UCS_EVT_ERROR_STATE 0x20 // ERR bit: channel in Error state
+#define UCS_EVT_TEMP_WARNING 0x40 // TSD_LOW (chip-wide, reported on channel 0)
 
 typedef struct {
     uint8_t ch[2];  // UCS_EVT_* per channel
