@@ -61,6 +61,15 @@ di U4 e U5 (nel PCB le reti sono corrette):
 Dopo le riparazioni entrambi i controller vedono i due enable, nessuna segnalazione
 residua, e i sei test `pytest -m board` passano.
 
+Prova con una chiavetta USB: enumera su tutte e quattro le porte (5 V a porta accesa e
+0 V a porta spenta sui test point TP11–TP14). Sulla porta 4 i dati non passavano, senza
+alcun tentativo di collegamento visto dal hub, finché non sono stati ripassati il
+connettore J401 e l'interruttore dati U401. Dopo la riparazione la chiavetta scompare dal
+Mac allo spegnimento della porta e ricompare alla riaccensione, sia con comandi separati
+sia con `CYCLE_PORT` da 1 s inviato dalla CLI. Il hub si presenta al Mac con cinque porte:
+le quattro esterne e, sulla quinta, il dispositivo di controllo (la porta 6 fisica
+rinumerata dopo la disabilitazione di DS5 e DS7).
+
 Nota sui registri dell'UCS2114: con entrambi gli enable bassi il controller dorme e i
 registri di stato (0Fh, 10h, 13h) si leggono con valori diversi da quelli a controller
 sveglio; non vanno interpretati in quella condizione.
