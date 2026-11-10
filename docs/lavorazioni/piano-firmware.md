@@ -39,6 +39,28 @@ Verificato sulla scheda:
 - Dopo la seconda ripassata (pin 23): I2C2_SDA regolare, controller U5 (porte 3-4)
   identificato e configurato come U4. Nessuna anomalia di saldatura nota resta aperta.
 
+Osservazioni al banco (LED, pulsanti, relè, VBUS):
+
+- LED: i quattro di porta, quello del relè e quello di host funzionano; il LED della porta
+  1 non si accendeva per la saldatura del pin 16 di U3 (PA5), poi ripassato.
+- Pulsanti: cinque su cinque, una pressione contata per ogni pressione, senza rimbalzi.
+- Relè: la continuità fra le boccole si interrompe allo scatto; LED acceso a linea staccata,
+  come da D90.
+- VBUS_DET: 5,1–5,3 V dopo la ripassata di U3 (il pin 21 era fra quelli mal saldati).
+- Porta 4: 5 V accesa, 0 V spenta.
+
+Anomalie hardware aperte sui controller delle porte:
+
+| Componente | Pin | Sintomo | Verifica |
+|---|---|---|---|
+| U4 e U5 | 1, PWR_EN1 | le porte 1 e 3 restano a 5 V a porta spenta | rete EN bassa lato MCU, ma il controller legge il pin alto; con PIN_IGN (registro 13h) il canale si spegne e TP13 va a 0 V |
+| U4 | 15, PWR_EN2 | la porta 2 non si accende (TP12 a 0 V) | rete EN_P2 collegata lato MCU, il controller non vede mai l'enable |
+
+Nel PCB le reti sono corrette. I pin 1 e 15 sono i due d'angolo sul lato dei pin 16–20,
+quello vicino alle via dell'area di massa del pin 17 sotto il corpo: il sospetto è che
+l'integrato non appoggi bene su quel lato. Finché il pin 1 non è collegato, le porte 1 e 3
+sono alimentate anche durante il reset e nel bootloader, contro D80.
+
 Punti aperti dalle prove:
 
 - **Guasto generico delle porte 1 e 2 all'accensione.** Visto una sola volta, alla prima

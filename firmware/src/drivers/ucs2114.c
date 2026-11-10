@@ -73,7 +73,7 @@ bool ucs2114_read_reg(i2c_bus_t bus, uint8_t reg, uint8_t *value) {
     return true;
 }
 
-static bool write_reg(i2c_bus_t bus, uint8_t reg, uint8_t value) {
+bool ucs2114_write_reg(i2c_bus_t bus, uint8_t reg, uint8_t value) {
     if (!ucs2114_wake(bus) || !i2c_write_reg(bus, UCS_ADDR, reg, value)) {
         accessed[bus] = false;
         return false;
@@ -90,7 +90,7 @@ bool ucs2114_check_id(i2c_bus_t bus) {
 
 bool ucs2114_configure(i2c_bus_t bus) {
     uint8_t v1, v2;
-    if (!write_reg(bus, REG_GEN_CFG2, CFG2_VALUE) || !write_reg(bus, REG_GEN_CFG1, CFG1_VALUE)) {
+    if (!ucs2114_write_reg(bus, REG_GEN_CFG2, CFG2_VALUE) || !ucs2114_write_reg(bus, REG_GEN_CFG1, CFG1_VALUE)) {
         return false;
     }
     if (!ucs2114_read_reg(bus, REG_GEN_CFG2, &v2) || !ucs2114_read_reg(bus, REG_GEN_CFG1, &v1)) {

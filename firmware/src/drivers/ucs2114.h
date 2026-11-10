@@ -32,5 +32,6 @@ bool ucs2114_configure(i2c_bus_t bus);
 // Read and clear the interrupt status registers.
 bool ucs2114_read_events(i2c_bus_t bus, ucs2114_events_t *ev);
 bool ucs2114_read_reg(i2c_bus_t bus, uint8_t reg, uint8_t *value);
+bool ucs2114_write_reg(i2c_bus_t bus, uint8_t reg, uint8_t value);
 
 #endif

@@ -66,7 +66,7 @@ elenca. I principali:
 | `port <n> on\|off\|cycle [ms]\|clear`, `all on\|off` | comando logico delle porte |
 | `relay connect\|disconnect\|pulse <ms>` | linea del relè |
 | `hub [status\|reset\|dump]` | stato del hub, nuova sequenza di reset e configurazione |
-| `ucs <1\|2> id\|init\|status\|dump` | controller delle porte 1-2 e 3-4: identificazione, registri |
+| `ucs <1\|2> id\|init\|status\|dump\|write <reg> <val>` | controller delle porte 1-2 e 3-4: identificazione, registri, scrittura di un registro |
 | `led`, `btn`, `gpio en\|data <n> 0\|1` | collaudo di LED, pulsanti e singoli segnali delle porte |
 | `io`, `pin <porta><n>`, `i2c <1\|2> scan` | registri GPIO, prova di un pin con pull-up e pull-down interni, scansione di un bus I²C |
 | `defaults [set <maschera hex>\|save]` | porte abilitate all'accensione |

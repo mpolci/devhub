@@ -201,8 +201,8 @@ static void cmd_hub(int argc, char **argv) {
 }
 
 static void cmd_ucs(int argc, char **argv) {
-    // ucs <1|2> id|init|status|dump
-    int chip = argc == 3 ? index_arg(argv[1], PORTCTL_N_CHIPS) : -1;
+    // ucs <1|2> id|init|status|dump | ucs <1|2> write <hex reg> <hex value>
+    int chip = argc >= 3 ? index_arg(argv[1], PORTCTL_N_CHIPS) : -1;
     if (chip < 0) {
         usage_error();
         return;
@@ -212,7 +212,13 @@ static void cmd_ucs(int argc, char **argv) {
         P("I2C bus 1 is held by the hub reset sequence\r\n");
         return;
     }
-    if (eq(argv[2], "id")) {
+    if (argc == 5 && eq(argv[2], "write")) {
+        uint8_t reg = (uint8_t)strtoul(argv[3], NULL, 16), value = (uint8_t)strtoul(argv[4], NULL, 16), back = 0;
+        bool ok = ucs2114_write_reg(bus, reg, value) && ucs2114_read_reg(bus, reg, &back);
+        P("ucs %d: %02Xh <- %02X, %s, reads back %02X\r\n", chip + 1, reg, value, ok ? "ok" : "FAILED", back);
+    } else if (argc != 3) {
+        usage_error();
+    } else if (eq(argv[2], "id")) {
         P("ucs %d: %s\r\n", chip + 1, ucs2114_check_id(bus) ? "UCS2114 found" : "not found");
     } else if (eq(argv[2], "init")) {
         P("ucs %d: %s\r\n", chip + 1, portctl_chip_init((uint8_t)chip) ? "configured" : "failed");
@@ -345,7 +351,7 @@ static const command_t commands[] = {
     {"relay", "connect|disconnect|pulse <ms>", cmd_relay},
     {"defaults", "[set <hex mask>|save]", cmd_defaults},
     {"hub", "[status|reset|dump]", cmd_hub},
-    {"ucs", "<1|2> id|init|status|dump", cmd_ucs},
+    {"ucs", "<1|2> id|init|status|dump|write <reg> <val>", cmd_ucs},
     {"led", "<n>|host on|off, led auto", cmd_led},
     {"btn", "", cmd_btn},
     {"gpio", "en|data <n> 0|1 (raw, bypasses the port logic)", cmd_gpio},
