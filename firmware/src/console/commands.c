@@ -283,10 +283,17 @@ static void cmd_pin(int argc, char **argv) {
     g->PUPDR = (pupdr & ~mask) | (2u << (2 * n));
     board_delay_ms(2);
     int down = (g->IDR >> n) & 1;
+    // Released right after the pull-down: a weak external pull-up (100 kΩ,
+    // overpowered by the internal pulls) brings the pin back up, an
+    // unconnected pin keeps the low level on its own capacitance.
+    g->PUPDR = pupdr & ~mask;
+    board_delay_ms(5);
+    int released = (g->IDR >> n) & 1;
     g->PUPDR = pupdr;
     g->MODER = moder;
-    P("P%c%d: level %d, with pull-up %d, with pull-down %d -> %s\r\n", *l, n, level, up, down,
-      up != down ? "floating" : up ? "held high" : "held low");
+    P("P%c%d: level %d, with pull-up %d, with pull-down %d, released %d -> %s\r\n", *l, n, level, up, down,
+      released,
+      up == down ? (up ? "held high" : "held low") : released ? "weak external pull-up" : "floating");
 }
 
 static void cmd_i2c(int argc, char **argv) {
