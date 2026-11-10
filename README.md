@@ -66,6 +66,7 @@ DigiKey come fornitore di riferimento.
 Schema elettrico v0.3 allineato ai requisiti (D79–D83); PCB 100 × 100 mm a quattro strati (D84)
 completo (D84–D95, vedi [hardware/README.md](hardware/README.md)). Il prototipo Rev A è
 montato: al banco sono verificate le alimentazioni, l'enumerazione del hub senza firmware e
-il collegamento al MCU. Firmware e strumento host non sono ancora iniziati; stack e
-comportamenti sono definiti (D96–D101) e il protocollo ha il formato binario 0.1. Restano il
-dimensionamento della scarica e le verifiche sul prototipo che richiedono il firmware.
+il collegamento al MCU. Firmware ([firmware/README.md](firmware/README.md)) e libreria
+Python con CLI ([host/README.md](host/README.md)) sono scritti secondo D96–D101 e il
+protocollo 0.1, e superano i test su PC; non sono ancora stati eseguiti sul prototipo.
+Restano il collaudo sulla scheda, il dimensionamento della scarica e le verifiche elettriche.

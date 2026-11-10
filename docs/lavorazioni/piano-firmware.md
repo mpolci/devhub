@@ -4,6 +4,24 @@ Documento di lavorazione: descrive come si intende realizzare il firmware e la l
 minima, non lo stato del progetto. Le specifiche restano in `docs/` (requisiti, architettura,
 protocollo, pinout, decisioni D96–D101); in caso di differenze prevalgono quelle.
 
+## Stato
+
+Il codice degli incrementi 1–10 è scritto in `firmware/` e `host/`: compila, e la logica
+indipendente dall'hardware (porte, relè, protocollo, libreria Python) supera i test su PC.
+**Nessun incremento è ancora verificato sulla scheda**: le verifiche descritte sotto restano
+tutte da fare, nell'ordine indicato, usando la console. Durante la scrittura non era
+collegata una sonda al prototipo.
+
+Punti da guardare per primi al banco, perché decisi sulla carta:
+
+- numerazione delle porte del hub dopo la disabilitazione di DS5 e DS7 (porta 6 dichiarata
+  non rimovibile con il numero fisico) e stringhe del hub;
+- temporizzazione I²C a 100 kHz con clock a 16 MHz e risveglio degli UCS2114;
+- comportamento di ALERT# mascherato (D98) e ripresa del controller dopo una tensione di
+  ritorno;
+- salto al bootloader ST da firmware e stato dei pin in DFU;
+- banco singolo o doppio della flash per il record dei default.
+
 ## Punto di partenza
 
 - Prototipo Rev A montato. Verificati al banco: alimentazioni (+5V, +3V3, eFuse),

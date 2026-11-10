@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "devhub"
+version = "0.1.0"
+description = "Host library and CLI for the devhub USB hub"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.9"
+dependencies = ["hidapi>=0.14"]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[project.scripts]
+devhub = "devhub.cli:main"
+
+[tool.setuptools]
+packages = ["devhub"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["board: needs a devhub connected over USB"]
