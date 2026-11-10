@@ -1,5 +1,7 @@
 #include "app/portctl.h"
 
+#include <stddef.h>
+
 #include "app/defaults.h"
 #include "app/hub_ctrl.h"
 #include "app/ports.h"
@@ -18,6 +20,7 @@ typedef struct {
     i2c_bus_t bus;
     bool ok;
     uint32_t next_poll;
+    const char *last_error;
 } chip_t;
 
 static chip_t chips[PORTCTL_N_CHIPS] = {{.bus = I2C_BUS_1}, {.bus = I2C_BUS_2}};
@@ -76,14 +79,20 @@ bool portctl_chip_init(uint8_t chip) {
         i2c_bus_init(c->bus);
     }
     ucs2114_events_t ev;
+    const char *error = NULL;
     if (!ucs2114_check_id(c->bus)) {
-        LOG("ucs %u: not found", chip + 1);
+        error = "not found";
     } else if (!ucs2114_read_events(c->bus, &ev) || !ucs2114_configure(c->bus)) {
-        LOG("ucs %u: configuration failed", chip + 1);
+        error = "configuration failed";
     } else {
         LOG("ucs %u: configured (discharge 400 ms, ALERT# masked)", chip + 1);
         c->ok = true;
     }
+    // Retried every second: report a failure once, not at every attempt.
+    if (error && error != c->last_error) {
+        LOG("ucs %u: %s", chip + 1, error);
+    }
+    c->last_error = error;
     return c->ok;
 }
 
