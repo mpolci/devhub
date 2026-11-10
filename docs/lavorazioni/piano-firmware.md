@@ -49,17 +49,19 @@ Osservazioni al banco (LED, pulsanti, relè, VBUS):
 - VBUS_DET: 5,1–5,3 V dopo la ripassata di U3 (il pin 21 era fra quelli mal saldati).
 - Porta 4: 5 V accesa, 0 V spenta.
 
-Anomalie hardware aperte sui controller delle porte:
+Anomalie hardware sui controller delle porte, dopo le ripassate ad aria calda di U4 e U5:
 
 | Componente | Pin | Sintomo | Verifica |
 |---|---|---|---|
-| U4 e U5 | 1, PWR_EN1 | le porte 1 e 3 restano a 5 V a porta spenta | rete EN bassa lato MCU, ma il controller legge il pin alto; con PIN_IGN (registro 13h) il canale si spegne e TP13 va a 0 V |
-| U4 | 15, PWR_EN2 | la porta 2 non si accende (TP12 a 0 V) | rete EN_P2 collegata lato MCU, il controller non vede mai l'enable |
+| U4 | 15, PWR_EN2 | la porta 2 non si accende (TP12 a 0 V) | rete EN_P2 collegata lato MCU; il registro 0Fh non mostra mai l'enable attivo |
+| U5 | 9 e 10, VS del canale 2 | la porta 4 non si accende (TP14 a 0 V) | enable visto dal controller (0Fh = 0Bh), ma il registro 04h segnala VS_LOW in modo permanente |
 
-Nel PCB le reti sono corrette. I pin 1 e 15 sono i due d'angolo sul lato dei pin 16–20,
-quello vicino alle via dell'area di massa del pin 17 sotto il corpo: il sospetto è che
-l'integrato non appoggi bene su quel lato. Finché il pin 1 non è collegato, le porte 1 e 3
-sono alimentate anche durante il reset e nel bootloader, contro D80.
+Il pin 1 (PWR_EN1) dei due controller, che prima teneva sempre accese le porte 1 e 3, ora è
+collegato: TP11 e TP13 seguono il comando. Nel PCB le reti sono corrette.
+
+Nota sui registri dell'UCS2114: con entrambi gli enable bassi il controller dorme e i
+registri di stato (0Fh, 10h, 13h) si leggono con valori diversi da quelli a controller
+sveglio; non vanno interpretati in quella condizione.
 
 Punti aperti dalle prove:
 

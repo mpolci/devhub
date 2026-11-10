@@ -3,11 +3,16 @@
 #include "board/board.h"
 
 #define DEBOUNCE_MS 20
+// Minimum time between two accepted presses of the same button: contact
+// chatter longer than the debounce time was seen toggling a port twice.
+#define REPEAT_LOCKOUT_MS 250
 
 typedef struct {
     bool stable;
     bool last_raw;
     uint32_t changed_at;
+    uint32_t pressed_at;
+    bool pressed_once;
     uint16_t count;
 } button_t;
 
@@ -33,7 +38,9 @@ void buttons_task(uint32_t now) {
             b->changed_at = now;
         } else if (raw != b->stable && (uint32_t)(now - b->changed_at) >= DEBOUNCE_MS) {
             b->stable = raw;
-            if (raw) {
+            if (raw && !(b->pressed_once && (uint32_t)(now - b->pressed_at) < REPEAT_LOCKOUT_MS)) {
+                b->pressed_once = true;
+                b->pressed_at = now;
                 b->count++;
                 if (callback) {
                     callback(i);
