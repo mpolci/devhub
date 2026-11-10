@@ -49,15 +49,17 @@ Osservazioni al banco (LED, pulsanti, relè, VBUS):
 - VBUS_DET: 5,1–5,3 V dopo la ripassata di U3 (il pin 21 era fra quelli mal saldati).
 - Porta 4: 5 V accesa, 0 V spenta.
 
-Anomalie hardware sui controller delle porte, dopo le ripassate ad aria calda di U4 e U5:
+Anomalie hardware sui controller delle porte, tutte risolte con ripassate ad aria calda
+di U4 e U5 (nel PCB le reti sono corrette):
 
-| Componente | Pin | Sintomo | Verifica |
+| Componente | Pin | Sintomo | Come è stato individuato |
 |---|---|---|---|
-| U4 | 15, PWR_EN2 | la porta 2 non si accende (TP12 a 0 V) | rete EN_P2 collegata lato MCU; il registro 0Fh non mostra mai l'enable attivo. Con il bit PWR_EN2S (registro 11h) scritto via I²C TP12 sale a 5 V: interruttore, alimentazione e uscita sono a posto, manca solo l'ingresso di enable (pin 15 o la pista da R43) |
-| U5 | 9 e 10, VS del canale 2 | la porta 4 non si accende (TP14 a 0 V) | enable visto dal controller (0Fh = 0Bh), ma il registro 04h segnala VS_LOW in modo permanente |
+| U4 e U5 | 1, PWR_EN1 | porte 1 e 3 sempre alimentate | rete EN bassa lato MCU, ma enable letto alto dal controller; con PIN_IGN (13h) il canale si spegneva |
+| U4 | 15, PWR_EN2 | porta 2 mai alimentata | enable mai visto nel registro 0Fh; con PWR_EN2S (11h) scritto via I²C TP12 saliva a 5 V |
+| U5 | 9 e 10, VS del canale 2 | porta 4 mai alimentata dopo una ripassata | enable visto, VS_LOW fisso nel registro 04h; sparito dopo la riparazione |
 
-Il pin 1 (PWR_EN1) dei due controller, che prima teneva sempre accese le porte 1 e 3, ora è
-collegato: TP11 e TP13 seguono il comando. Nel PCB le reti sono corrette.
+Dopo le riparazioni entrambi i controller vedono i due enable, nessuna segnalazione
+residua, e i sei test `pytest -m board` passano.
 
 Nota sui registri dell'UCS2114: con entrambi gli enable bassi il controller dorme e i
 registri di stato (0Fh, 10h, 13h) si leggono con valori diversi da quelli a controller
