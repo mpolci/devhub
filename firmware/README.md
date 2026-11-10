@@ -62,6 +62,7 @@ elenca. I principali:
 | Comando | Uso |
 |---|---|
 | `status` | stato di sistema, hub, porte (logico e segnali), relè, default |
+| `log` | messaggi di log dall'avvio (utili sulla seriale virtuale, che all'avvio non è ancora aperta) |
 | `port <n> on\|off\|cycle [ms]\|clear`, `all on\|off` | comando logico delle porte |
 | `relay connect\|disconnect\|pulse <ms>` | linea del relè |
 | `hub [status\|reset\|dump]` | stato del hub, nuova sequenza di reset e configurazione |

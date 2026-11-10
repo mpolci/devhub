@@ -11,6 +11,9 @@ void console_printf(const char *fmt, ...) __attribute__((format(printf, 1, 2)));
 void console_log(const char *fmt, ...) __attribute__((format(printf, 1, 2)));
 #define LOG(...) console_log(__VA_ARGS__)
 
+// Print the retained log lines (oldest first).
+void console_dump_history(void);
+
 // Implemented in commands.c: run one command line (modified in place).
 void commands_exec(char *line);
 

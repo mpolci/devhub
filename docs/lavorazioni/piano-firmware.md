@@ -36,16 +36,19 @@ Verificato sulla scheda:
   sequenza dell'ADC, variabili persistenti fuori dalla RAM del bootloader, coda dei report,
   sorveglianza del reset del hub, recupero del bus I²C).
 
-Anomalie hardware ancora aperte (prova `pin` della console: un pin che segue sia il pull-up
-sia il pull-down interno è flottante):
+- Dopo la seconda ripassata (pin 23): I2C2_SDA regolare, controller U5 (porte 3-4)
+  identificato e configurato come U4. Nessuna anomalia di saldatura nota resta aperta.
 
-| Pin MCU | Rete | Atteso | Trovato | Effetto |
-|---|---|---|---|---|
-| 23, PB11 | I2C2_SDA | alto, pull-up R51 da 4,7 kΩ | flottante: va basso con il solo pull-down interno | controller U5 (porte 3-4) irraggiungibile: le porte si accendono, ma senza scarica automatica né cause di guasto |
+Punti aperti dalle prove:
 
-PB10 (I2C2_SCL, pin 22) è regolare. Restano da controllare la saldatura del pin 23, R51 e
-la continuità fra il pin e il pin SMDATA di U5. VBUS_DET legge 5,5–5,6 V con il PC
-collegato: da confrontare con un multimetro, il valore reale atteso è intorno a 5 V.
+- **Guasto generico delle porte 1 e 2 all'accensione.** Visto una volta dopo un ciclo di
+  alimentazione con entrambi i controller presenti; un nuovo comando di accensione le
+  riabilita senza problemi, e non si ripete dopo un reset software né dopo `hub reset`.
+  Il comando `log` della console conserva ora i messaggi di avvio, con la maschera di
+  ALERT# e i registri di stato letti al momento del guasto: va riletto dopo un ciclo di
+  alimentazione.
+- VBUS_DET legge 5,5–5,6 V con il PC collegato: da confrontare con un multimetro, il valore
+  reale atteso è intorno a 5 V.
 
 Ancora da verificare al banco, perché richiedono strumenti o l'osservazione della scheda:
 LED e pulsanti, VBUS e scarica sui test point, relè sui contatti, accensione sfalsata,

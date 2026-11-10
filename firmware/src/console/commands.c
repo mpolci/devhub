@@ -320,6 +320,10 @@ static void cmd_defaults(int argc, char **argv) {
     P("defaults mask 0x%X (%s)\r\n", defaults_get(), defaults_from_flash() ? "flash" : "not saved");
 }
 
+static void cmd_log(int argc, char **argv) {
+    console_dump_history();
+}
+
 static void cmd_reset(int argc, char **argv) {
     system_request_reboot();
 }
@@ -335,6 +339,7 @@ static const command_t commands[] = {
     {"help", "", cmd_help},
     {"version", "", cmd_version},
     {"status", "", cmd_status},
+    {"log", "(log lines since start-up)", cmd_log},
     {"port", "<n> on|off|cycle [ms]|clear", cmd_port},
     {"all", "on|off", cmd_all},
     {"relay", "connect|disconnect|pulse <ms>", cmd_relay},

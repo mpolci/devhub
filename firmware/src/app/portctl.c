@@ -110,6 +110,10 @@ static void service_chip(uint8_t chip, uint8_t alerted) {
         LOG("ucs %u: reset detected, reconfiguring", chip + 1);
         portctl_chip_init(chip);
     }
+    if (alerted) {
+        LOG("ucs %u: ALERT# mask 0x%X, read %d, int1 0x%02X, int2 0x%02X", chip + 1, alerted, read, ev.raw_int1,
+            ev.raw_int2);
+    }
     for (uint8_t ch = 0; ch < 2; ch++) {
         uint8_t port = (uint8_t)(chip * 2 + ch);
         uint8_t cause = fault_cause(ev.ch[ch]);
