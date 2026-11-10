@@ -1,0 +1,12 @@
+[submodule "firmware/third_party/stm32g0xx_hal_driver"]
+	path = firmware/third_party/stm32g0xx_hal_driver
+	url = https://github.com/STMicroelectronics/stm32g0xx-hal-driver
+[submodule "firmware/third_party/cmsis_core"]
+	path = firmware/third_party/cmsis_core
+	url = https://github.com/STMicroelectronics/cmsis-core
+[submodule "firmware/third_party/tinyusb"]
+	path = firmware/third_party/tinyusb
+	url = https://github.com/hathach/tinyusb
+[submodule "firmware/third_party/cmsis_device_g0"]
+	path = firmware/third_party/cmsis_device_g0
+	url = https://github.com/STMicroelectronics/cmsis-device-g0
