@@ -2,8 +2,8 @@
 
 L'architettura funzionale segue i requisiti semplificati D60–D66 e le decisioni D68–D87: controllo delle porte
 e riavvio temporizzato, senza misura dei consumi, delle tensioni delle porte/5V_SYS o delle CC
-d'ingresso. Lo schema v0.3 la applica (D79); il PCB da 100 × 100 mm (D84) ha il
-piazzamento iniziale ed è da sbrogliare.
+d'ingresso. Lo schema v0.3 la applica (D79); il PCB da 100 × 100 mm (D84) è realizzato e il
+prototipo è montato. Il firmware segue D96–D101.
 D75 sceglie due UCS2114-1-V/LX con due bus I²C indipendenti e quattro PI3USB4002A.
 La scarica automatica va configurata all’avvio, con 400 ms come durata iniziale da validare.
 Componenti e alternative: [componenti.md](componenti.md).
@@ -154,6 +154,11 @@ contemporaneamente su tutte le porte. Hub e MCU sono alimentati solo dalla 5V_SY
 **Gestione dei guasti (D64/D73).** Un guasto porta segnalato blocca la porta in OFF
 e interrompe l’eventuale ciclo, con LED lampeggiante; il MCU attende un tentativo esplicito
 da pulsante o PC. Non è richiesta una funzione latch-off integrata nel controller.
+Bloccano la porta solo sovracorrente e sovratemperatura: ALERT# degli UCS2114 è mascherato
+agli altri casi (D98). Scarica non riuscita, tensione di ritorno e VBUS sotto il minimo sono
+avvisi letti dai registri ed esposti al PC, senza blocco né lampeggio: una scheda
+autoalimentata può restare collegata ed essere sottoposta a cicli. Scollegamento o
+sospensione del PC non cambiano lo stato di porte e relè (D100).
  Le accensioni multiple sono sfalsate per contenere l'inrush,
 con intervallo da verificare sul circuito. Restano limitazione hardware e segnali di guasto;
 il firmware non calcola consumi o budget, non sceglie la porta più energivora e non espone
@@ -296,13 +301,17 @@ diversa; le varianti N non sono compatibili (pin 30/31 di alimentazione).
 
 Interfacce USB esposte:
 - **HID** con usage page vendor: il canale di controllo, senza driver.
-- **CDC** (opzionale): console di debug e log.
+- **CDC**: console diagnostica a comandi di testo e log, la stessa disponibile sulla UART di
+  J9 (D97).
 - Bootloader di sistema ST via DFU (USB) per l'aggiornamento del firmware: `ENTER_BOOTLOADER`, poi
   `dfu-util` attraverso il hub, che resta acceso. Con la flash vuota il G0 avvia da solo il
   bootloader (empty check), quindi anche la prima programmazione può passare dall'USB. SWD (J4) per
   debug e recupero.
 
-Stack software: STM32CubeG0 HAL; per l'USB device TinyUSB o la libreria USB device di ST. Build con CMake e arm-none-eabi-gcc (già presenti sulla macchina di sviluppo).
+Stack software (D96): HAL di STM32CubeG0 per clock, GPIO, I²C e flash, TinyUSB per l'USB
+device; nessun RTOS, ciclo principale cooperativo con tick da 1 ms. Build con CMake e
+arm-none-eabi-gcc (già presenti sulla macchina di sviluppo). Il collaudo della scheda passa
+dalla console diagnostica dello stesso firmware, senza un firmware di prova separato.
 
 VID/PID: VID 0x1209 (pid.codes) con PID di test (0x0001–0x0010) durante lo sviluppo; PID definitivo
 da richiedere a pid.codes alla pubblicazione del repository.

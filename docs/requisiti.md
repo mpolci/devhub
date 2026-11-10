@@ -12,7 +12,7 @@ Questi requisiti includono le semplificazioni D60–D66 e le decisioni D68–D87
 porte, con due bus I²C indipendenti e scarica automatica configurata all’avvio; D78 conferma
 USB2517I-JZX e STM32G0B1CEU6. Restano MCU separato, controllo HID e cicli autonomi; la
 variante senza MCU non è adottata. Lo schema v0.3 applica questi requisiti (D79); il PCB
-(D84) è da completare.
+(D84) è realizzato e il prototipo è montato. D96–D101 precisano il comportamento del firmware.
 
 ## Requisiti funzionali
 
@@ -91,6 +91,8 @@ variante senza MCU non è adottata. Lo schema v0.3 applica questi requisiti (D79
   Dopo un guasto hardware segnalato della porta, il MCU interrompe l’eventuale ciclo,
   disabilita VBUS e dati e mantiene il LED lampeggiante (D73). Il ripristino richiede
   un tentativo esplicito da pulsante o PC; se il guasto persiste, la porta torna bloccata.
+  I guasti bloccanti sono sovracorrente e sovratemperatura; scarica non riuscita e tensione
+  di ritorno, tipiche di una scheda autoalimentata, sono avvisi leggibili dal PC (D98).
 - **RF-16 — Eliminato (D32).** Hub e MCU sono alimentati solo dall'alimentatore esterno;
   senza alimentatore l'hub non è visibile dal PC.
 
@@ -100,6 +102,9 @@ variante senza MCU non è adottata. Lo schema v0.3 applica questi requisiti (D79
   Ogni pressione alterna lo
   stato della porta (dati e alimentazione con un unico comando logico) o della linea del relè.
   I cambi di stato sono notificati all'host. Non è prevista una verifica del budget di corrente.
+  Durante un ciclo la pressione lo annulla e lascia la porta disabilitata (D99). I pulsanti
+  funzionano anche senza PC collegato; lo scollegamento o la sospensione del PC non cambiano
+  lo stato di porte e relè (D100).
 
 ## Requisiti non funzionali
 

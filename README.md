@@ -64,6 +64,8 @@ Requisiti semplificati definiti (D60–D66). Hub USB2517I-JZX, MCU STM32G0B1CEU6
 DigiKey come fornitore di riferimento.
 
 Schema elettrico v0.3 allineato ai requisiti (D79–D83); PCB 100 × 100 mm a quattro strati (D84)
-completo di piazzamento, sbroglio e zone (D84–D95), pronto per il prototipo (vedi
-[hardware/README.md](hardware/README.md)). Restano da fare BOM e file di assemblaggio, il
-dimensionamento della scarica e le verifiche sul prototipo.
+completo (D84–D95, vedi [hardware/README.md](hardware/README.md)). Il prototipo Rev A è
+montato: al banco sono verificate le alimentazioni, l'enumerazione del hub senza firmware e
+il collegamento al MCU. Firmware e strumento host non sono ancora iniziati; stack e
+comportamenti sono definiti (D96–D101) e il protocollo ha il formato binario 0.1. Restano il
+dimensionamento della scarica e le verifiche sul prototipo che richiedono il firmware.

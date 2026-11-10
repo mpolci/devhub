@@ -88,12 +88,24 @@ VBUS upstream, due controlli del hub, UART, USB e SWD.
 - UCS2114 (D75): all'avvio PWR_EN bassi e dati aperti, risveglio dei controller, abilitazione
   di EN_VBUS_DISCHG con timer 400 ms e verifica per lettura, poi accensione sfalsata delle
   porte. Charge rationing e override software dei pin restano disabilitati; niente comandi
-  DISCHG_LOAD senza timer. Dopo una perdita di alimentazione dei controller reinizializzare.
+  DISCHG_LOAD senza timer. Dopo una perdita di alimentazione dei controller reinizializzare
+  (bit RESET del registro 03h).
+- Registri UCS2114 (DS20005743B): il controller dorme con entrambi i PWR_EN bassi e torna a
+  dormire dopo 200 ms senza comunicazioni; la prima lettura lo sveglia e restituisce zeri, da
+  scartare (attesa ~4 ms). Configurazione, conservata nel sonno: 12h con EN_VBUS_DISCHG e
+  ALERT1_MASK, 11h con ALERT2_MASK e DISCHG_TIME = 11 (400 ms); 15h lasciato al default
+  (LATCHS = 0); identificazione da FDh = E3h e FEh = 5Dh.
+- Guasti e avvisi (D98): su ALERT# leggere 04h (porta 1 del chip) o 03h (porta 2) **prima**
+  di abbassare PWR_EN, perché ERR si cancella con PWR_EN basso; OV_LIM e TSD bloccano la
+  porta, DISCH_ERR, BACK_V e KEEP_OUT sono avvisi letti in polling. I bit si cancellano alla
+  lettura.
 - PF1 (HUB_RST_N) va sempre configurato open-drain (mai push-pull alto): RESET_N è condiviso con il supervisore U12 e ha il pull-up R27.
 - Sequenza di avvio del hub, dopo un'accensione o un calo di tensione del MCU (flag di RCC_CSR, oppure un flag in un registro di backup): tirare basso HUB_RST_N, impostare HUB_CFG_SEL2, verificare I2C1_SCL alto (bus I2C1 fermo), rilasciare il reset e **aspettare che la linea risalga davvero** (lettura di PF1 in ingresso: U12 può tenerla bassa fino a 700 ms dopo che la 3,3 V è tornata); solo allora, se CFG_SEL2 = 0, scrivere i registri del hub via SMBus, compresa la disabilitazione delle porte 5 e 7, e poi il comando di attach (registro FFh). Il MCU parte prima che U12 rilasci il reset (150-700 ms), quindi il hub enumera una volta sola.
 - Reset del solo hub (D35): un calo della 3,3 V tra ~1,8 e ~2,9 V fa scattare U12 ma non resetta il MCU, che funziona fino a 1,7 V (il brownout reset è disattivato di default). Il firmware legge HUB_RST_N ogni ≤10 ms (PF1 è open-drain e il suo ingresso resta attivo; U12 tiene il reset almeno 150 ms). Niente interrupt: EXTI1 è usata da EFUSE_FLT_N (PB1). Se lo trova basso senza averlo chiesto: porta basso anche PF1, così il rilascio non dipende da U12, ferma l'I2C1, aspetta almeno 1 s, poi ripete la sequenza di avvio. Così il rilascio non capita mai durante una transazione I2C: SCL è anche CFG_SEL0. Attivare il brownout reset del MCU (~2,8 V) non basterebbe: resterebbe la finestra tra 2,8 e 3,0 V.
 - Dopo un reset software, un watchdog o il ritorno dal bootloader non toccare HUB_RST_N: il hub è già configurato e il MCU si ricollega da solo sulla porta 6.
-- LED delle porte (D63): spento = disabilitata, fisso = abilitata, lampeggiante = guasto, con priorità al guasto.
+- LED delle porte (D63): spento = disabilitata, fisso = abilitata, lampeggiante = guasto, con priorità al guasto. Durante la fase spenta di un ciclo il LED è spento.
+- LED_HOST: acceso con il dispositivo USB del MCU configurato dall'host e bus non sospeso.
+- Console diagnostica (D97) su USART2 (J9) a 115200 8N1 e sulla CDC USB.
 - I pulsanti delle porte 1-3 sono su PC13/PC14/PC15, pin a bassa capacità di pilotaggio: vanno usati solo come ingressi.
 - FAULT_P1-P4: pull-up esterni da 10 kΩ, nessun pull-up interno necessario.
 - Ingresso alimentazione: EFUSE_FLT_N (PB1) segnala guasti hardware; con OVLO/UVLO può restare alto. Il MCU può gestirlo solo finché è alimentato: non si garantisce un evento prima dello spegnimento dell'hub. Nessuna lettura di corrente totale, 5V_SYS o CC d'ingresso (D60/D65).
