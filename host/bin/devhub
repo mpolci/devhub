@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Run the devhub CLI straight from the repository, without installing anything by hand.
+# The first run creates host/.venv and installs the package and its dependencies there.
+# It can be symlinked into a directory on the PATH, e.g. ~/.local/bin/devhub.
+set -euo pipefail
+
+# Resolve symlinks to find the host/ directory of the repository.
+src="${BASH_SOURCE[0]}"
+while [ -L "$src" ]; do
+    dir="$(cd -P "$(dirname "$src")" && pwd)"
+    src="$(readlink "$src")"
+    [[ $src != /* ]] && src="$dir/$src"
+done
+host="$(cd -P "$(dirname "$src")/.." && pwd)"
+venv="$host/.venv"
+py="$venv/bin/python"
+
+if ! [ -x "$py" ] || ! "$py" -I -c "import devhub.cli, hid" 2>/dev/null; then
+    echo "devhub: first run, setting up $venv" >&2
+    [ -x "$py" ] || python3 -m venv "$venv"
+    "$py" -m pip install --quiet --disable-pip-version-check -e "$host"
+fi
+
+exec "$py" -I -m devhub "$@"

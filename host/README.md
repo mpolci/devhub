@@ -6,18 +6,27 @@ Lato PC, in Python: libreria `devhub` e comando `devhub`, sopra `hidapi`. Protoc
 **Stato:** libreria e CLI coprono tutti i comandi e gli eventi del protocollo 0.1. Sono
 provate con un trasporto simulato e sul prototipo Rev A, dove passano i test `pytest -m board`.
 
-## Installazione
+## Avvio
 
-Dalla cartella `host/`:
+Serve solo `python3`. Lo script `bin/devhub` lancia la CLI direttamente dal repository:
+
+```
+host/bin/devhub status
+```
+
+Al primo avvio crea `host/.venv` e ci installa il pacchetto con le dipendenze; dopo parte
+subito. Per averlo come comando `devhub` basta un link in una cartella del PATH:
+
+```
+ln -s "$PWD/host/bin/devhub" ~/.local/bin/devhub
+```
+
+Per sviluppare e lanciare i test, dalla cartella `host/`:
 
 ```
 python3 -m venv .venv
 .venv/bin/pip install -e ".[test]"
 ```
-
-Il comando `devhub` viene installato nel venv: si usa come `.venv/bin/devhub` oppure come
-`devhub` dopo `source .venv/bin/activate`. Senza installare il pacchetto, sempre da `host/`,
-funziona `.venv/bin/python -m devhub`.
 
 ## Libreria
 
