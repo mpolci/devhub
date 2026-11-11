@@ -1,4 +1,6 @@
-"""Help output of the command line interface; no device needed."""
+"""Command line interface logic, without a device."""
+
+import pytest
 
 from devhub import cli
 
@@ -60,3 +62,33 @@ def test_wait_times_out(monkeypatch, capsys):
     monkeypatch.setattr(cli.time, "sleep", lambda s: None)
     assert cli._wait_for_device(_FakeStatusDev(0), "S", 1, None, timeout=0) == cli.EXIT_ERROR
     assert "no device enumerated on port 1" in capsys.readouterr().err
+
+
+def _devices():
+    from devhub.usbtree import AttachedDevice
+    return {
+        1: AttachedDevice(port=1, vid=0x303A, pid=0x1001, manufacturer="Espressif", product="USB JTAG/serial",
+                          ttys=["/dev/cu.usbmodem212101"]),
+        4: AttachedDevice(port=4, vid=0x0781, pid=0x556B, manufacturer="SanDisk", product="Cruzer Edge"),
+    }
+
+
+class _InfoDev:
+    def info(self):
+        from types import SimpleNamespace
+        return SimpleNamespace(serial="S")
+
+
+def test_device_matching():
+    esp, stick = _devices()[1], _devices()[4]
+    assert esp.matches("ESPRESSIF") and esp.matches("usbmodem2121") and esp.matches("303a:1001")
+    assert stick.matches("cruzer") and not stick.matches("esp")
+
+
+def test_resolve_port(monkeypatch):
+    monkeypatch.setattr(cli, "attached_devices", lambda serial: _devices())
+    assert cli._resolve_port(_InfoDev(), "3") == 3
+    assert cli._resolve_port(_InfoDev(), "@cruzer") == 4
+    for spec, message in [("@e", "several ports match: 1, 4"), ("@nope", "no device matches"), ("x", "invalid port")]:
+        with pytest.raises(cli._UsageError, match=message):
+            cli._resolve_port(_InfoDev(), spec)

@@ -50,7 +50,8 @@ Porte e relè sono numerati da 1. I comandi rifiutati dal dispositivo sollevano
 devhub list
 devhub info
 devhub status [--json]
-devhub port <n> on|off|cycle [--ms 1000]|clear|reset-charge [--wait [--timeout 10]]
+devhub port <n>|@testo on|off|cycle [--ms 1000]|clear|reset-charge [--wait [--timeout 10]]
+devhub find <testo>
 devhub all on|off
 devhub relay <n> connect|disconnect|cycle [--ms 500]
 devhub defaults show|set [porte...]|charge-reset [porte...]|save
@@ -74,6 +75,11 @@ port 2: on         13 mA     0.42 mAh  -
 port 3: off         0 mA     0.38 mAh
 port 4: on         53 mA     4.41 mAh  SanDisk Cruzer Edge [0781:556b]
 ```
+
+`devhub find <testo>` elenca le porte il cui dispositivo corrisponde al testo (produttore,
+prodotto, numero di serie, VID:PID o porta seriale); `@testo` al posto del numero sceglie la
+porta allo stesso modo, per esempio `devhub port @esp32 cycle`, e deve corrispondere a una
+sola porta.
 
 `port <n> on|cycle --wait` torna solo quando sulla porta c'è un dispositivo enumerato dal PC
 (dopo un ciclo, la nuova enumerazione) e lo stampa con le sue porte seriali; codice di uscita 1

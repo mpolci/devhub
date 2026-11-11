@@ -56,7 +56,8 @@ Exit code {EXIT_FAULT} when a port is latched in fault.
 """),
     ("port", "port <n> on|off|cycle|clear|reset-charge [--ms MS] [--wait]", "switch, power cycle, clear a fault, reset the charge count", f"""
 Control port n (1-4, as on the front panel). VBUS and data lines are switched
-together.
+together. Instead of the number, @text chooses the port whose attached device
+matches the text, as in 'find'; it must match exactly one port.
 
   on       power the port and connect its data lines. On a port latched in
            fault this is the explicit retry: the fault is cleared first.
@@ -82,6 +83,15 @@ After a cycle it waits for the new enumeration, not for the old one.
   devhub port 2 cycle            port 2 off for 1 s, then on
   devhub port 2 cycle --ms 3000  port 2 off for 3 s
   devhub port 2 cycle --wait     ... and wait for the board to come back
+  devhub port @esp32 cycle       power cycle the port where the ESP32 is
+"""),
+    ("find", "find <text>", "ports whose device matches the text", """
+Print the ports whose attached device matches the text (macOS and Linux):
+case-insensitive, on manufacturer, product, serial number, VID:PID or serial
+port name. Exit code 1 when no device matches.
+
+  devhub find esp32          port 1: Espressif ... /dev/cu.usbmodem212101
+  devhub find 0483:          every ST device
 """),
     ("all", "all on|off", "switch every port", """
   on    switch on every port, 100 ms apart to limit the inrush current. Ports
@@ -230,11 +240,14 @@ def _parser() -> argparse.ArgumentParser:
     st.add_argument("--json", action="store_true", help="print the status as JSON")
 
     port = add("port")
-    port.add_argument("n", type=int, help="port number, 1-4")
+    port.add_argument("n", metavar="port", help="port number 1-4, or @text to choose it by attached device")
     port.add_argument("action", choices=["on", "off", "cycle", "clear", "reset-charge"])
     port.add_argument("--ms", type=int, default=p.CYCLE_DEFAULT_MS, help="off time of a cycle (default %(default)s)")
     port.add_argument("--wait", action="store_true", help="on, cycle: wait for the device to enumerate")
     port.add_argument("--timeout", type=float, default=10.0, help="for --wait, seconds (default %(default)s)")
+
+    find = add("find")
+    find.add_argument("text")
 
     all_ = add("all")
     all_.add_argument("action", choices=["on", "off"])
@@ -303,6 +316,31 @@ def _print_status(dev: Devhub, as_json: bool) -> int:
     return EXIT_FAULT if any(port.faulted for port in status.ports) else EXIT_OK
 
 
+class _UsageError(Exception):
+    """A command line argument that cannot be applied."""
+
+
+def _find(serial: str, text: str) -> dict:
+    devices = attached_devices(serial)
+    if devices is None:
+        raise _UsageError("the USB device list is available only on macOS and Linux")
+    return {port: d for port, d in sorted(devices.items()) if d.matches(text)}
+
+
+def _resolve_port(dev: Devhub, spec: str) -> int:
+    """Port number from a command line argument: a number, or @text for the attached device."""
+    if spec.startswith("@"):
+        found = _find(dev.info().serial, spec[1:])
+        if len(found) != 1:
+            what = "no device matches" if not found else "several ports match: " + ", ".join(map(str, found))
+            raise _UsageError(f"'{spec}': {what}")
+        return next(iter(found))
+    try:
+        return int(spec)
+    except ValueError:
+        raise _UsageError(f"invalid port '{spec}': a number or @text") from None
+
+
 def _wait_for_device(dev: Devhub, serial: str, port: int, before, timeout: float) -> int:
     """Wait until the port is on and a device other than `before` is enumerated on it.
 
@@ -330,6 +368,7 @@ def _wait_for_device(dev: Devhub, serial: str, port: int, before, timeout: float
 
 
 def _port_command(dev: Devhub, args: argparse.Namespace) -> int:
+    args.n = _resolve_port(dev, args.n)
     before = None
     if args.wait:
         if args.action not in ("on", "cycle"):
@@ -386,6 +425,11 @@ def _run(args: argparse.Namespace) -> int:
             return _print_status(dev, args.json)
         elif args.command == "port":
             return _port_command(dev, args)
+        elif args.command == "find":
+            found = _find(dev.info().serial, args.text)
+            for port, device in found.items():
+                print(f"port {port}: {device.describe()}")
+            return EXIT_OK if found else EXIT_ERROR
         elif args.command == "all":
             dev.set_all(args.action == "on")
         elif args.command == "relay":
@@ -430,7 +474,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     args = _parser().parse_args(argv)
     try:
         return _run(args)
-    except DevhubError as exc:
+    except (DevhubError, _UsageError) as exc:
         print(f"devhub: {exc}", file=sys.stderr)
         return EXIT_ERROR
 

@@ -54,6 +54,12 @@ class AttachedDevice:
             text += " " + " ".join(self.ttys)
         return text
 
+    def matches(self, text: str) -> bool:
+        """Case-insensitive match of names, serial number, VID:PID or a serial port."""
+        text = text.lower()
+        fields = [self.manufacturer, self.product, self.serial, f"{self.vid:04x}:{self.pid:04x}", *self.ttys]
+        return any(text in f.lower() for f in fields if f)
+
     def to_dict(self) -> dict:
         return {
             "vid": f"{self.vid:04x}",
