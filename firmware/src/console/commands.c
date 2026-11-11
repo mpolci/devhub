@@ -73,9 +73,9 @@ static void cmd_status(int argc, char **argv) {
     }
     P("hub: %s\r\n", hub_ctrl_state_name());
     for (uint8_t p = 0; p < BOARD_N_PORTS; p++) {
-        P("port %u: state 0x%02X fault 0x%02X warning 0x%02X | EN=%d DATA=%d ALERT#=%s\r\n", p + 1, ports_state(p),
-          ports_fault_cause(p), ports_warnings(p), board_port_power_get(p), board_port_data_get(p),
-          board_port_alert(p) ? "low" : "high");
+        P("port %u %s: state 0x%02X fault 0x%02X warning 0x%02X | EN=%d DATA=%d ALERT#=%s\r\n", p + 1,
+          defaults_label_get(p), ports_state(p), ports_fault_cause(p), ports_warnings(p), board_port_power_get(p),
+          board_port_data_get(p), board_port_alert(p) ? "low" : "high");
         uint16_t ma;
         uint32_t uah;
         if (portctl_measure(p, &ma, &uah)) {
@@ -351,6 +351,21 @@ static void cmd_defaults(int argc, char **argv) {
       defaults_from_flash() ? "flash" : "not saved");
 }
 
+static void cmd_label(int argc, char **argv) {
+    // label | label <n> [text]
+    if (argc >= 2) {
+        int n = index_arg(argv[1], BOARD_N_PORTS);
+        const char *text = argc >= 3 ? argv[2] : "";
+        if (n < 0 || argc > 3 || !defaults_label_set((uint8_t)n, text, (uint8_t)strlen(text))) {
+            usage_error();
+            return;
+        }
+    }
+    for (uint8_t p = 0; p < BOARD_N_PORTS; p++) {
+        P("port %u: %s\r\n", p + 1, defaults_label_get(p));
+    }
+}
+
 static void cmd_log(int argc, char **argv) {
     console_dump_history();
 }
@@ -382,6 +397,7 @@ static const command_t commands[] = {
     {"all", "on|off", cmd_all},
     {"relay", "connect|disconnect|pulse <ms>", cmd_relay},
     {"defaults", "[set <hex mask>|charge-reset <hex mask>|save]", cmd_defaults},
+    {"label", "[<n> [text]]", cmd_label},
     {"hub", "[status|reset|dump]", cmd_hub},
     {"ucs", "<1|2> id|init|status|dump|write <reg> <val>", cmd_ucs},
     {"led", "<n>|host on|off, led auto", cmd_led},

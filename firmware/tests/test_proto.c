@@ -11,6 +11,7 @@ static uint32_t now_ms;
 static uint8_t defaults_mask, charge_reset_mask;
 static int charge_resets[4];
 static bool measure_ok;
+static char labels[4][16];
 static bool save_ok;
 static int hub_resets, reboots, bootloaders;
 static bool coil;
@@ -52,6 +53,18 @@ static void sys_charge_reset_set(uint8_t m) {
     charge_reset_mask = m;
 }
 
+static const char *sys_label_get(uint8_t port) {
+    return labels[port];
+}
+static bool sys_label_set(uint8_t port, const char *text, uint8_t len) {
+    if (len > 15 || (len && text[0] == '!')) { // '!' stands for any rejected text
+        return false;
+    }
+    memset(labels[port], 0, sizeof labels[port]);
+    memcpy(labels[port], text, len);
+    return true;
+}
+
 static void sys_uid(uint8_t uid[12]) {
     for (int i = 0; i < 12; i++) {
         uid[i] = (uint8_t)(0xA0 + i);
@@ -88,6 +101,8 @@ static const proto_sys_t sys = {
     .defaults_save = sys_defaults_save,
     .charge_reset_get = sys_charge_reset_get,
     .charge_reset_set = sys_charge_reset_set,
+    .label_get = sys_label_get,
+    .label_set = sys_label_set,
     .request_hub_reset = sys_hub_reset,
     .request_reboot = sys_reboot,
     .request_bootloader = sys_bootloader,
@@ -99,6 +114,7 @@ static void setup(void) {
     charge_reset_mask = 0;
     memset(charge_resets, 0, sizeof charge_resets);
     measure_ok = true;
+    memset(labels, 0, sizeof labels);
     save_ok = true;
     hub_resets = reboots = bootloaders = 0;
     ports_init(&ports_hw);
@@ -212,6 +228,26 @@ static void test_charge_commands(void) {
     r = command(CMD_GET_CHARGE_RESET, NULL, 0);
     CHECK_EQ(r[4], 0x05);
     r = command(CMD_SET_CHARGE_RESET, ARGS(0x10));
+    CHECK_EQ(r[3], ST_BAD_PARAM);
+}
+
+static void test_label_commands(void) {
+    setup();
+    const uint8_t *r = command(CMD_SET_LABEL, ARGS(2, 'e', 's', 'p'));
+    CHECK_EQ(r[3], ST_OK);
+    CHECK(strcmp(labels[1], "esp") == 0);
+    r = command(CMD_GET_LABEL, ARGS(2));
+    CHECK_EQ(r[3], ST_OK);
+    CHECK(memcmp(&r[4], "esp\0", 4) == 0);
+    r = command(CMD_SET_LABEL, ARGS(2, '!'));
+    CHECK_EQ(r[3], ST_BAD_PARAM);
+    // 16 bytes without a terminator: longer than a label.
+    r = command(CMD_SET_LABEL, ARGS(1, 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p'));
+    CHECK_EQ(r[3], ST_BAD_PARAM);
+    r = command(CMD_SET_LABEL, ARGS(2));
+    CHECK_EQ(r[3], ST_OK);
+    CHECK_EQ(labels[1][0], 0); // cleared
+    r = command(CMD_GET_LABEL, ARGS(5));
     CHECK_EQ(r[3], ST_BAD_PARAM);
 }
 
@@ -342,6 +378,7 @@ int main(void) {
     RUN(test_get_status_layout);
     RUN(test_status_without_measurements);
     RUN(test_charge_commands);
+    RUN(test_label_commands);
     RUN(test_set_port_and_event);
     RUN(test_bad_parameters);
     RUN(test_cycle_command);

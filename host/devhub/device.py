@@ -201,8 +201,24 @@ class Devhub:
     def set_charge_reset(self, ports: List[int]) -> None:
         self._command(Command.SET_CHARGE_RESET, bytes([_mask(ports)]))
 
+    def get_label(self, port: int) -> str:
+        """Port label, "" when not set."""
+        return bytes(self._command(Command.GET_LABEL, bytes([port]))).split(b"\0")[0].decode("utf-8", "replace")
+
+    def get_labels(self) -> List[str]:
+        """Labels of all ports, in port order."""
+        info = self._info or self.info()
+        return [self.get_label(port) for port in range(1, info.n_ports + 1)]
+
+    def set_label(self, port: int, text: str) -> None:
+        """Set the label of a port; "" clears it."""
+        data = text.encode("utf-8")
+        if len(data) > p.LABEL_MAX_BYTES:
+            raise ValueError(f"label longer than {p.LABEL_MAX_BYTES} bytes")
+        self._command(Command.SET_LABEL, bytes([port]) + data.ljust(p.LABEL_MAX_BYTES + 1, b"\0"))
+
     def save_defaults(self) -> None:
-        """Write the power-on ports and the charge reset setting to flash."""
+        """Write the settings (power-on ports, charge reset, labels) to flash."""
         self._command(Command.SAVE_DEFAULTS)
 
     # --- System ---------------------------------------------------------------

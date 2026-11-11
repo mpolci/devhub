@@ -14,7 +14,10 @@ typedef struct {
     uint8_t reserved[2];
     uint8_t data[FLASH_STORE_MAX_LEN];
     uint32_t crc;
-} record_t; // 44 bytes; programmed as 6 double words (48 bytes)
+} record_t;
+
+// Flash is programmed by double words.
+#define RECORD_DWORDS ((sizeof(record_t) + 7u) / 8u)
 
 static uint32_t crc32(const uint8_t *p, uint32_t n) {
     uint32_t crc = 0xFFFFFFFFu;
@@ -45,7 +48,7 @@ bool flash_store_save(uint8_t version, const void *data, uint8_t len) {
     }
     union {
         record_t r;
-        uint64_t dw[6];
+        uint64_t dw[RECORD_DWORDS];
     } buf;
     memset(&buf, 0xFF, sizeof buf);
     buf.r.magic = STORE_MAGIC;
@@ -76,7 +79,7 @@ bool flash_store_save(uint8_t version, const void *data, uint8_t len) {
     __HAL_FLASH_CLEAR_FLAG(FLASH_SR_CLEAR); // stale error flags would fail the erase
     if (HAL_FLASHEx_Erase(&erase, &page_error) == HAL_OK) {
         ok = true;
-        for (uint32_t i = 0; i < 6 && ok; i++) {
+        for (uint32_t i = 0; i < RECORD_DWORDS && ok; i++) {
             ok = HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, STORE_ADDR + 8u * i, buf.dw[i]) == HAL_OK;
         }
     }

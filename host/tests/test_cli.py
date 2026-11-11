@@ -78,6 +78,9 @@ class _InfoDev:
         from types import SimpleNamespace
         return SimpleNamespace(serial="S")
 
+    def get_labels(self):
+        return ["", "", "Nucleo", ""]
+
 
 def test_device_matching():
     esp, stick = _devices()[1], _devices()[4]
@@ -89,7 +92,8 @@ def test_resolve_port(monkeypatch):
     monkeypatch.setattr(cli, "attached_devices", lambda serial: _devices())
     assert cli._resolve_port(_InfoDev(), "3") == 3
     assert cli._resolve_port(_InfoDev(), "@cruzer") == 4
-    for spec, message in [("@e", "several ports match: 1, 4"), ("@nope", "no device matches"), ("x", "invalid port")]:
+    assert cli._resolve_port(_InfoDev(), "nucleo") == 3
+    for spec, message in [("@e", "several ports match: 1, 4"), ("@nope", "no device matches"), ("x", "not a number nor a label")]:
         with pytest.raises(cli._UsageError, match=message):
             cli._resolve_port(_InfoDev(), spec)
 
@@ -113,3 +117,14 @@ def test_log_csv(monkeypatch, capsys):
     assert row.split(",")[1:] == ["33", "1", "120", "44.491", "0", "", ""]
     with pytest.raises(cli._UsageError):
         cli._log(Dev(), 10, duration=0)
+
+
+@pytest.mark.parametrize("text", ["", "a b", "@x", "12", "x" * 16, "è" * 8])
+def test_invalid_labels(text):
+    with pytest.raises(cli._UsageError):
+        cli._check_label(text)
+
+
+def test_valid_label():
+    cli._check_label("nucleo-f4")
+    cli._check_label("è" * 7)  # 14 bytes

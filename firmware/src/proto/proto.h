@@ -21,6 +21,8 @@ typedef struct {
     bool (*defaults_save)(void);
     uint8_t (*charge_reset_get)(void);
     void (*charge_reset_set)(uint8_t mask);
+    const char *(*label_get)(uint8_t port);                         // port from 0
+    bool (*label_set)(uint8_t port, const char *text, uint8_t len); // false if not acceptable
     void (*request_hub_reset)(void);
     void (*request_reboot)(void);
     void (*request_bootloader)(void);

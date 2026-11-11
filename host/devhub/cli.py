@@ -56,8 +56,9 @@ Exit code {EXIT_FAULT} when a port is latched in fault.
 """),
     ("port", "port <n> on|off|cycle|clear|reset-charge [--ms MS] [--wait]", "switch, power cycle, clear a fault, reset the charge count", f"""
 Control port n (1-4, as on the front panel). VBUS and data lines are switched
-together. Instead of the number, @text chooses the port whose attached device
-matches the text, as in 'find'; it must match exactly one port.
+together. Instead of the number, the port can be given by its label (see
+'label') or by @text: the port whose attached device matches the text, as in
+'find', which must match exactly one port.
 
   on       power the port and connect its data lines. On a port latched in
            fault this is the explicit retry: the fault is cleared first.
@@ -84,6 +85,16 @@ After a cycle it waits for the new enumeration, not for the old one.
   devhub port 2 cycle --ms 3000  port 2 off for 3 s
   devhub port 2 cycle --wait     ... and wait for the board to come back
   devhub port @esp32 cycle       power cycle the port where the ESP32 is
+"""),
+    ("label", "label [<port> <text>|--clear]", "names of the ports", f"""
+Without arguments print the label of every port; with a port and a text set
+the label of that port, with --clear remove it. A label has up to
+{p.LABEL_MAX_BYTES} bytes, no spaces, does not start with @ and is not a number. It is
+shown by 'status' and can be used in place of the port number. Labels are kept
+in flash with 'defaults save'.
+
+  devhub label 2 nucleo-f4 && devhub defaults save
+  devhub port nucleo-f4 cycle
 """),
     ("find", "find <text>", "ports whose device matches the text", """
 Print the ports whose attached device matches the text (macOS and Linux):
@@ -112,16 +123,17 @@ relay: n is always 1. At power-on the relay is at rest: line connected.
 """),
     ("defaults", "defaults show|set|charge-reset [ports...]|save", "settings kept in flash", """
 Settings kept by the devhub: the ports switched on when it powers up (factory
-setting: all) and the ports whose charge count restarts from zero at every
-turn-on (factory setting: none).
+setting: all), the ports whose charge count restarts from zero at every
+turn-on (factory setting: none) and the port labels (see 'label').
 
   show                        print both settings.
   set [ports...]              ports enabled at power-on; none = all off.
   charge-reset [ports...]     ports whose charge count is reset when they switch
                               on (command, button, end of a cycle, power-on);
                               none = only 'port <n> reset-charge' resets it.
-  save                        write both settings to flash. Without save the
-                              changes are lost at the next power-on.
+  save                        write the settings, labels included, to flash.
+                              Without save the changes are lost at the next
+                              power-on.
 
   devhub defaults set 1 3 && devhub defaults save
   devhub defaults charge-reset 2      count port 2 from each turn-on
@@ -252,11 +264,16 @@ def _parser() -> argparse.ArgumentParser:
     st.add_argument("--json", action="store_true", help="print the status as JSON")
 
     port = add("port")
-    port.add_argument("n", metavar="port", help="port number 1-4, or @text to choose it by attached device")
+    port.add_argument("n", metavar="port", help="port number 1-4, label, or @text to choose it by attached device")
     port.add_argument("action", choices=["on", "off", "cycle", "clear", "reset-charge"])
     port.add_argument("--ms", type=int, default=p.CYCLE_DEFAULT_MS, help="off time of a cycle (default %(default)s)")
     port.add_argument("--wait", action="store_true", help="on, cycle: wait for the device to enumerate")
     port.add_argument("--timeout", type=float, default=10.0, help="for --wait, seconds (default %(default)s)")
+
+    label = add("label")
+    label.add_argument("port", nargs="?", help="port number, label or @text")
+    label.add_argument("text", nargs="?", help="new label")
+    label.add_argument("--clear", action="store_true", help="remove the label")
 
     find = add("find")
     find.add_argument("text")
@@ -293,9 +310,12 @@ def _parser() -> argparse.ArgumentParser:
 
 def _print_status(dev: Devhub, as_json: bool) -> int:
     status = dev.status()
+    labels = dev.get_labels()
     devices = attached_devices(dev.info().serial)  # None: not available on this platform
     if as_json:
         d = status.to_dict()
+        for port in d["ports"]:
+            port["label"] = labels[port["port"] - 1] or None
         if devices is not None:
             for port in d["ports"]:
                 found = devices.get(port["port"])
@@ -306,12 +326,14 @@ def _print_status(dev: Devhub, as_json: bool) -> int:
         print("system:", ", ".join(system) if system else "-")
         if status.mcu_temp_c is not None:
             print(f"temperature: {status.mcu_temp_c} °C (controller chip)")
+        width = max(map(len, labels))
         for port in status.ports:
             d = port.to_dict()
+            name = f"port {port.port}" + (f" {labels[port.port - 1]:<{width}}" if width else "")
             state = "FAULT" if d["fault"] else "cycling" if d["cycle_active"] else "on" if d["enabled"] else "off"
             current = "?" if port.current_ma is None else f"{port.current_ma} mA"
             charge = "?" if port.charge_uah is None else f"{port.charge_uah / 1000:.2f} mAh"
-            line = f"port {port.port}: {state:<7} {current:>8} {charge:>12}"
+            line = f"{name}: {state:<7} {current:>8} {charge:>12}"
             found = devices.get(port.port) if devices is not None else None
             if found:
                 line += "  " + found.describe()
@@ -343,18 +365,27 @@ def _find(serial: str, text: str) -> dict:
     return {port: d for port, d in sorted(devices.items()) if d.matches(text)}
 
 
+def _check_label(text: str) -> None:
+    if not text or len(text.encode("utf-8")) > p.LABEL_MAX_BYTES:
+        raise _UsageError(f"a label has 1 to {p.LABEL_MAX_BYTES} bytes")
+    if text.startswith("@") or text.isdigit() or any(c.isspace() or not c.isprintable() for c in text):
+        raise _UsageError("a label has no spaces, does not start with @ and is not a number")
+
+
 def _resolve_port(dev: Devhub, spec: str) -> int:
-    """Port number from a command line argument: a number, or @text for the attached device."""
+    """Port number from a command line argument: a number, a label, or @text for the attached device."""
     if spec.startswith("@"):
         found = _find(dev.info().serial, spec[1:])
         if len(found) != 1:
             what = "no device matches" if not found else "several ports match: " + ", ".join(map(str, found))
             raise _UsageError(f"'{spec}': {what}")
         return next(iter(found))
-    try:
+    if spec.isdigit():
         return int(spec)
-    except ValueError:
-        raise _UsageError(f"invalid port '{spec}': a number or @text") from None
+    for port, label in enumerate(dev.get_labels(), start=1):
+        if label and label.lower() == spec.lower():
+            return port
+    raise _UsageError(f"invalid port '{spec}': not a number nor a label; @text chooses by attached device")
 
 
 def _wait_for_device(dev: Devhub, serial: str, port: int, before, timeout: float) -> int:
@@ -474,6 +505,18 @@ def _run(args: argparse.Namespace) -> int:
             return _print_status(dev, args.json)
         elif args.command == "port":
             return _port_command(dev, args)
+        elif args.command == "label":
+            if args.port is not None:
+                if args.text is None and not args.clear:
+                    raise _UsageError("give the new label, or --clear to remove it")
+                port = _resolve_port(dev, args.port)
+                if args.text is not None:
+                    _check_label(args.text)
+                dev.set_label(port, "" if args.clear else args.text)
+            for port, label in enumerate(dev.get_labels(), start=1):
+                print(f"port {port}: {label or '-'}")
+            if args.port is not None:
+                print("(kept in flash only after 'devhub defaults save')")
         elif args.command == "find":
             found = _find(dev.info().serial, args.text)
             for port, device in found.items():

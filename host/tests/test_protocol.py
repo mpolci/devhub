@@ -46,7 +46,8 @@ class FakeTransport:
         if self.silent or cmd in (p.Command.REBOOT, p.Command.ENTER_BOOTLOADER):
             return
         data = {p.Command.GET_INFO: INFO_DATA, p.Command.GET_STATUS: self.status_data,
-                p.Command.GET_DEFAULTS: bytes([0x05]), p.Command.GET_CHARGE_RESET: bytes([0x02])}.get(cmd, b"")
+                p.Command.GET_DEFAULTS: bytes([0x05]), p.Command.GET_CHARGE_RESET: bytes([0x02]),
+                p.Command.GET_LABEL: b"esp\0"}.get(cmd, b"")
         self.rx.append(response(cmd, seq, self.status_code, data))
 
     def read(self, timeout_ms):
@@ -121,6 +122,7 @@ def test_command_payloads(dev, fake):
     dev.set_defaults([1, 3])
     dev.reset_charge(2)
     dev.set_charge_reset([2, 4])
+    dev.set_label(1, "ab")
     dev.save_defaults()
     dev.reset_hub()
     dev.reboot()
@@ -136,6 +138,7 @@ def test_command_payloads(dev, fake):
         (0x31, bytes([0x05])),
         (0x13, bytes([2])),
         (0x34, bytes([0x0A])),
+        (0x36, bytes([1]) + b"ab"),
         (0x32, b""),
         (0x50, b""),
         (0x7E, b""),
@@ -150,6 +153,9 @@ def test_defaults(dev):
     with pytest.raises(ValueError):
         dev.set_defaults([0])
     assert dev.get_charge_reset() == [2]
+    assert dev.get_label(2) == "esp" and dev.get_labels() == ["esp"] * 4
+    with pytest.raises(ValueError):
+        dev.set_label(1, "x" * 16)
     with pytest.raises(ValueError):
         dev.set_charge_reset([9])
 

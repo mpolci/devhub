@@ -214,6 +214,31 @@ void proto_handle(const uint8_t *report, uint16_t len) {
         }
         break;
 
+    case CMD_GET_LABEL: {
+        uint8_t port = index_of(arg[0], PROTO_N_PORTS);
+        if (port == 0xFF) {
+            status = ST_BAD_PARAM;
+        } else {
+            const char *label = sys->label_get(port);
+            for (uint8_t i = 0; i < PROTO_LABEL_FIELD && label[i]; i++) {
+                data[i] = (uint8_t)label[i];
+            }
+        }
+        break;
+    }
+
+    case CMD_SET_LABEL: {
+        uint8_t port = index_of(arg[0], PROTO_N_PORTS);
+        uint8_t text_len = 0;
+        while (text_len < PROTO_LABEL_FIELD && arg[1 + text_len]) {
+            text_len++;
+        }
+        if (port == 0xFF || !sys->label_set(port, (const char *)&arg[1], text_len)) {
+            status = ST_BAD_PARAM;
+        }
+        break;
+    }
+
     case CMD_CLEAR_FAULT: {
         uint8_t port = index_of(arg[0], PROTO_N_PORTS);
         status = (port == 0xFF) ? ST_BAD_PARAM : ports_clear_fault(port);

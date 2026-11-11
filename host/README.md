@@ -50,7 +50,8 @@ Porte e relè sono numerati da 1. I comandi rifiutati dal dispositivo sollevano
 devhub list
 devhub info
 devhub status [--json]
-devhub port <n>|@testo on|off|cycle [--ms 1000]|clear|reset-charge [--wait [--timeout 10]]
+devhub port <n>|<nome>|@testo on|off|cycle [--ms 1000]|clear|reset-charge [--wait [--timeout 10]]
+devhub label [<porta> <nome>|--clear]
 devhub find <testo>
 devhub log [--interval 1000] [--duration secondi]
 devhub all on|off
@@ -76,6 +77,9 @@ port 2: on         13 mA     0.42 mAh  -
 port 3: off         0 mA     0.38 mAh
 port 4: on         53 mA     4.41 mAh  SanDisk Cruzer Edge [0781:556b]
 ```
+
+`devhub label 2 nucleo-f4` dà un nome alla porta 2 (fino a 15 byte, senza spazi, salvato con
+`devhub defaults save`): `status` lo mostra e i comandi lo accettano al posto del numero.
 
 `devhub find <testo>` elenca le porte il cui dispositivo corrisponde al testo (produttore,
 prodotto, numero di serie, VID:PID o porta seriale); `@testo` al posto del numero sceglie la

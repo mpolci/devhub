@@ -44,6 +44,8 @@ class Command(enum.IntEnum):
     SAVE_DEFAULTS = 0x32
     GET_CHARGE_RESET = 0x33
     SET_CHARGE_RESET = 0x34
+    GET_LABEL = 0x35
+    SET_LABEL = 0x36
     CLEAR_FAULT = 0x40
     RESET_HUB = 0x50
     REBOOT = 0x7E
@@ -112,6 +114,7 @@ class Capabilities(enum.IntFlag):
 TEMP_UNAVAILABLE = -128
 CURRENT_UNAVAILABLE = 0xFFFF
 CHARGE_UNAVAILABLE = 0xFFFFFFFF
+LABEL_MAX_BYTES = 15  # UTF-8 bytes of a port label
 PORT_STATUS_SIZE = 9  # state, fault, warning, current (u16 mA), charge (u32 µAh)
 
 

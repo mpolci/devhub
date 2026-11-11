@@ -31,7 +31,8 @@ punti aperti e anomalie hardware sono in
 - cinque pulsanti, quattro per le porte e uno per il relè, con debounce e notifica all'host;
 - comando e impulsi autonomi del relè ausiliario;
 - stato di default all'accensione salvato nell'ultima pagina della flash; di fabbrica
-  tutte le porte abilitate (D74);
+  tutte le porte abilitate (D74); nello stesso record l'azzeramento della carica e i nomi
+  delle porte;
 - riavvio, salto al bootloader ST per l'aggiornamento via DFU, reset del hub, watchdog;
 - temperatura del chip del MCU dal sensore interno, con le calibrazioni di fabbrica (D102);
 - corrente e carica erogata di ogni porta dai controller, con azzeramento a comando o a ogni
@@ -75,6 +76,7 @@ elenca. I principali:
 | `led`, `btn`, `gpio en\|data <n> 0\|1` | collaudo di LED, pulsanti e singoli segnali delle porte |
 | `io`, `pin <porta><n>`, `i2c <1\|2> scan` | registri GPIO, prova di un pin con pull-up e pull-down interni, scansione di un bus I²C |
 | `defaults [set <maschera hex>\|charge-reset <maschera hex>\|save]` | porte abilitate all'accensione, azzeramento della carica all'accensione |
+| `label [<n> [nome]]` | nomi delle porte, salvati con `defaults save` |
 | `reset`, `dfu`, `hang` | riavvio, ingresso nel bootloader, blocco del ciclo principale per provare il watchdog |
 
 ## Sorgenti
