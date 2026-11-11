@@ -4,12 +4,15 @@ They switch ports and the relay: disconnect anything that must not be power-cycl
 """
 
 import time
+from argparse import Namespace
 
 import pytest
 
-from devhub import Devhub, DevhubError, EventType
+from devhub import CommandError, Devhub, DevhubError, EventType, attached_devices, cli
 
 pytestmark = pytest.mark.board
+
+PROJECT_START = 1767225600  # 2026-01-01 UTC: no firmware can be older
 
 
 @pytest.fixture(scope="module")
@@ -79,3 +82,62 @@ def test_defaults_roundtrip(dev):
     dev.set_defaults([1, 3])
     assert dev.get_defaults() == [1, 3]
     dev.set_defaults(original)  # not saved to flash
+
+
+def test_temperature_and_build_time(dev):
+    temp = dev.status().mcu_temp_c
+    assert temp is not None and 10 <= temp <= 70
+    assert PROJECT_START <= dev.info().build_time <= time.time() + 60
+
+
+def test_measurements_available(dev):
+    for port in dev.status().ports:
+        assert port.current_ma is not None and port.charge_uah is not None, f"port {port.port}"
+
+
+def test_charge_never_decreases_and_resets(dev):
+    dev.set_port(1, True)
+    first = dev.status().ports[0].charge_uah
+    time.sleep(1.2)  # the controller updates the charge once a second
+    assert dev.status().ports[0].charge_uah >= first
+    dev.reset_charge(1)
+    assert dev.status().ports[0].charge_uah < 1000  # µAh: at most one update since the reset
+
+
+def test_charge_reset_at_turn_on(dev):
+    ports = dev.status().ports
+    port = max(ports, key=lambda p: p.charge_uah).port  # the one that shows the reset best
+    if ports[port - 1].charge_uah < 50:
+        pytest.skip("no port has accumulated charge")
+    original = dev.get_charge_reset()
+    try:
+        dev.set_charge_reset([port])
+        dev.set_port(port, False)
+        dev.set_port(port, True)
+        assert dev.status().ports[port - 1].charge_uah < 1000
+    finally:
+        dev.set_charge_reset(original)  # not saved to flash
+
+
+def test_labels(dev):
+    original = dev.get_labels()
+    try:
+        dev.set_label(3, "test-label")
+        assert dev.get_label(3) == "test-label"
+        assert cli._resolve_port(dev, "TEST-LABEL") == 3
+        with pytest.raises(CommandError):
+            dev.set_label(3, "a\x01")  # not printable: refused by the firmware
+    finally:
+        dev.set_label(3, original[2])  # not saved to flash
+
+
+def test_cycle_wait_sees_the_new_enumeration(dev):
+    serial = dev.info().serial
+    devices = attached_devices(serial)
+    if not devices:
+        pytest.skip("no device attached to a port, or USB device list not available")
+    port, before = min(devices.items())
+    args = Namespace(n=str(port), action="cycle", ms=1000, wait=True, timeout=10)
+    assert cli._port_command(dev, args) == cli.EXIT_OK
+    after = attached_devices(serial)[port]
+    assert (after.vid, after.pid) == (before.vid, before.pid) and after.session != before.session

@@ -110,3 +110,8 @@ esecuzione gli altri comandi non riescono ad aprirlo.
 .venv/bin/python -m pytest            # codifica del protocollo e libreria, senza dispositivo
 .venv/bin/python -m pytest -m board   # sul dispositivo collegato: accende e spegne porte e relè
 ```
+
+I test sulla scheda provano comandi, misure, nomi delle porte e, se su una porta c'è un
+dispositivo, l'attesa della nuova enumerazione dopo un ciclo. Spengono e riaccendono le porte e
+azzerano la carica di alcune: prima vanno staccati i dispositivi che non devono perdere
+l'alimentazione. Le impostazioni tornano come prima e non vengono salvate in flash.
