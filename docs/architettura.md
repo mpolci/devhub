@@ -383,11 +383,13 @@ ripiego se la rifusione dell'hub dà problemi. La D è il ripiego se non si vuol
 - PCB 100 × 100 mm (D84): sulla faccia superiore solo LED e pulsanti, che si vedono e si premono dal
   coperchio, ciascuno dietro la sua porta o coppia di boccole, con i pulsanti a 14,5 mm dal bordo frontale (D87); tutto il resto, connettori compresi,
   sulla faccia inferiore. Le due boccole (COM e NC del relè) sono affiancate; il loro manicotto
-  isolante (14,35 mm, senza filetto) attraversa la parete frontale, ispessita intorno alle boccole
-  perché il manicotto finisca a filo della faccia esterna.
-- PCB fissato alla scatola con 4 viti M3 su boccole filettate o inserti, due agli angoli
-  posteriori e due lontano dagli angoli anteriori, occupati da boccole e porte (D84); i pulsanti tattili con
-  estensori stampati o pulsanti ad asta lunga.
+  isolante (14,35 mm, senza filetto) sporge 2,15 mm dal bordo del PCB e attraversa la parete
+  frontale in un'asola a U chiusa dal fondo, a filo della faccia esterna.
+- Scatola in due pezzi (D102, progetto in [../enclosure/](../enclosure/README.md)): coperchio
+  profondo e fondo guidato da uno scalino nelle pareti. Il PCB è stretto fra le colonnine dei due
+  pezzi da 4 viti autofilettanti M3 che passano nei fori H1–H4 (D95). Pulsanti tattili con
+  cappucci da 6 mm incassati in fori smussati del coperchio, LED visti attraverso guide luce in
+  PETG trasparente.
 
 ## Protezioni (uso in laboratorio)
 

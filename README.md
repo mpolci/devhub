@@ -38,6 +38,7 @@ sono in [docs/architettura.md](docs/architettura.md).
 ```
 docs/        requisiti, architettura, protocollo di controllo, domande aperte
 hardware/    progetto KiCad (schema, PCB, BOM)
+enclosure/   scatola stampata, progetto FreeCAD parametrico
 firmware/    firmware del MCU di controllo
 host/        strumento da riga di comando per il PC
 ```
