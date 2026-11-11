@@ -3,7 +3,10 @@
 #include "app/ports.h"
 #include "app/relay.h"
 #include "proto/proto.h"
+#include "build_info.h"
 #include "test.h"
+
+const uint32_t fw_build_time = 0x6731A2B4u;
 
 // --- Fakes ---------------------------------------------------------------------
 
@@ -174,7 +177,7 @@ static void test_get_info_layout(void) {
     CHECK_EQ(r[11], CAP_CDC_CONSOLE);
     CHECK_EQ(r[15], 0xA0); // serial
     CHECK_EQ(r[26], 0xAB);
-    CHECK_EQ(r[27], 0);
+    CHECK_EQ(r[27] | (r[28] << 8) | (r[29] << 16) | ((uint32_t)r[30] << 24), fw_build_time);
 }
 
 static void test_get_status_layout(void) {

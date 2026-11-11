@@ -5,6 +5,7 @@ Pure functions, no I/O. See docs/protocollo-controllo.md.
 
 from __future__ import annotations
 
+import datetime
 import enum
 import struct
 from dataclasses import dataclass
@@ -139,6 +140,7 @@ class Info:
     n_relays: int
     capabilities: Capabilities
     serial: str
+    build_time: int  # Unix time (UTC) the firmware was built
 
     def to_dict(self) -> dict:
         return {
@@ -148,6 +150,8 @@ class Info:
             "n_relays": self.n_relays,
             "capabilities": _flag_names(self.capabilities),
             "serial": self.serial,
+            "build_time": datetime.datetime.fromtimestamp(self.build_time, datetime.timezone.utc)
+            .strftime("%Y-%m-%d %H:%M UTC"),
         }
 
 
@@ -291,6 +295,7 @@ def parse_info(data: bytes) -> Info:
         "<BBBBBBBI", data, 0
     )
     serial = bytes(data[11:23]).hex().upper()
+    (build_time,) = struct.unpack_from("<I", data, 23)
     return Info(
         proto_version=(proto_major, proto_minor),
         fw_version=(fw_major, fw_minor, fw_patch),
@@ -298,6 +303,7 @@ def parse_info(data: bytes) -> Info:
         n_relays=n_relays,
         capabilities=Capabilities(caps),
         serial=serial,
+        build_time=build_time,
     )
 
 

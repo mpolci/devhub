@@ -52,7 +52,9 @@ cmake --preset debug          # oppure release
 cmake --build build/debug
 ```
 
-Il risultato è `build/debug/devhub.elf` (e `devhub.bin`).
+Il risultato è `build/debug/devhub.elf` (e `devhub.bin`). Ogni compilazione registra nel firmware
+la data e l'ora (UTC), mostrate da `version` sulla console e da `devhub info`: durante lo sviluppo
+la versione non cambia, ed è la data a dire quale firmware è sulla scheda.
 
 ## Programmazione
 

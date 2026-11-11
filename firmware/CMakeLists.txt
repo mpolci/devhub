@@ -45,8 +45,16 @@ target_include_directories(vendor PUBLIC
 target_compile_definitions(vendor PUBLIC STM32G0B1xx USE_HAL_DRIVER)
 target_compile_options(vendor PRIVATE -w)
 
+# --- Build time: regenerated at every build ----------------------------------
+set(BUILD_INFO_C ${CMAKE_CURRENT_BINARY_DIR}/build_info.c)
+add_custom_target(build_info
+  COMMAND ${CMAKE_COMMAND} -DOUT=${BUILD_INFO_C} -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_info.cmake
+  BYPRODUCTS ${BUILD_INFO_C}
+)
+
 # --- Application -------------------------------------------------------------
 add_executable(devhub
+  ${BUILD_INFO_C}
   ${CMSIS_DEV}/Source/Templates/gcc/startup_stm32g0b1xx.s
   src/main.c
   src/board/board.c
@@ -70,6 +78,7 @@ add_executable(devhub
   src/console/commands.c
 )
 target_include_directories(devhub PRIVATE src)
+add_dependencies(devhub build_info)
 target_compile_definitions(devhub PRIVATE
   FW_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
   FW_VERSION_MINOR=${PROJECT_VERSION_MINOR}

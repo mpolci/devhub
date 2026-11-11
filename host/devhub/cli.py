@@ -24,9 +24,11 @@ _COMMANDS = [
 Print the serial number of every devhub connected to this computer, one per line.
 Exit code 1 when none is found.
 """),
-    ("info", "info", "firmware and protocol versions", """
+    ("info", "info", "firmware version and build time", """
 Print protocol and firmware versions, number of ports and relays, optional
-capabilities of the firmware and serial number.
+capabilities of the firmware, serial number and when the firmware was built
+(UTC): with the version unchanged during development, the build time tells
+which firmware is on the board.
 """),
     ("status", "status [--json]", "ports (state, current, charge) and relay", f"""
 Print the system flags, the state of each port and of the relay. On macOS and

@@ -4,6 +4,7 @@
 
 #include "app/ports.h"
 #include "app/relay.h"
+#include "build_info.h"
 
 #ifndef FW_VERSION_MAJOR
 #define FW_VERSION_MAJOR 0
@@ -116,6 +117,7 @@ void proto_handle(const uint8_t *report, uint16_t len) {
         data[6] = PROTO_N_RELAYS;
         put_u32(&data[7], CAP_CDC_CONSOLE);
         sys->get_uid(&data[11]);
+        put_u32(&data[23], fw_build_time);
         break;
 
     case CMD_GET_STATUS: {

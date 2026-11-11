@@ -76,7 +76,7 @@ i parametri iniziano al byte 3, in quello di evento i dati iniziano al byte 2.
 
 | cmd | Nome | Parametri | Risposta |
 |---|---|---|---|
-| 0x01 | GET_INFO | — | proto_version, fw_version, n_ports, n_relays, capabilities, serial |
+| 0x01 | GET_INFO | — | proto_version, fw_version, n_ports, n_relays, capabilities, serial, build_time |
 | 0x02 | GET_STATUS | — | stato di sistema; per porta stato logico, guasti, avvisi, corrente e carica; stato relè; temperatura del MCU |
 | 0x10 | SET_PORT | port, on (0/1): VBUS e dati insieme | status |
 | 0x11 | CYCLE_PORT | port, off_ms (u16): durata dal comando di disabilitazione VBUS, inclusa la scarica | status di accettazione; il ciclo prosegue autonomamente nel MCU |
@@ -106,6 +106,7 @@ Dati di `GET_INFO`, dal byte 4 della risposta:
 | 10 | n_relays | u8 | 1 |
 | 11 | capabilities | u32 | bit 0 = console CDC presente; gli altri a zero |
 | 15 | serial | 12 byte | UID del MCU |
+| 27 | build_time | u32 | momento della compilazione del firmware, tempo Unix UTC |
 
 Dati di `GET_STATUS`, dal byte 4 della risposta:
 

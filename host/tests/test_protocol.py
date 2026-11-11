@@ -22,7 +22,7 @@ def status_data(ports, relay=1, temp=37, system=0x02):
     return bytes([system]) + b"".join(struct.pack("<BBBHI", *port) for port in ports) + bytes([relay, temp & 0xFF])
 
 
-INFO_DATA = bytes([0, 1, 0, 1, 0, 4, 1]) + struct.pack("<I", 1) + bytes(range(0xA0, 0xAC))
+INFO_DATA = bytes([0, 1, 0, 1, 0, 4, 1]) + struct.pack("<I", 1) + bytes(range(0xA0, 0xAC)) + struct.pack("<I", 1794427754)
 
 
 class FakeTransport:
@@ -80,6 +80,7 @@ def test_info(dev):
     assert info.fw_version == (0, 1, 0)
     assert (info.n_ports, info.n_relays) == (4, 1)
     assert info.serial == "A0A1A2A3A4A5A6A7A8A9AAAB"
+    assert info.to_dict()["build_time"] == "2026-11-11 20:09 UTC"
     assert info.to_dict()["capabilities"] == ["cdc_console"]
 
 

@@ -10,6 +10,7 @@
 #include "app/relay.h"
 #include "app/system.h"
 #include "board/board.h"
+#include "build_info.h"
 #include "console/console.h"
 #include "drivers/i2c_bus.h"
 #include "drivers/ucs2114.h"
@@ -50,11 +51,29 @@ static void usage_error(void) {
     P("invalid arguments, see 'help'\r\n");
 }
 
+// Unix time to UTC calendar date and time (days-from-civil inverse, H. Hinnant).
+static void print_utc(uint32_t t) {
+    uint32_t secs = t % 86400u;
+    int32_t z = (int32_t)(t / 86400u) + 719468;
+    int32_t era = z / 146097;
+    uint32_t doe = (uint32_t)(z - era * 146097);
+    uint32_t yoe = (doe - doe / 1460 + doe / 36524 - doe / 146096) / 365;
+    uint32_t doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
+    uint32_t mp = (5 * doy + 2) / 153;
+    uint32_t d = doy - (153 * mp + 2) / 5 + 1;
+    uint32_t m = mp < 10 ? mp + 3 : mp - 9;
+    uint32_t y = yoe + (uint32_t)era * 400 + (m <= 2);
+    P("%04lu-%02lu-%02lu %02lu:%02lu UTC", (unsigned long)y, (unsigned long)m, (unsigned long)d,
+      (unsigned long)(secs / 3600), (unsigned long)(secs / 60 % 60));
+}
+
 static void cmd_version(int argc, char **argv) {
     uint8_t uid[12];
     board_uid(uid);
-    P("devhub firmware %d.%d.%d, protocol %d.%d\r\n", FW_VERSION_MAJOR, FW_VERSION_MINOR, FW_VERSION_PATCH,
+    P("devhub firmware %d.%d.%d, protocol %d.%d, built ", FW_VERSION_MAJOR, FW_VERSION_MINOR, FW_VERSION_PATCH,
       PROTO_VERSION_MAJOR, PROTO_VERSION_MINOR);
+    print_utc(fw_build_time);
+    P("\r\n");
     P("uid ");
     for (uint8_t i = 0; i < 12; i++) {
         P("%02X", uid[i]);
