@@ -201,6 +201,21 @@ class Devhub:
     def set_charge_reset(self, ports: List[int]) -> None:
         self._command(Command.SET_CHARGE_RESET, bytes([_mask(ports)]))
 
+    def get_limits(self) -> p.Limits:
+        """Current limits of the ports and current the power supply can deliver."""
+        info = self._info or self.info()
+        data = self._command(Command.GET_LIMITS)
+        values = struct.unpack_from(f"<{info.n_ports + 1}H", data, 0)
+        return p.Limits(ports_ma=list(values[:-1]), supply_ma=values[-1])
+
+    def set_port_limit(self, port: int, ma: int) -> None:
+        """Set the current limit of a port; the device applies the largest step not above `ma`."""
+        self._command(Command.SET_PORT_LIMIT, struct.pack("<BH", port, ma))
+
+    def set_supply_limit(self, ma: int) -> None:
+        """Current the power supply can deliver, for the comparison with the port limits."""
+        self._command(Command.SET_SUPPLY_LIMIT, struct.pack("<H", ma))
+
     def get_label(self, port: int) -> str:
         """Port label, "" when not set."""
         return bytes(self._command(Command.GET_LABEL, bytes([port]))).split(b"\0")[0].decode("utf-8", "replace")
@@ -218,7 +233,7 @@ class Devhub:
         self._command(Command.SET_LABEL, bytes([port]) + data.ljust(p.LABEL_MAX_BYTES + 1, b"\0"))
 
     def save_defaults(self) -> None:
-        """Write the settings (power-on ports, charge reset, labels) to flash."""
+        """Write the settings (power-on ports, charge reset, labels, limits) to flash."""
         self._command(Command.SAVE_DEFAULTS)
 
     # --- System ---------------------------------------------------------------

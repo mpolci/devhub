@@ -11,6 +11,7 @@
 #define REG_INT_STATUS1 0x04 // chip port 1
 #define REG_GEN_CFG2 0x11
 #define REG_GEN_CFG1 0x12
+#define REG_CURRENT_LIMIT 0x14 // ILIM_PORT1 in bits 5-3, ILIM_PORT2 in bits 2-0
 #define REG_TAC2 0x16 // total accumulated charge, 4 bytes, chip port 2
 #define REG_TAC1 0x1A // chip port 1
 #define REG_RATION_CFG 0x22
@@ -168,6 +169,27 @@ bool ucs2114_reset_charge(i2c_bus_t bus, uint8_t ch) {
     uint8_t rst = ch == 0 ? RTN_RST1 : RTN_RST2;
     return ucs2114_write_reg(bus, REG_RATION_CFG, RATION_VALUE | rst) &&
            ucs2114_write_reg(bus, REG_RATION_CFG, RATION_VALUE);
+}
+
+const uint16_t ucs2114_ilim_ma[UCS2114_ILIM_STEPS] = {530, 960, 1070, 1280, 1600, 2130, 2670};
+
+static uint8_t ilim_code(uint16_t ma) {
+    uint8_t code = 0;
+    while (code + 1 < UCS2114_ILIM_STEPS && ucs2114_ilim_ma[code + 1] <= ma) {
+        code++;
+    }
+    return code;
+}
+
+uint16_t ucs2114_ilim_round(uint16_t ma) {
+    return ucs2114_ilim_ma[ilim_code(ma)];
+}
+
+bool ucs2114_set_current_limits(i2c_bus_t bus, uint16_t ch0_ma, uint16_t ch1_ma) {
+    uint8_t value = (uint8_t)((ilim_code(ch0_ma) << 3) | ilim_code(ch1_ma));
+    uint8_t back;
+    return ucs2114_write_reg(bus, REG_CURRENT_LIMIT, value) && ucs2114_read_reg(bus, REG_CURRENT_LIMIT, &back) &&
+           (back & 0x3F) == value;
 }
 
 static uint8_t decode(uint8_t reg) {

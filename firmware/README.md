@@ -35,6 +35,7 @@ punti aperti e anomalie hardware sono in
   delle porte;
 - riavvio, salto al bootloader ST per l'aggiornamento via DFU, reset del hub, watchdog;
 - temperatura del chip del MCU dal sensore interno, con le calibrazioni di fabbrica (D102);
+- limite di corrente di ogni porta abbassabile fino a 0,53 A (D104);
 - corrente e carica erogata di ogni porta dai controller, con azzeramento a comando o a ogni
   accensione (D103);
 - nessuna misura di tensione o di corrente totale, lettura delle CC d'ingresso o gestione del budget.
@@ -79,6 +80,7 @@ elenca. I principali:
 | `io`, `pin <porta><n>`, `i2c <1\|2> scan` | registri GPIO, prova di un pin con pull-up e pull-down interni, scansione di un bus I²C |
 | `defaults [set <maschera hex>\|charge-reset <maschera hex>\|save]` | porte abilitate all'accensione, azzeramento della carica all'accensione |
 | `label [<n> [nome]]` | nomi delle porte, salvati con `defaults save` |
+| `limit [<n> <mA>\|supply <mA>]` | limite di corrente delle porte e corrente dell'alimentatore, salvati con `defaults save` |
 | `reset`, `dfu`, `hang` | riavvio, ingresso nel bootloader, blocco del ciclo principale per provare il watchdog |
 
 ## Sorgenti

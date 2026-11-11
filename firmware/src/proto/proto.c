@@ -216,6 +216,34 @@ void proto_handle(const uint8_t *report, uint16_t len) {
         }
         break;
 
+    case CMD_GET_LIMITS:
+        for (uint8_t i = 0; i < PROTO_N_PORTS; i++) {
+            put_u16(&data[2 * i], sys->port_limit_get(i));
+        }
+        put_u16(&data[2 * PROTO_N_PORTS], sys->supply_get());
+        break;
+
+    case CMD_SET_PORT_LIMIT: {
+        uint8_t port = index_of(arg[0], PROTO_N_PORTS);
+        uint16_t ma = get_u16(&arg[1]);
+        if (port == 0xFF || ma < PORT_LIMIT_MIN_MA) {
+            status = ST_BAD_PARAM;
+        } else {
+            sys->port_limit_set(port, ma);
+        }
+        break;
+    }
+
+    case CMD_SET_SUPPLY_LIMIT: {
+        uint16_t ma = get_u16(arg);
+        if (ma < SUPPLY_LIMIT_MIN_MA || ma > SUPPLY_LIMIT_MAX_MA) {
+            status = ST_BAD_PARAM;
+        } else {
+            sys->supply_set(ma);
+        }
+        break;
+    }
+
     case CMD_GET_LABEL: {
         uint8_t port = index_of(arg[0], PROTO_N_PORTS);
         if (port == 0xFF) {

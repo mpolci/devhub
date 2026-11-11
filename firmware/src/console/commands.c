@@ -370,6 +370,32 @@ static void cmd_defaults(int argc, char **argv) {
       defaults_from_flash() ? "flash" : "not saved");
 }
 
+static void cmd_limit(int argc, char **argv) {
+    // limit | limit <n> <mA> | limit supply <mA>
+    if (argc == 3 && eq(argv[1], "supply")) {
+        int ma = atoi(argv[2]);
+        if (ma < SUPPLY_LIMIT_MIN_MA || ma > SUPPLY_LIMIT_MAX_MA) {
+            usage_error();
+            return;
+        }
+        defaults_supply_set((uint16_t)ma);
+    } else if (argc == 3) {
+        int n = index_arg(argv[1], BOARD_N_PORTS);
+        if (n < 0) {
+            usage_error();
+            return;
+        }
+        portctl_set_limit((uint8_t)n, (uint16_t)atoi(argv[2]));
+    } else if (argc != 1) {
+        usage_error();
+        return;
+    }
+    for (uint8_t p = 0; p < BOARD_N_PORTS; p++) {
+        P("port %u: %u mA\r\n", p + 1, defaults_port_limit_get(p));
+    }
+    P("supply: %u mA\r\n", defaults_supply_get());
+}
+
 static void cmd_label(int argc, char **argv) {
     // label | label <n> [text]
     if (argc >= 2) {
@@ -417,6 +443,7 @@ static const command_t commands[] = {
     {"relay", "connect|disconnect|pulse <ms>", cmd_relay},
     {"defaults", "[set <hex mask>|charge-reset <hex mask>|save]", cmd_defaults},
     {"label", "[<n> [text]]", cmd_label},
+    {"limit", "[<n> <mA>|supply <mA>]", cmd_limit},
     {"hub", "[status|reset|dump]", cmd_hub},
     {"ucs", "<1|2> id|init|status|dump|write <reg> <val>", cmd_ucs},
     {"led", "<n>|host on|off, led auto", cmd_led},

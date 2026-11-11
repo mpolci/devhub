@@ -88,6 +88,7 @@ VBUS upstream, due controlli del hub, UART, USB e SWD.
 - UCS2114 (D75): all'avvio PWR_EN bassi e dati aperti, risveglio dei controller, abilitazione
   di EN_VBUS_DISCHG con timer 400 ms e verifica per lettura, poi accensione sfalsata delle
   porte. Charge rationing abilitato in modalità "Ignore" solo per contare la carica (D103);
+  limite di corrente di ogni porta scritto nel registro 14h dalle impostazioni (D104);
   override software dei pin disabilitato; niente comandi
   DISCHG_LOAD senza timer. Dopo una perdita di alimentazione dei controller reinizializzare
   (bit RESET del registro 03h).

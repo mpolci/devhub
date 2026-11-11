@@ -52,6 +52,7 @@ devhub info
 devhub status [--json]
 devhub port <n>|<nome>|@testo on|off|cycle [--ms 1000]|clear|reset-charge [--wait [--timeout 10]]
 devhub label [<porta> <nome>|--clear]
+devhub limit [<porta>|supply <corrente>]
 devhub find <testo>
 devhub log [--interval 1000] [--duration secondi]
 devhub all on|off
@@ -77,6 +78,11 @@ port 2: on         13 mA     0.42 mAh  -
 port 3: off         0 mA     0.38 mAh
 port 4: on         53 mA     4.41 mAh  SanDisk Cruzer Edge [0781:556b]
 ```
+
+`devhub limit 2 0.53` abbassa il limite di corrente della porta 2 (gradini da 0,53 a 2,67 A);
+`devhub limit` mostra i limiti e il caso peggiore, cioè la loro somma più i consumi interni,
+confrontato con la corrente dell'alimentatore (`devhub limit supply 5` per uno da 5 A). Salvati
+con `devhub defaults save`.
 
 `devhub label 2 nucleo-f4` dà un nome alla porta 2 (fino a 15 byte, senza spazi, salvato con
 `devhub defaults save`): `status` lo mostra e i comandi lo accettano al posto del numero.

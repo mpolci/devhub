@@ -141,3 +141,20 @@ def test_cycle_wait_sees_the_new_enumeration(dev):
     assert cli._port_command(dev, args) == cli.EXIT_OK
     after = attached_devices(serial)[port]
     assert (after.vid, after.pid) == (before.vid, before.pid) and after.session != before.session
+
+
+def test_port_limits(dev):
+    original = dev.get_limits()
+    try:
+        dev.set_port_limit(3, 1000)
+        assert dev.get_limits().ports_ma[2] == 960  # largest step not above 1000 mA
+        dev.set_port_limit(3, 9999)
+        assert dev.get_limits().ports_ma[2] == 2670  # the maximum set by the board
+        dev.set_supply_limit(5000)
+        assert dev.get_limits().supply_ma == 5000
+        with pytest.raises(CommandError):
+            dev.set_port_limit(3, 100)  # below the lowest step
+        assert all(port.current_ma is not None for port in dev.status().ports)  # controllers still fine
+    finally:
+        dev.set_port_limit(3, original.ports_ma[2])
+        dev.set_supply_limit(original.supply_ma)  # not saved to flash

@@ -21,6 +21,10 @@ typedef struct {
     bool (*defaults_save)(void);
     uint8_t (*charge_reset_get)(void);
     void (*charge_reset_set)(uint8_t mask);
+    uint16_t (*port_limit_get)(uint8_t port);             // mA
+    uint16_t (*port_limit_set)(uint8_t port, uint16_t ma); // returns the limit applied
+    uint16_t (*supply_get)(void);
+    void (*supply_set)(uint16_t ma);
     const char *(*label_get)(uint8_t port);                         // port from 0
     bool (*label_set)(uint8_t port, const char *text, uint8_t len); // false if not acceptable
     void (*request_hub_reset)(void);

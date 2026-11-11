@@ -88,6 +88,25 @@ After a cycle it waits for the new enumeration, not for the old one.
   devhub port 2 cycle --wait     ... and wait for the board to come back
   devhub port @esp32 cycle       power cycle the port where the ESP32 is
 """),
+    ("limit", "limit [<port>|supply <current>]", "current limits of the ports", f"""
+Without arguments print the current limit of every port, the current the power
+supply can deliver and the worst case: the input current if every port draws
+its limit, plus up to {p.INTERNAL_MAX_MA / 1000:.2f} A used by the devhub itself. Above the supply,
+an overload can switch the whole devhub off.
+
+  <port> <current>    set the limit of a port. The port controller applies it
+                      at once: a port drawing more is switched off and latched
+                      as an overcurrent fault. Steps (A): 0.53 0.96 1.07 1.28 1.60 2.13 2.67
+                      (2.67 A is the maximum, set by the board); the largest
+                      step not above the value is used.
+  supply <current>    current the power supply can deliver (factory 3 A).
+
+Current as amperes (1.07, 1.07A), milliamperes (530mA) or 'max'. The settings
+are kept in flash with 'defaults save'.
+
+  devhub limit 2 0.53            port 2 at most 0.53 A
+  devhub limit supply 5          a 5 A power supply
+"""),
     ("label", "label [<port> <text>|--clear]", "names of the ports", f"""
 Without arguments print the label of every port; with a port and a text set
 the label of that port, with --clear remove it. A label has up to
@@ -126,7 +145,8 @@ relay: n is always 1. At power-on the relay is at rest: line connected.
     ("defaults", "defaults show|set|charge-reset [ports...]|save", "settings kept in flash", """
 Settings kept by the devhub: the ports switched on when it powers up (factory
 setting: all), the ports whose charge count restarts from zero at every
-turn-on (factory setting: none) and the port labels (see 'label').
+turn-on (factory setting: none), the port labels (see 'label') and the
+current limits (see 'limit').
 
   show                        print both settings.
   set [ports...]              ports enabled at power-on; none = all off.
@@ -272,6 +292,10 @@ def _parser() -> argparse.ArgumentParser:
     port.add_argument("--wait", action="store_true", help="on, cycle: wait for the device to enumerate")
     port.add_argument("--timeout", type=float, default=10.0, help="for --wait, seconds (default %(default)s)")
 
+    limit = add("limit")
+    limit.add_argument("target", nargs="?", metavar="port|supply", help="port number, label, @text, or 'supply'")
+    limit.add_argument("current", nargs="?", help="amperes, NmA or 'max'")
+
     label = add("label")
     label.add_argument("port", nargs="?", help="port number, label or @text")
     label.add_argument("text", nargs="?", help="new label")
@@ -316,8 +340,11 @@ def _print_status(dev: Devhub, as_json: bool) -> int:
     devices = attached_devices(dev.info().serial)  # None: not available on this platform
     if as_json:
         d = status.to_dict()
+        limits = dev.get_limits()
         for port in d["ports"]:
             port["label"] = labels[port["port"] - 1] or None
+            port["limit_ma"] = limits.ports_ma[port["port"] - 1]
+        d["supply_ma"] = limits.supply_ma
         if devices is not None:
             for port in d["ports"]:
                 found = devices.get(port["port"])
@@ -388,6 +415,30 @@ def _resolve_port(dev: Devhub, spec: str) -> int:
         if label and label.lower() == spec.lower():
             return port
     raise _UsageError(f"invalid port '{spec}': not a number nor a label; @text chooses by attached device")
+
+
+def _parse_current(text: str) -> int:
+    """Current from the command line, in mA: amperes, NmA, NA or 'max'."""
+    t = text.strip().lower()
+    if t == "max":
+        return p.PORT_LIMIT_STEPS_MA[-1]
+    try:
+        if t.endswith("ma"):
+            return int(round(float(t[:-2])))
+        return int(round(float(t[:-1] if t.endswith("a") else t) * 1000))
+    except ValueError:
+        raise _UsageError(f"invalid current '{text}': amperes (1.07), milliamperes (530mA) or 'max'") from None
+
+
+def _print_limits(limits: p.Limits) -> None:
+    for port, ma in enumerate(limits.ports_ma, start=1):
+        print(f"port {port}: {ma / 1000:.2f} A")
+    print(f"supply: {limits.supply_ma / 1000:.2f} A")
+    worst = limits.worst_case_ma
+    margin = limits.supply_ma - worst
+    verdict = f"{margin / 1000:.2f} A margin" if margin >= 0 else f"{-margin / 1000:.2f} A above the supply"
+    print(f"worst case: {sum(limits.ports_ma) / 1000:.2f} A from the ports + {p.INTERNAL_MAX_MA / 1000:.2f} A inside"
+          f" = {worst / 1000:.2f} A, {verdict}")
 
 
 def _wait_for_device(dev: Devhub, serial: str, port: int, before, timeout: float) -> int:
@@ -507,6 +558,23 @@ def _run(args: argparse.Namespace) -> int:
             return _print_status(dev, args.json)
         elif args.command == "port":
             return _port_command(dev, args)
+        elif args.command == "limit":
+            if args.target is not None:
+                if args.current is None:
+                    raise _UsageError("give the current: devhub limit <port>|supply <current>")
+                ma = _parse_current(args.current)
+                if args.target == "supply":
+                    if not p.SUPPLY_LIMIT_MIN_MA <= ma <= p.SUPPLY_LIMIT_MAX_MA:
+                        raise _UsageError(f"supply from {p.SUPPLY_LIMIT_MIN_MA / 1000:g} to "
+                                          f"{p.SUPPLY_LIMIT_MAX_MA / 1000:g} A")
+                    dev.set_supply_limit(ma)
+                else:
+                    if ma < p.PORT_LIMIT_STEPS_MA[0]:
+                        raise _UsageError(f"the lowest port limit is {p.PORT_LIMIT_STEPS_MA[0] / 1000:.2f} A")
+                    dev.set_port_limit(_resolve_port(dev, args.target), min(ma, 0xFFFF))
+            _print_limits(dev.get_limits())
+            if args.target is not None:
+                print("(kept in flash only after 'devhub defaults save')")
         elif args.command == "label":
             if args.port is not None:
                 if args.text is None and not args.clear:
@@ -540,6 +608,7 @@ def _run(args: argparse.Namespace) -> int:
                 dev.save_defaults()
             print("ports enabled at power-on:", " ".join(map(str, dev.get_defaults())) or "none")
             print("charge reset at turn-on:  ", " ".join(map(str, dev.get_charge_reset())) or "none")
+            _print_limits(dev.get_limits())
         elif args.command == "hub":
             dev.reset_hub()
         elif args.command == "log":

@@ -47,6 +47,9 @@ class Command(enum.IntEnum):
     SET_CHARGE_RESET = 0x34
     GET_LABEL = 0x35
     SET_LABEL = 0x36
+    GET_LIMITS = 0x37
+    SET_PORT_LIMIT = 0x38
+    SET_SUPPLY_LIMIT = 0x39
     CLEAR_FAULT = 0x40
     RESET_HUB = 0x50
     REBOOT = 0x7E
@@ -115,6 +118,10 @@ class Capabilities(enum.IntFlag):
 TEMP_UNAVAILABLE = -128
 CURRENT_UNAVAILABLE = 0xFFFF
 CHARGE_UNAVAILABLE = 0xFFFFFFFF
+PORT_LIMIT_STEPS_MA = (530, 960, 1070, 1280, 1600, 2130, 2670)  # port controller current limits
+SUPPLY_LIMIT_MIN_MA = 1000
+SUPPLY_LIMIT_MAX_MA = 6000
+INTERNAL_MAX_MA = 480  # hub, MCU, LEDs and an energized relay, worst case (architettura.md)
 LABEL_MAX_BYTES = 15  # UTF-8 bytes of a port label
 PORT_STATUS_SIZE = 9  # state, fault, warning, current (u16 mA), charge (u32 µAh)
 
@@ -210,6 +217,20 @@ class Status:
                 for i, r in enumerate(self.relays)
             ],
         }
+
+
+@dataclass(frozen=True)
+class Limits:
+    ports_ma: List[int]  # current limit of each port, in port order
+    supply_ma: int  # current the power supply can deliver
+
+    @property
+    def worst_case_ma(self) -> int:
+        """Input current if every port draws its limit, internal consumption included."""
+        return sum(self.ports_ma) + INTERNAL_MAX_MA
+
+    def to_dict(self) -> dict:
+        return {"ports_ma": list(self.ports_ma), "supply_ma": self.supply_ma, "worst_case_ma": self.worst_case_ma}
 
 
 @dataclass(frozen=True)

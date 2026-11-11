@@ -128,3 +128,22 @@ def test_invalid_labels(text):
 def test_valid_label():
     cli._check_label("nucleo-f4")
     cli._check_label("è" * 7)  # 14 bytes
+
+
+@pytest.mark.parametrize("text, ma", [("1.07", 1070), ("0.53A", 530), ("530mA", 530), ("2A", 2000), ("max", 2670)])
+def test_parse_current(text, ma):
+    assert cli._parse_current(text) == ma
+
+
+def test_parse_current_invalid():
+    with pytest.raises(cli._UsageError):
+        cli._parse_current("lots")
+
+
+def test_limits_verdict(capsys):
+    from devhub import protocol as p
+    cli._print_limits(p.Limits(ports_ma=[530, 530, 530, 530], supply_ma=3000))
+    assert capsys.readouterr().out.splitlines()[-1] == (
+        "worst case: 2.12 A from the ports + 0.48 A inside = 2.60 A, 0.40 A margin")
+    cli._print_limits(p.Limits(ports_ma=[2670] * 4, supply_ma=3000))
+    assert capsys.readouterr().out.splitlines()[-1].endswith("= 11.16 A, 8.16 A above the supply")

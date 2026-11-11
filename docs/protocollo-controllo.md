@@ -86,11 +86,14 @@ i parametri iniziano al byte 3, in quello di evento i dati iniziano al byte 2.
 | 0x21 | PULSE_RELAY | relay, ms (u16): stacca la linea e poi la ricollega | status |
 | 0x30 | GET_DEFAULTS | — | maschera delle porte abilitate all'accensione |
 | 0x31 | SET_DEFAULTS | maschera delle porte abilitate all'accensione (u8, bit 0 = porta 1) | status; i relè all'accensione sono sempre a riposo, linea collegata |
-| 0x32 | SAVE_DEFAULTS | — | status; scrive in flash le porte abilitate all'accensione, l'azzeramento automatico della carica e i nomi delle porte |
+| 0x32 | SAVE_DEFAULTS | — | status; scrive in flash le porte abilitate all'accensione, l'azzeramento automatico della carica, i nomi delle porte e i limiti di corrente |
 | 0x33 | GET_CHARGE_RESET | — | maschera delle porte la cui carica si azzera a ogni accensione |
 | 0x34 | SET_CHARGE_RESET | maschera (u8, bit 0 = porta 1); di fabbrica 0 | status |
 | 0x35 | GET_LABEL | port | nome della porta: 16 byte, completati con zeri; tutti zero se non impostato |
 | 0x36 | SET_LABEL | port, nome (16 byte, completati con zeri) | status; da 0 a 15 byte stampabili, vuoto = nessun nome; `BAD_PARAM` altrimenti |
+| 0x37 | GET_LIMITS | — | limite di corrente di ogni porta (u16 mA, nell'ordine delle porte), corrente dell'alimentatore (u16 mA) |
+| 0x38 | SET_PORT_LIMIT | port, mA (u16) | status; applicato subito come gradino più alto non superiore (0,53–2,67 A, D104); sotto 530 mA `BAD_PARAM` |
+| 0x39 | SET_SUPPLY_LIMIT | mA (u16), da 1000 a 6000; di fabbrica 3000 | status |
 | 0x40 | CLEAR_FAULT | port | status; toglie il blocco e lascia la porta disabilitata |
 | 0x50 | RESET_HUB | — | status prima del reset; hub e dispositivi downstream, controllo incluso, ri-enumerano |
 | 0x7E | REBOOT | — | — |

@@ -85,10 +85,13 @@ bool portctl_chip_init(uint8_t chip) {
     const char *error = NULL;
     if (!ucs2114_check_id(c->bus)) {
         error = "not found";
-    } else if (!ucs2114_read_events(c->bus, &ev) || !ucs2114_configure(c->bus)) {
+    } else if (!ucs2114_read_events(c->bus, &ev) || !ucs2114_configure(c->bus) ||
+               !ucs2114_set_current_limits(c->bus, defaults_port_limit_get(chip * 2),
+                                           defaults_port_limit_get(chip * 2 + 1))) {
         error = "configuration failed";
     } else {
-        LOG("ucs %u: configured (discharge 400 ms, ALERT# masked, charge accumulation)", chip + 1);
+        LOG("ucs %u: configured (discharge 400 ms, ALERT# masked, charge accumulation, limits %u/%u mA)", chip + 1,
+            defaults_port_limit_get(chip * 2), defaults_port_limit_get(chip * 2 + 1));
         c->ok = true;
     }
     // Retried every second: report a failure once, not at every attempt.
@@ -217,6 +220,20 @@ bool portctl_measure(uint8_t port, uint16_t *ma, uint32_t *uah) {
 bool portctl_reset_charge(uint8_t port) {
     chip_t *c = usable_chip(port);
     return c && ucs2114_reset_charge(c->bus, port % 2);
+}
+
+uint16_t portctl_set_limit(uint8_t port, uint16_t ma) {
+    if (port >= BOARD_N_PORTS) {
+        return 0;
+    }
+    uint16_t limit = ucs2114_ilim_round(ma);
+    defaults_port_limit_set(port, limit);
+    uint8_t first = (uint8_t)(port & ~1u);
+    chip_t *c = usable_chip(port);
+    if (c && !ucs2114_set_current_limits(c->bus, defaults_port_limit_get(first), defaults_port_limit_get(first + 1))) {
+        LOG("ucs %u: current limit not applied", port / 2 + 1);
+    }
+    return limit;
 }
 
 bool portctl_chip_ok(uint8_t chip) {

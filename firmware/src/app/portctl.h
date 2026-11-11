@@ -19,6 +19,9 @@ bool portctl_chip_init(uint8_t chip);
 // its controller. False if the controller cannot be reached.
 bool portctl_measure(uint8_t port, uint16_t *ma, uint32_t *uah);
 bool portctl_reset_charge(uint8_t port);
+// Set the current limit of a port (rounded down to a controller step, at least the
+// lowest one), store it in the settings and apply it. Returns the limit applied in mA.
+uint16_t portctl_set_limit(uint8_t port, uint16_t ma);
 // Suspend the port logic's control of the LEDs (console LED test).
 void portctl_led_override(bool on);
 

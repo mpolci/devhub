@@ -15,6 +15,7 @@ static uint8_t defaults_mask, charge_reset_mask;
 static int charge_resets[4];
 static bool measure_ok;
 static char labels[4][16];
+static uint16_t port_limits[4], supply_ma;
 static bool save_ok;
 static int hub_resets, reboots, bootloaders;
 static bool coil;
@@ -56,6 +57,19 @@ static void sys_charge_reset_set(uint8_t m) {
     charge_reset_mask = m;
 }
 
+static uint16_t sys_limit_get(uint8_t port) {
+    return port_limits[port];
+}
+static uint16_t sys_limit_set(uint8_t port, uint16_t ma) {
+    port_limits[port] = ma - ma % 10; // stands for the rounding to a step
+    return port_limits[port];
+}
+static uint16_t sys_supply_get(void) {
+    return supply_ma;
+}
+static void sys_supply_set(uint16_t ma) {
+    supply_ma = ma;
+}
 static const char *sys_label_get(uint8_t port) {
     return labels[port];
 }
@@ -104,6 +118,10 @@ static const proto_sys_t sys = {
     .defaults_save = sys_defaults_save,
     .charge_reset_get = sys_charge_reset_get,
     .charge_reset_set = sys_charge_reset_set,
+    .port_limit_get = sys_limit_get,
+    .port_limit_set = sys_limit_set,
+    .supply_get = sys_supply_get,
+    .supply_set = sys_supply_set,
     .label_get = sys_label_get,
     .label_set = sys_label_set,
     .request_hub_reset = sys_hub_reset,
@@ -118,6 +136,10 @@ static void setup(void) {
     memset(charge_resets, 0, sizeof charge_resets);
     measure_ok = true;
     memset(labels, 0, sizeof labels);
+    for (int i = 0; i < 4; i++) {
+        port_limits[i] = 2670;
+    }
+    supply_ma = 3000;
     save_ok = true;
     hub_resets = reboots = bootloaders = 0;
     ports_init(&ports_hw);
@@ -254,6 +276,26 @@ static void test_label_commands(void) {
     CHECK_EQ(r[3], ST_BAD_PARAM);
 }
 
+static void test_limit_commands(void) {
+    setup();
+    const uint8_t *r = command(CMD_SET_PORT_LIMIT, ARGS(2, 0x2D, 0x04)); // 1069 mA
+    CHECK_EQ(r[3], ST_OK);
+    CHECK_EQ(port_limits[1], 1060);
+    r = command(CMD_SET_PORT_LIMIT, ARGS(2, 0x10, 0x02)); // 528 mA: below the lowest step
+    CHECK_EQ(r[3], ST_BAD_PARAM);
+    r = command(CMD_SET_PORT_LIMIT, ARGS(5, 0x00, 0x10));
+    CHECK_EQ(r[3], ST_BAD_PARAM);
+    r = command(CMD_SET_SUPPLY_LIMIT, ARGS(0x88, 0x13)); // 5000 mA
+    CHECK_EQ(r[3], ST_OK);
+    CHECK_EQ(supply_ma, 5000);
+    r = command(CMD_SET_SUPPLY_LIMIT, ARGS(0xF4, 0x01)); // 500 mA
+    CHECK_EQ(r[3], ST_BAD_PARAM);
+    r = command(CMD_GET_LIMITS, NULL, 0);
+    CHECK_EQ(r[4] | (r[5] << 8), 2670);
+    CHECK_EQ(r[6] | (r[7] << 8), 1060);
+    CHECK_EQ(r[12] | (r[13] << 8), 5000);
+}
+
 static void test_set_port_and_event(void) {
     setup();
     const uint8_t *r = command(CMD_SET_PORT, ARGS(2, 1));
@@ -382,6 +424,7 @@ int main(void) {
     RUN(test_status_without_measurements);
     RUN(test_charge_commands);
     RUN(test_label_commands);
+    RUN(test_limit_commands);
     RUN(test_set_port_and_event);
     RUN(test_bad_parameters);
     RUN(test_cycle_command);

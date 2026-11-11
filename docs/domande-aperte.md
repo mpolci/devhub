@@ -111,6 +111,7 @@ il PCB da 100 × 100 mm (D84) è sbrogliato.
 | D101 | Libreria e CLI insieme al firmware | La libreria Python e la CLI di base si sviluppano insieme ai comandi HID del firmware e servono anche per i test automatici sulla scheda; le rifiniture della CLI vengono dopo |
 | D102 | Temperatura della scheda | Il firmware legge il sensore di temperatura interno dello STM32G0B1, con le calibrazioni di fabbrica a 30 °C e 130 °C e la correzione della tensione di riferimento tramite VREFINT, e la espone in `GET_STATUS`, nella CLI e nella console. È la temperatura del chip del MCU, al centro della scheda, con precisione di qualche grado: segue la scheda, non i punti caldi. Gli altri chip non hanno una lettura di temperatura: gli UCS2114 hanno solo lo spegnimento termico (120 °C e 135 °C), segnalato come guasto `overtemperature`; USB2517 e TPS259470A nessuna. Non cambia D60: nessuna misura di corrente o tensione esposta |
 | D103 | Corrente e carica per porta | Il firmware legge dagli UCS2114 la corrente di ogni porta (registri 00h/01h, passo 13,3 mA, ±2 % sopra 200 mA, ±2 passi sotto) e la carica erogata (registri 16h–1Dh, passo 0,00367 mAh, ±4,5 %, aggiornata ogni secondo) e le espone in `GET_STATUS`, nella CLI e nella console. Per avere la carica il charge rationing è abilitato con comportamento "Ignore" e soglia massima: il controller conta e basta, senza staccare la porta né attivare ALERT#. La carica si azzera con `RESET_CHARGE` e, per le porte scelte con `SET_CHARGE_RESET` (salvato in flash con i default, di fabbrica nessuna), a ogni accensione della porta. Nessun componente aggiunto: supera D60 per la misura di corrente per porta; restano escluse corrente totale e tensioni. Lo zero non è esatto (0–13 mA a porta vuota, qualche mAh all'ora di carica): misura indicativa, non uno strumento |
+| D104 | Limite di corrente per porta | Il limite hardware di ogni porta si può abbassare via SMBus (registro 14h dell'UCS2114) ai gradini 0,53, 0,96, 1,07, 1,28, 1,6, 2,13 e 2,67 A; non oltre i 2,67 A fissati dalla resistenza COMM_ILIM. È un'impostazione per porta salvata in flash con i default, di fabbrica 2,67 A; il firmware applica il gradino più alto non superiore al valore richiesto, alla configurazione dei controller e a ogni modifica. Il superamento è una sovracorrente gestita dal controller e bloccata dal MCU come gli altri guasti (D73). Si salva anche la corrente erogabile dall'alimentatore (di fabbrica 3 A): la CLI la confronta con il caso peggiore, cioè la somma dei limiti più 0,48 A di consumi interni. Nessun controllo dinamico della corrente totale |
 
 ## Aperte
 
@@ -125,6 +126,12 @@ il PCB da 100 × 100 mm (D84) è sbrogliato.
   prima di togliere PWR_EN, uscita dallo stato di errore del controller con tensione di ritorno.
 - Validare i tempi fissati nel protocollo: sfasamento fra le accensioni (100 ms), limiti di
   `off_ms` (500–60000 ms) e dell'impulso del relè.
+- Controllo dinamico della corrente totale: somma periodica delle correnti delle porte contro la
+  corrente dell'alimentatore (D104), prima come avviso, poi eventualmente con lo spegnimento di una
+  porta. Prima va misurato al banco come reagiscono alimentatore ed eFuse a un sovraccarico; cambia
+  RF-15 e D64.
+- Verificare al banco il comportamento di un limite di porta abbassato (D104) con un carico che lo
+  supera: intervento del controller, causa letta, blocco e riarmo.
 - Corrente totale d'ingresso: il pin ILM dell'eFuse U13 dà una tensione proporzionale alla corrente
   (182 µA/A su R33, ±10 %). Leggerla richiede un collegamento a un ingresso ADC libero del MCU
   (per esempio PA6) e la verifica che il carico non alteri il limite di corrente: da valutare per

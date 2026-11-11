@@ -31,6 +31,12 @@
 #define CMD_SET_CHARGE_RESET 0x34
 #define CMD_GET_LABEL 0x35
 #define CMD_SET_LABEL 0x36
+#define CMD_GET_LIMITS 0x37
+#define CMD_SET_PORT_LIMIT 0x38
+#define CMD_SET_SUPPLY_LIMIT 0x39
+#define PORT_LIMIT_MIN_MA 530 // lowest step of the port controllers
+#define SUPPLY_LIMIT_MIN_MA 1000
+#define SUPPLY_LIMIT_MAX_MA 6000
 #define PROTO_LABEL_FIELD 16 // label bytes in GET_LABEL/SET_LABEL, NUL-padded
 #define CMD_CLEAR_FAULT 0x40
 #define CMD_RESET_HUB 0x50

@@ -88,8 +88,8 @@ variante senza MCU non è adottata. Lo schema v0.3 applica questi requisiti (D79
   necessarie per ricevere alimentazione USB-C, e le protezioni hardware d'ingresso.
 - **RF-15** Le accensioni multiple sono sfalsate per contenere l'inrush. Il firmware gestisce
   le segnalazioni di guasto disponibili dall'hardware, senza calcolare budget
-  o scegliere la porta più energivora. La protezione da sovraccarico è hardware: un sovraccarico
-  complessivo può interrompere l'intero hub. Non è garantita la continuità delle altre porte.
+  o scegliere la porta più energivora. La protezione da sovraccarico è hardware: il limite di ogni
+  porta si può abbassare (D104), ma un sovraccarico complessivo può interrompere l'intero hub. Non è garantita la continuità delle altre porte.
   Dopo un guasto hardware segnalato della porta, il MCU interrompe l’eventuale ciclo,
   disabilita VBUS e dati e mantiene il LED lampeggiante (D73). Il ripristino richiede
   un tentativo esplicito da pulsante o PC; se il guasto persiste, la porta torna bloccata.
