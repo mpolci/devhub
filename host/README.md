@@ -79,6 +79,10 @@ port 3: off         0 mA     0.38 mAh
 port 4: on         53 mA     4.41 mAh  SanDisk Cruzer Edge [0781:556b]
 ```
 
+La corrente ha accuratezza ±26,6 mA sotto 200 mA, ±2 % sopra. L'errore di zero può far
+leggere 13 mA e accumulare carica anche a porta vuota.
+Vedi i [limiti delle misure](../docs/protocollo-controllo.md).
+
 `devhub limit 2 0.53` abbassa il limite di corrente della porta 2 (gradini da 0,53 a 2,67 A).
 Fino a 1,28 A gli spunti brevi passano e la porta si spegne con causa `current_limit` solo se
 resta oltre il limite più della tolleranza (`--tolerance`, di fabbrica 100 ms); da 1,6 A si spegne

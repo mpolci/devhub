@@ -135,5 +135,21 @@ il PCB da 100 × 100 mm (D84) è sbrogliato.
   (182 µA/A su R33, ±10 %). Leggerla richiede un collegamento a un ingresso ADC libero del MCU
   (per esempio PA6) e la verifica che il carico non alteri il limite di corrente: da valutare per
   la prossima revisione.
+- Strumenti host fuori da macOS. Linux: fornire una regola udev per l'accesso al dispositivo HID
+  (VID 0x1209, PID 0x0001) senza root. Windows: la ricerca dei dispositivi collegati alle porte
+  (`status`, `find`, `@testo`, `--wait`) non è disponibile; scegliere come leggere l'albero USB.
+- Modifiche per la prossima revisione della scheda:
+  - collegamento del pin ILM dell'eFuse a un ingresso ADC per la corrente totale (voce sopra);
+  - NTC vicino a U2 (USB2517), il componente più caldo, che non ha una lettura di temperatura,
+    letto da un GPIO libero con ADC;
+  - test point sulla rete VBUS_DET, oggi misurabile solo sulle piazzole di R22/R23;
+  - LED verdi delle porte D102–D402 molto meno luminosi del LED host D93 a parità di
+    resistenza (1 kΩ, circa 1,3 mA da 3,3 V): l'LTST-C171GKT è un GaP da 12 mcd tipici a
+    20 mA, l'LTST-C171KFKT arancio un AlInGaP da 90 mcd. Sostituirli con un verde AlInGaP
+    nello stesso package (per esempio LTST-C171KGKT, luminosità da verificare sul datasheet) e
+    scegliere la resistenza con una prova sul prototipo; esclusi i verdi InGaN, con tensione
+    diretta intorno ai 3 V e poco margine a 3,3 V;
+  - saldature dei QFN: su Rev A sono state ripassate U3, U4, U5, J401 e U401; rivedere piazzole
+    e aperture dello stencil, in particolare i pin d'angolo dell'UCS2114 (1 e 15).
 - Completare i codici fornitore mancanti: U4/U5 (UCS2114-1-V/LX), U3 su Mouser e LCSC,
   R60/R61 (27 kΩ 1 %) su LCSC; campi `warehouse` vuoti per i componenti non a magazzino.
