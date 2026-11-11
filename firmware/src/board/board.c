@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "stm32g0xx_hal.h"
+#include "stm32g0xx_ll_adc.h" // factory calibration addresses
 
 typedef struct {
     GPIO_TypeDef *port;
@@ -24,6 +25,8 @@ static const pin_t PIN_EFUSE_FLT_N = PIN(B, 1);
 static const pin_t PIN_I2C1_SCL = PIN(B, 8);
 
 #define VBUS_DET_ADC_CHANNEL 10 // PB2
+#define TEMP_ADC_CHANNEL 12     // internal temperature sensor
+#define VREFINT_ADC_CHANNEL 13  // internal voltage reference
 #define VBUS_DET_DIVIDER 2
 
 static volatile uint8_t alert_edges;
@@ -72,7 +75,10 @@ static void adc_init(void) {
     __HAL_RCC_ADC_CLK_ENABLE();
     // Kernel clock 16 MHz / 16: the 160.5-cycle sample then lasts 160 µs,
     // enough for the 50 kΩ source impedance of the VBUS_DET divider.
-    ADC1_COMMON->CCR = (ADC1_COMMON->CCR & ~ADC_CCR_PRESC) | (7u << ADC_CCR_PRESC_Pos);
+    // The same long sample also covers the minimum of the temperature sensor (5 µs) and
+    // of VREFINT (4 µs). CCR can only be written with the ADC disabled.
+    ADC1_COMMON->CCR =
+        (ADC1_COMMON->CCR & ~ADC_CCR_PRESC) | (7u << ADC_CCR_PRESC_Pos) | ADC_CCR_TSEN | ADC_CCR_VREFEN;
     ADC1->CR = ADC_CR_ADVREGEN;
     HAL_Delay(1);
     ADC1->CR |= ADC_CR_ADCAL;
@@ -83,12 +89,29 @@ static void adc_init(void) {
     ADC1->CR |= ADC_CR_ADEN;
     while (!(ADC1->ISR & ADC_ISR_ADRDY)) {
     }
-    // Single channel, selected once: a conversion may only start after the
-    // channel configuration is acknowledged (CCRDY).
-    ADC1->ISR = ADC_ISR_CCRDY;
-    ADC1->CHSELR = 1u << VBUS_DET_ADC_CHANNEL;
-    while (!(ADC1->ISR & ADC_ISR_CCRDY)) {
+}
+
+// One conversion of a single channel; -1 on timeout. A conversion may only start
+// after a new channel selection is acknowledged (CCRDY).
+static int32_t adc_read(uint8_t channel) {
+    uint32_t t0 = HAL_GetTick();
+    if (ADC1->CHSELR != (1u << channel)) {
+        ADC1->ISR = ADC_ISR_CCRDY;
+        ADC1->CHSELR = 1u << channel;
+        while (!(ADC1->ISR & ADC_ISR_CCRDY)) {
+            if (HAL_GetTick() - t0 > 5) {
+                return -1;
+            }
+        }
     }
+    ADC1->ISR = ADC_ISR_EOC;
+    ADC1->CR |= ADC_CR_ADSTART;
+    while (!(ADC1->ISR & ADC_ISR_EOC)) {
+        if (HAL_GetTick() - t0 > 5) {
+            return -1;
+        }
+    }
+    return (int32_t)ADC1->DR; // 12 bit
 }
 
 void board_init(void) {
@@ -229,16 +252,24 @@ bool board_i2c1_scl_level(void) {
 }
 
 uint16_t board_vbus_det_mv(void) {
-    ADC1->ISR = ADC_ISR_EOC;
-    ADC1->CR |= ADC_CR_ADSTART;
-    uint32_t t0 = HAL_GetTick();
-    while (!(ADC1->ISR & ADC_ISR_EOC)) {
-        if (HAL_GetTick() - t0 > 5) {
-            return 0;
-        }
+    int32_t raw = adc_read(VBUS_DET_ADC_CHANNEL); // VREF+ = 3.3 V
+    return raw < 0 ? 0 : (uint16_t)((uint32_t)raw * 3300u * VBUS_DET_DIVIDER / 4095u);
+}
+
+bool board_mcu_temp_c(int16_t *temp_c) {
+    int32_t vref = adc_read(VREFINT_ADC_CHANNEL);
+    int32_t ts = adc_read(TEMP_ADC_CHANNEL);
+    int32_t cal1 = *TEMPSENSOR_CAL1_ADDR, cal2 = *TEMPSENSOR_CAL2_ADDR;
+    if (vref <= 0 || ts < 0 || cal2 <= cal1) {
+        return false;
     }
-    uint32_t raw = ADC1->DR; // 12 bit, VREF+ = 3.3 V
-    return (uint16_t)(raw * 3300u * VBUS_DET_DIVIDER / 4095u);
+    // The calibration values were taken with VREF+ = 3.0 V, as was VREFINT_CAL: scaling the
+    // reading by VREFINT_CAL / VREFINT gives it at 3.0 V whatever the actual supply.
+    int32_t ts_at_cal = ts * (int32_t)*VREFINT_CAL_ADDR / vref;
+    int32_t span = TEMPSENSOR_CAL2_TEMP - TEMPSENSOR_CAL1_TEMP;
+    int32_t tenths = (ts_at_cal - cal1) * span * 10 / (cal2 - cal1) + TEMPSENSOR_CAL1_TEMP * 10;
+    *temp_c = (int16_t)((tenths + (tenths >= 0 ? 5 : -5)) / 10);
+    return true;
 }
 
 void board_uid(uint8_t uid[12]) {

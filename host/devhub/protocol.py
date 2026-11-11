@@ -106,6 +106,9 @@ class Capabilities(enum.IntFlag):
     CDC_CONSOLE = 0x01
 
 
+TEMP_UNAVAILABLE = -128
+
+
 def _flag_names(value: enum.IntFlag) -> List[str]:
     """Names of the set bits, lower case; unknown bits as hex."""
     names = []
@@ -174,10 +177,12 @@ class Status:
     system: SystemFlags
     ports: List[PortStatus]
     relays: List[RelayState]
+    mcu_temp_c: Optional[int]  # MCU die temperature; None if the reading failed
 
     def to_dict(self) -> dict:
         return {
             "system": _flag_names(self.system),
+            "mcu_temp_c": self.mcu_temp_c,
             "ports": [p.to_dict() for p in self.ports],
             "relays": [
                 {
@@ -291,4 +296,7 @@ def parse_status(data: bytes, n_ports: int, n_relays: int) -> Status:
         ports.append(PortStatus(i + 1, PortState(state), PortFault(fault), PortWarning(warning)))
     base = 1 + 3 * n_ports
     relays = [RelayState(data[base + i]) for i in range(n_relays)]
-    return Status(system=system, ports=ports, relays=relays)
+    temp = struct.unpack_from("<b", data, base + n_relays)[0]
+    if temp == TEMP_UNAVAILABLE:
+        temp = None
+    return Status(system=system, ports=ports, relays=relays, mcu_temp_c=temp)

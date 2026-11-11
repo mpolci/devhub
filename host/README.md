@@ -64,8 +64,9 @@ devhub help [comando]
 `devhub` senza argomenti stampa una guida breve con i comandi ed esempi; `devhub help` la
 guida completa, `devhub help <comando>` i dettagli di un comando.
 
-Su macOS e Linux `status` mostra accanto a ogni porta il dispositivo collegato, come lo vede
-il PC: produttore e prodotto, VID:PID e porte seriali.
+`status` mostra anche la temperatura del chip del MCU (D102). Su macOS e Linux mostra accanto
+a ogni porta il dispositivo collegato, come lo vede il PC: produttore e prodotto, VID:PID e
+porte seriali.
 
 ```
 port 1: on       STMicroelectronics STLINK-V3 [0483:374e] /dev/cu.usbmodem212102

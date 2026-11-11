@@ -30,6 +30,10 @@ static uint32_t sys_now(void) {
 static uint8_t sys_flags(void) {
     return SYS_HUB_CONFIGURED;
 }
+static int8_t sys_temp(void) {
+    return 37;
+}
+
 static void sys_uid(uint8_t uid[12]) {
     for (int i = 0; i < 12; i++) {
         uid[i] = (uint8_t)(0xA0 + i);
@@ -54,8 +58,9 @@ static void sys_bootloader(void) {
     bootloaders++;
 }
 
-static const proto_sys_t sys = {sys_now,           sys_flags,     sys_uid,    sys_defaults_get, sys_defaults_set,
-                                sys_defaults_save, sys_hub_reset, sys_reboot, sys_bootloader};
+static const proto_sys_t sys = {sys_now,          sys_flags,         sys_temp,      sys_uid,
+                                sys_defaults_get, sys_defaults_set,  sys_defaults_save,
+                                sys_hub_reset,    sys_reboot,        sys_bootloader};
 
 static void setup(void) {
     now_ms = 0;
@@ -141,6 +146,7 @@ static void test_get_status_layout(void) {
     CHECK_EQ(r[11], PORT_STATE_FAULT);       // port 3 state
     CHECK_EQ(r[12], PORT_FAULT_OVERCURRENT); // port 3 fault
     CHECK_EQ(r[17], RELAY_STATE_DISCONNECTED);
+    CHECK_EQ(r[18], 37); // MCU temperature
 }
 
 static void test_set_port_and_event(void) {

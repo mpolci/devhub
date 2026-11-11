@@ -2,7 +2,8 @@
 
 Canale USB HID, usage page vendor (0xFF00), report ID fissi, report da 64 byte, little endian.
 HID non richiede driver dedicati e `hidapi` è disponibile sui sistemi previsti.
-La bozza riflette D60–D66, D68 e D96–D101; firmware e host non sono ancora implementati.
+La bozza riflette D60–D66, D68 e D96–D102; firmware e libreria host la implementano e sono
+provati sul prototipo Rev A.
 Il controllo resta HID e i cicli/impulsi sono eseguiti dal MCU: il PC invia il comando
 senza dover restare in esecuzione per inviare la riaccensione.
 
@@ -22,6 +23,7 @@ libreria non sono collaudati, poi diventa 1.0.
   né una conferma del riavvio del dispositivo. Guasti e cause sono solo quelli rilevabili
   dall'hardware selezionato; un segnale generico resta un guasto generico.
 - Nessun campo di corrente, tensione, budget, corrente annunciata sulle CC o `budget_blocked`.
+  L'unica grandezza misurata è la temperatura del MCU (D102).
 - Il MCU governa VBUS e dati con un unico comando logico; la sequenza interna del controller
   è ammessa. Non esiste il parametro `on_delay_ms`.
 
@@ -106,6 +108,7 @@ Dati di `GET_STATUS`, dal byte 4 della risposta:
 | 4 | system | u8 | bit 0 = guasto ingresso segnalato dall'eFuse; bit 1 = hub configurato via SMBus; bit 2 = controller porte 1-2 non risponde; bit 3 = controller porte 3-4 non risponde |
 | 5 | porte | 3 byte per porta | `state`, `fault`, `warning`, nell'ordine delle porte |
 | 5 + 3·n_ports | relè | 1 byte per relè | bit 0 = linea staccata; bit 1 = impulso in corso |
+| 5 + 3·n_ports + n_relays | mcu_temp | i8 | temperatura del chip del MCU in °C (D102); −128 se la lettura non riesce |
 
 Byte di una porta:
 

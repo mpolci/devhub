@@ -28,7 +28,7 @@ class FakeTransport:
         self.rx = deque()
         self.pending_events = []
         self.status_code = 0
-        self.status_data = bytes([0x02, 1, 0, 0, 2, 0, 1, 4, 1, 0, 0, 0, 2, 1])
+        self.status_data = bytes([0x02, 1, 0, 0, 2, 0, 1, 4, 1, 0, 0, 0, 2, 1, 37])
         self.silent = False
 
     def write(self, report):
@@ -93,6 +93,13 @@ def test_status(dev):
     assert d["system"] == ["hub_configured"]
     assert d["relays"] == [{"relay": 1, "line": "disconnected", "pulse_active": False}]
     assert d["ports"][2]["fault_causes"] == ["overcurrent"]
+    assert status.mcu_temp_c == 37 and d["mcu_temp_c"] == 37
+
+
+def test_status_temperature():
+    data = bytes([0x02] + [0] * 12 + [0])
+    assert p.parse_status(data + bytes([0xF6]), 4, 1).mcu_temp_c == -10
+    assert p.parse_status(data + bytes([0x80]), 4, 1).mcu_temp_c is None  # reading failed
 
 
 def test_command_payloads(dev, fake):

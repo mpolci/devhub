@@ -44,6 +44,9 @@ bool board_i2c1_scl_level(void);
 
 // Upstream VBUS, in millivolts at the connector.
 uint16_t board_vbus_det_mv(void);
+// Die temperature of the MCU in °C, from the internal sensor and its factory calibration.
+// False if the ADC does not answer.
+bool board_mcu_temp_c(int16_t *temp_c);
 
 void board_uid(uint8_t uid[12]);
 

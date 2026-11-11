@@ -68,10 +68,10 @@ completo (D84–D95, vedi [hardware/README.md](hardware/README.md)). Il prototip
 montato e funziona: corretti alcuni difetti di saldatura, nessuna modifica al PCB.
 
 Firmware ([firmware/README.md](firmware/README.md)) e libreria Python con CLI
-([host/README.md](host/README.md)) sono scritti secondo D96–D101 e il protocollo 0.1. Sul
+([host/README.md](host/README.md)) sono scritti secondo D96–D102 e il protocollo 0.1. Sul
 prototipo sono verificati hub configurato via SMBus, aggiornamento via DFU attraverso il
 hub, le quattro porte (accensione, spegnimento, ciclo, enumerazione di un dispositivo),
-relè, LED, pulsanti, default in flash, eventi e watchdog. Restano le misure con strumenti:
+relè, LED, pulsanti, default in flash, eventi, watchdog e temperatura del MCU. Restano le misure con strumenti:
 durata della scarica e del ciclo, sfasamento delle accensioni, guasti reali e ritorno di
 alimentazione (D98), tempi I²C, corrente dei LED, transitori al reset e in DFU. Dopo le misure
 il protocollo passerà alla versione 1.0.

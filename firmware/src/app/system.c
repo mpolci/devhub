@@ -75,6 +75,7 @@ static void on_button(uint8_t idx) {
 static const proto_sys_t proto_sys = {
     .now = board_millis,
     .system_flags = system_flags,
+    .mcu_temp_c = system_mcu_temp_c,
     .get_uid = board_uid,
     .defaults_get = defaults_get,
     .defaults_set = defaults_set,
@@ -99,6 +100,14 @@ void system_request_bootloader(void) {
 
 void system_request_hub_reset(void) {
     schedule(REQ_HUB_RESET);
+}
+
+int8_t system_mcu_temp_c(void) {
+    int16_t t;
+    if (!board_mcu_temp_c(&t)) {
+        return PROTO_TEMP_UNAVAILABLE;
+    }
+    return (int8_t)(t < -127 ? -127 : t > 127 ? 127 : t);
 }
 
 uint8_t system_flags(void) {

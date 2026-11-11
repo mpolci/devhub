@@ -14,6 +14,8 @@ void system_init(void);
 void system_task(uint32_t now);
 
 uint8_t system_flags(void);
+// MCU die temperature in °C for the protocol; PROTO_TEMP_UNAVAILABLE if it cannot be read.
+int8_t system_mcu_temp_c(void);
 
 void system_request_reboot(void);
 void system_request_bootloader(void);

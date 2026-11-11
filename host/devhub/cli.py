@@ -42,6 +42,9 @@ Port states: off, on, cycling (power cycle in progress), FAULT (latched off).
 System flags: hub_configured (normal), input_fault (power input protection
 tripped), controller_12_error / controller_34_error (port controller of ports
 1-2 or 3-4 not responding).
+Temperature: of the controller chip (MCU) at the centre of the board, a few
+degrees accurate. It follows the board, not the hottest parts: the port
+controllers switch a port off on their own above 120 °C (overtemperature).
 
   --json   print the status as JSON, for scripts.
 
@@ -251,6 +254,8 @@ def _print_status(dev: Devhub, as_json: bool) -> int:
     else:
         system = status.to_dict()["system"]
         print("system:", ", ".join(system) if system else "-")
+        if status.mcu_temp_c is not None:
+            print(f"temperature: {status.mcu_temp_c} °C (controller chip)")
         for port in status.ports:
             d = port.to_dict()
             state = "FAULT" if d["fault"] else "cycling" if d["cycle_active"] else "on" if d["enabled"] else "off"

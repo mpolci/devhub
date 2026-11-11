@@ -83,6 +83,9 @@
 // Capabilities
 #define CAP_CDC_CONSOLE 0x00000001u
 
+// MCU temperature in GET_STATUS when the reading fails
+#define PROTO_TEMP_UNAVAILABLE (-128)
+
 // Timing (to be validated on the prototype)
 #define PORT_STAGGER_MS 100
 #define PORT_CYCLE_DEFAULT_MS 1000

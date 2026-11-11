@@ -10,6 +10,13 @@
   componenti sono collegati a filo. Etichette locali per le reti interne a un foglio, globali per
   quelle che passano tra fogli, gerarchiche per i fogli porta.
 
+## Firmware e host
+
+- Chiedere sempre conferma prima di creare una nuova versione (protocollo, firmware, libreria)
+  o di aggiungere codice di compatibilità con versioni precedenti. In questa fase di sviluppo
+  firmware e libreria si aggiornano insieme sull'unico prototipo: le modifiche si applicano
+  alla versione corrente.
+
 ## Documentazione
 
 - Decisioni in `docs/domande-aperte.md` (tabella "Decise", numerazione progressiva).

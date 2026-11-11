@@ -11,6 +11,7 @@
 typedef struct {
     uint32_t (*now)(void);
     uint8_t (*system_flags)(void);
+    int8_t (*mcu_temp_c)(void); // PROTO_TEMP_UNAVAILABLE if it cannot be read
     void (*get_uid)(uint8_t uid[12]);
     uint8_t (*defaults_get)(void);
     void (*defaults_set)(uint8_t mask);

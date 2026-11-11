@@ -109,6 +109,7 @@ il PCB da 100 × 100 mm (D84) è sbrogliato.
 | D99 | Pulsante durante un ciclo | La pressione del pulsante di una porta con ciclo in corso annulla il ciclo e lascia la porta disabilitata; una nuova pressione la riabilita. Il PC riceve la notifica del cambio di stato. Su una porta bloccata per guasto la pressione è il tentativo esplicito di riabilitazione di D73 |
 | D100 | Host scollegato o sospeso | Stato delle porte e del relè invariato quando il PC a monte viene scollegato o sospende il bus; pulsanti sempre attivi. Si spegne solo il LED di host collegato. Nessuno spegnimento né riaccensione automatica delle porte legati alla presenza del PC |
 | D101 | Libreria e CLI insieme al firmware | La libreria Python e la CLI di base si sviluppano insieme ai comandi HID del firmware e servono anche per i test automatici sulla scheda; le rifiniture della CLI vengono dopo |
+| D102 | Temperatura della scheda | Il firmware legge il sensore di temperatura interno dello STM32G0B1, con le calibrazioni di fabbrica a 30 °C e 130 °C e la correzione della tensione di riferimento tramite VREFINT, e la espone in `GET_STATUS`, nella CLI e nella console. È la temperatura del chip del MCU, al centro della scheda, con precisione di qualche grado: segue la scheda, non i punti caldi. Gli altri chip non hanno una lettura di temperatura: gli UCS2114 hanno solo lo spegnimento termico (120 °C e 135 °C), segnalato come guasto `overtemperature`; USB2517 e TPS259470A nessuna. Non cambia D60: nessuna misura di corrente o tensione esposta |
 
 ## Aperte
 

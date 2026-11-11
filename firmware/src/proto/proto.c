@@ -122,6 +122,7 @@ void proto_handle(const uint8_t *report, uint16_t len) {
             *p++ = ports_warnings(i);
         }
         *p++ = relay_state();
+        *p++ = (uint8_t)sys->mcu_temp_c();
         break;
     }
 

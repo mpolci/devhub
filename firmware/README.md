@@ -33,6 +33,7 @@ punti aperti e anomalie hardware sono in
 - stato di default all'accensione salvato nell'ultima pagina della flash; di fabbrica
   tutte le porte abilitate (D74);
 - riavvio, salto al bootloader ST per l'aggiornamento via DFU, reset del hub, watchdog;
+- temperatura del chip del MCU dal sensore interno, con le calibrazioni di fabbrica (D102);
 - nessuna misura di corrente/tensione, lettura delle CC d'ingresso o gestione del budget.
 
 Pinout e note di avvio in [../docs/pinout-mcu.md](../docs/pinout-mcu.md).
@@ -63,7 +64,7 @@ elenca. I principali:
 
 | Comando | Uso |
 |---|---|
-| `status` | stato di sistema, hub, porte (logico e segnali), relè, default |
+| `status` | stato di sistema, VBUS upstream, temperatura del MCU, hub, porte (logico e segnali), relè, default |
 | `log` | messaggi di log dall'avvio (utili sulla seriale virtuale, che all'avvio non è ancora aperta) |
 | `port <n> on\|off\|cycle [ms]\|clear`, `all on\|off` | comando logico delle porte |
 | `relay connect\|disconnect\|pulse <ms>` | linea del relè |

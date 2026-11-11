@@ -65,6 +65,12 @@ static void cmd_version(int argc, char **argv) {
 static void cmd_status(int argc, char **argv) {
     P("system flags 0x%02X, usb host %s, vbus upstream %u mV\r\n", system_flags(),
       usb_dev_host_active() ? "active" : "absent", board_vbus_det_mv());
+    int16_t temp;
+    if (board_mcu_temp_c(&temp)) {
+        P("mcu temperature %d C\r\n", temp);
+    } else {
+        P("mcu temperature: adc error\r\n");
+    }
     P("hub: %s\r\n", hub_ctrl_state_name());
     for (uint8_t p = 0; p < BOARD_N_PORTS; p++) {
         P("port %u: state 0x%02X fault 0x%02X warning 0x%02X | EN=%d DATA=%d ALERT#=%s\r\n", p + 1, ports_state(p),
