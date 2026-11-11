@@ -13,9 +13,7 @@
 ## Firmware e host
 
 - Chiedere sempre conferma prima di creare una nuova versione (protocollo, firmware, libreria)
-  o di aggiungere codice di compatibilità con versioni precedenti. In questa fase di sviluppo
-  firmware e libreria si aggiornano insieme sull'unico prototipo: le modifiche si applicano
-  alla versione corrente.
+  o di aggiungere codice di compatibilità con versioni precedenti.
 
 ## Documentazione
 
