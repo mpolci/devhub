@@ -52,6 +52,7 @@ devhub info
 devhub status [--json]
 devhub port <n>|@testo on|off|cycle [--ms 1000]|clear|reset-charge [--wait [--timeout 10]]
 devhub find <testo>
+devhub log [--interval 1000] [--duration secondi]
 devhub all on|off
 devhub relay <n> connect|disconnect|cycle [--ms 500]
 devhub defaults show|set [porte...]|charge-reset [porte...]|save
@@ -80,6 +81,9 @@ port 4: on         53 mA     4.41 mAh  SanDisk Cruzer Edge [0781:556b]
 prodotto, numero di serie, VID:PID o porta seriale); `@testo` al posto del numero sceglie la
 porta allo stesso modo, per esempio `devhub port @esp32 cycle`, e deve corrispondere a una
 sola porta.
+
+`devhub log` stampa in CSV, a intervalli fissi, temperatura e per ogni porta stato, corrente
+e carica: `devhub log --interval 100 --duration 60 > prova.csv`.
 
 `port <n> on|cycle --wait` torna solo quando sulla porta c'è un dispositivo enumerato dal PC
 (dopo un ciclo, la nuova enumerazione) e lo stampa con le sue porte seriali; codice di uscita 1

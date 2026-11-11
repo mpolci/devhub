@@ -126,6 +126,18 @@ turn-on (factory setting: none).
   devhub defaults set 1 3 && devhub defaults save
   devhub defaults charge-reset 2      count port 2 from each turn-on
 """),
+    ("log", "log [--interval MS] [--duration S]", "record port currents as CSV", """
+Read the status every --interval milliseconds (default 1000, minimum 50) and
+print one CSV line per reading, until Ctrl-C or for --duration seconds:
+
+  time_s,temp_c,p1_on,p1_ma,p1_mah,p2_on,p2_ma,p2_mah,...
+
+time_s is counted from the start; pN_on is 1 when the port is on; a field is
+empty when the value cannot be read. The port controllers update the current
+every 2 ms and the charge once a second.
+
+  devhub log --interval 100 --duration 60 > run.csv
+"""),
     ("watch", "watch [--json]", "print events as they happen", """
 Print events until Ctrl-C: port_changed, port_fault, port_warning,
 relay_changed, power_changed. Each event says what caused it (origin):
@@ -264,6 +276,10 @@ def _parser() -> argparse.ArgumentParser:
     hub = add("hub")
     hub.add_argument("action", choices=["reset"])
 
+    log = add("log")
+    log.add_argument("--interval", type=int, default=1000, help="milliseconds between readings (default %(default)s)")
+    log.add_argument("--duration", type=float, help="seconds; default until Ctrl-C")
+
     watch = add("watch")
     watch.add_argument("--json", action="store_true", help="one JSON object per line")
 
@@ -397,6 +413,39 @@ def _port_command(dev: Devhub, args: argparse.Namespace) -> int:
     return EXIT_OK
 
 
+LOG_MIN_INTERVAL_MS = 50
+
+
+def _log(dev: Devhub, interval_ms: int, duration: Optional[float]) -> int:
+    if interval_ms < LOG_MIN_INTERVAL_MS:
+        raise _UsageError(f"--interval must be at least {LOG_MIN_INTERVAL_MS} ms")
+    n_ports = dev.info().n_ports
+    header = ["time_s", "temp_c"] + [f"p{i}_{k}" for i in range(1, n_ports + 1) for k in ("on", "ma", "mah")]
+    print(",".join(header), flush=True)
+
+    def field(value) -> str:
+        return "" if value is None else str(value)
+
+    start = time.monotonic()
+    k = 0
+    try:
+        while True:
+            status = dev.status()
+            row = [f"{time.monotonic() - start:.3f}", field(status.mcu_temp_c)]
+            for port in status.ports:
+                mah = None if port.charge_uah is None else f"{port.charge_uah / 1000:.3f}"
+                row += ["1" if port.enabled else "0", field(port.current_ma), field(mah)]
+            print(",".join(row), flush=True)
+            if duration is not None and time.monotonic() - start >= duration:
+                break
+            # Fixed rate: the next reading is due k intervals after the start.
+            k += 1
+            time.sleep(max(0.0, start + k * interval_ms / 1000 - time.monotonic()))
+    except KeyboardInterrupt:
+        pass
+    return EXIT_OK
+
+
 def _run(args: argparse.Namespace) -> int:
     if args.command == "help":
         if args.topic is None:
@@ -448,6 +497,8 @@ def _run(args: argparse.Namespace) -> int:
             print("charge reset at turn-on:  ", " ".join(map(str, dev.get_charge_reset())) or "none")
         elif args.command == "hub":
             dev.reset_hub()
+        elif args.command == "log":
+            return _log(dev, args.interval, args.duration)
         elif args.command == "watch":
             try:
                 for event in dev.events():

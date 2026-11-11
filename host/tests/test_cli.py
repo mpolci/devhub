@@ -92,3 +92,24 @@ def test_resolve_port(monkeypatch):
     for spec, message in [("@e", "several ports match: 1, 4"), ("@nope", "no device matches"), ("x", "invalid port")]:
         with pytest.raises(cli._UsageError, match=message):
             cli._resolve_port(_InfoDev(), spec)
+
+
+def test_log_csv(monkeypatch, capsys):
+    from types import SimpleNamespace
+    ports = [SimpleNamespace(enabled=True, current_ma=120, charge_uah=44491),
+             SimpleNamespace(enabled=False, current_ma=None, charge_uah=None)]
+
+    class Dev:
+        def info(self):
+            return SimpleNamespace(n_ports=2)
+
+        def status(self):
+            return SimpleNamespace(mcu_temp_c=33, ports=ports)
+
+    monkeypatch.setattr(cli.time, "sleep", lambda s: None)
+    assert cli._log(Dev(), 100, duration=0) == cli.EXIT_OK
+    header, row = capsys.readouterr().out.splitlines()
+    assert header == "time_s,temp_c,p1_on,p1_ma,p1_mah,p2_on,p2_ma,p2_mah"
+    assert row.split(",")[1:] == ["33", "1", "120", "44.491", "0", "", ""]
+    with pytest.raises(cli._UsageError):
+        cli._log(Dev(), 10, duration=0)
