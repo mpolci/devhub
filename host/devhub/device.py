@@ -56,6 +56,19 @@ def list_devices() -> List[dict]:
     return [d for d in hid.enumerate(p.USB_VID, p.USB_PID)]
 
 
+def _mask(ports: List[int]) -> int:
+    mask = 0
+    for port in ports:
+        if not 1 <= port <= 8:
+            raise ValueError(f"invalid port {port}")
+        mask |= 1 << (port - 1)
+    return mask
+
+
+def _ports(mask: int) -> List[int]:
+    return [i + 1 for i in range(8) if mask & (1 << i)]
+
+
 class Devhub:
     """One devhub. Ports and relays are numbered from 1.
 
@@ -168,22 +181,28 @@ class Devhub:
         """Disconnect the line for `ms`, then reconnect it."""
         self._command(Command.PULSE_RELAY, struct.pack("<BH", relay, ms))
 
-    # --- Power-on defaults ----------------------------------------------------
+    def reset_charge(self, port: int) -> None:
+        """Restart the charge count of a port from zero."""
+        self._command(Command.RESET_CHARGE, bytes([port]))
+
+    # --- Settings kept in flash -------------------------------------------------
 
     def get_defaults(self) -> List[int]:
         """Ports enabled at power-on."""
-        mask = self._command(Command.GET_DEFAULTS)[0]
-        return [i + 1 for i in range(8) if mask & (1 << i)]
+        return _ports(self._command(Command.GET_DEFAULTS)[0])
 
     def set_defaults(self, ports: List[int]) -> None:
-        mask = 0
-        for port in ports:
-            if not 1 <= port <= 8:
-                raise ValueError(f"invalid port {port}")
-            mask |= 1 << (port - 1)
-        self._command(Command.SET_DEFAULTS, bytes([mask]))
+        self._command(Command.SET_DEFAULTS, bytes([_mask(ports)]))
+
+    def get_charge_reset(self) -> List[int]:
+        """Ports whose charge count restarts from zero at every turn-on."""
+        return _ports(self._command(Command.GET_CHARGE_RESET)[0])
+
+    def set_charge_reset(self, ports: List[int]) -> None:
+        self._command(Command.SET_CHARGE_RESET, bytes([_mask(ports)]))
 
     def save_defaults(self) -> None:
+        """Write the power-on ports and the charge reset setting to flash."""
         self._command(Command.SAVE_DEFAULTS)
 
     # --- System ---------------------------------------------------------------

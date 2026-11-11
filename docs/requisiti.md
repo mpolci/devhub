@@ -5,7 +5,8 @@
 Durante il test di schede a microcontrollore collegate via USB può servire scollegare e
 ricollegare il cavo per recuperare un dispositivo bloccato. Devhub esegue questa operazione
 dal PC, in modo scriptabile, e permette di gestire le porte e un relè ausiliario.
-Non è uno strumento per misurare consumi o tensioni.
+Non è uno strumento di misura: corrente e carica per porta sono indicative (D103), le tensioni
+non si misurano.
 
 Questi requisiti includono le semplificazioni D60–D66 e le decisioni D68–D87 in
 [domande-aperte.md](domande-aperte.md). D75 seleziona UCS2114-1-V/LX e PI3USB4002A per le
@@ -49,9 +50,10 @@ variante senza MCU non è adottata. Lo schema v0.3 applica questi requisiti (D79
   su tutte le uscite: il totale è limitato dall'alimentatore e dai consumi interni (RF-13).
   Sulle USB-C resta l'annuncio di corrente standard USB tramite Rp da 56 kΩ (D30); non si
   annunciano 2 A sulle CC. Il limite hardware della porta resta distinto dall'annuncio USB.
-- **RF-6 — Eliminato (D60).** Non sono richieste misure di corrente per porta o all'ingresso,
-  accuratezza, calibrazione, azzeramento o visualizzazione degli assorbimenti. Non sono
-  richieste misure di tensione delle porte o della 5V_SYS, né diagnostica ricavata da tali misure.
+- **RF-6** Corrente e carica erogata di ogni porta, lette dai controller delle porte senza
+  componenti aggiunti, con la loro precisione e senza calibrazione; azzeramento della carica a
+  comando o a ogni accensione della porta (D103). Non sono richieste misure di corrente
+  all'ingresso, di tensione delle porte o della 5V_SYS, né diagnostica ricavata dalle misure.
 
 ### Dispositivo di controllo
 
@@ -85,7 +87,7 @@ variante senza MCU non è adottata. Lo schema v0.3 applica questi requisiti (D79
   di 3 A o gestione di budget diversi. Restano le resistenze Rd da 5,1 kΩ su CC1 e CC2,
   necessarie per ricevere alimentazione USB-C, e le protezioni hardware d'ingresso.
 - **RF-15** Le accensioni multiple sono sfalsate per contenere l'inrush. Il firmware gestisce
-  le segnalazioni di guasto disponibili dall'hardware, senza misurare consumi, calcolare budget
+  le segnalazioni di guasto disponibili dall'hardware, senza calcolare budget
   o scegliere la porta più energivora. La protezione da sovraccarico è hardware: un sovraccarico
   complessivo può interrompere l'intero hub. Non è garantita la continuità delle altre porte.
   Dopo un guasto hardware segnalato della porta, il MCU interrompe l’eventuale ciclo,
@@ -124,6 +126,6 @@ variante senza MCU non è adottata. Lo schema v0.3 applica questi requisiti (D79
 
 - USB 3.x SuperSpeed e isolamento galvanico delle porte USB.
 - USB-PD all'ingresso o verso i dispositivi; ricarica del laptop/host dall'hub.
-- Misura dei consumi, telemetria delle tensioni e gestione dinamica del budget di potenza.
+- Misura della corrente totale, telemetria delle tensioni e gestione dinamica del budget di potenza.
 - Certificazione elettrica dello spegnimento e diagnosi di sorgenti esterne tramite misure.
 - Riavvio automatico su blocco rilevato dal PC: è responsabilità degli script dell'utente.

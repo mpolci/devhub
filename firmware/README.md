@@ -34,7 +34,9 @@ punti aperti e anomalie hardware sono in
   tutte le porte abilitate (D74);
 - riavvio, salto al bootloader ST per l'aggiornamento via DFU, reset del hub, watchdog;
 - temperatura del chip del MCU dal sensore interno, con le calibrazioni di fabbrica (D102);
-- nessuna misura di corrente/tensione, lettura delle CC d'ingresso o gestione del budget.
+- corrente e carica erogata di ogni porta dai controller, con azzeramento a comando o a ogni
+  accensione (D103);
+- nessuna misura di tensione o di corrente totale, lettura delle CC d'ingresso o gestione del budget.
 
 Pinout e note di avvio in [../docs/pinout-mcu.md](../docs/pinout-mcu.md).
 
@@ -64,15 +66,15 @@ elenca. I principali:
 
 | Comando | Uso |
 |---|---|
-| `status` | stato di sistema, VBUS upstream, temperatura del MCU, hub, porte (logico e segnali), relè, default |
+| `status` | stato di sistema, VBUS upstream, temperatura del MCU, hub, porte (logico, segnali, corrente e carica), relè, default |
 | `log` | messaggi di log dall'avvio (utili sulla seriale virtuale, che all'avvio non è ancora aperta) |
-| `port <n> on\|off\|cycle [ms]\|clear`, `all on\|off` | comando logico delle porte |
+| `port <n> on\|off\|cycle [ms]\|clear\|reset-charge`, `all on\|off` | comando logico delle porte, azzeramento della carica |
 | `relay connect\|disconnect\|pulse <ms>` | linea del relè |
 | `hub [status\|reset\|dump]` | stato del hub, nuova sequenza di reset e configurazione |
 | `ucs <1\|2> id\|init\|status\|dump\|write <reg> <val>` | controller delle porte 1-2 e 3-4: identificazione, registri, scrittura di un registro |
 | `led`, `btn`, `gpio en\|data <n> 0\|1` | collaudo di LED, pulsanti e singoli segnali delle porte |
 | `io`, `pin <porta><n>`, `i2c <1\|2> scan` | registri GPIO, prova di un pin con pull-up e pull-down interni, scansione di un bus I²C |
-| `defaults [set <maschera hex>\|save]` | porte abilitate all'accensione |
+| `defaults [set <maschera hex>\|charge-reset <maschera hex>\|save]` | porte abilitate all'accensione, azzeramento della carica all'accensione |
 | `reset`, `dfu`, `hang` | riavvio, ingresso nel bootloader, blocco del ciclo principale per provare il watchdog |
 
 ## Sorgenti

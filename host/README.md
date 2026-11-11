@@ -50,10 +50,10 @@ Porte e relè sono numerati da 1. I comandi rifiutati dal dispositivo sollevano
 devhub list
 devhub info
 devhub status [--json]
-devhub port <n> on|off|cycle [--ms 1000]|clear
+devhub port <n> on|off|cycle [--ms 1000]|clear|reset-charge
 devhub all on|off
 devhub relay <n> connect|disconnect|cycle [--ms 500]
-devhub defaults show|set [porte...]|save
+devhub defaults show|set [porte...]|charge-reset [porte...]|save
 devhub hub reset
 devhub watch [--json]
 devhub reboot
@@ -64,15 +64,15 @@ devhub help [comando]
 `devhub` senza argomenti stampa una guida breve con i comandi ed esempi; `devhub help` la
 guida completa, `devhub help <comando>` i dettagli di un comando.
 
-`status` mostra anche la temperatura del chip del MCU (D102). Su macOS e Linux mostra accanto
-a ogni porta il dispositivo collegato, come lo vede il PC: produttore e prodotto, VID:PID e
-porte seriali.
+`status` mostra corrente e carica erogata di ogni porta (D103) e la temperatura del chip del MCU
+(D102). Su macOS e Linux mostra accanto a ogni porta anche il dispositivo collegato, come lo
+vede il PC: produttore e prodotto, VID:PID e porte seriali. Per esempio:
 
 ```
-port 1: on       STMicroelectronics STLINK-V3 [0483:374e] /dev/cu.usbmodem212102
-port 2: on       SanDisk Cruzer Edge [0781:556b]
-port 3: on       -
-port 4: off
+port 1: on        133 mA     1.00 mAh  Espressif USB JTAG/serial debug unit [303a:1001] /dev/cu.usbmodem212101
+port 2: on         13 mA     0.42 mAh  -
+port 3: off         0 mA     0.38 mAh
+port 4: on         53 mA     4.41 mAh  SanDisk Cruzer Edge [0781:556b]
 ```
 
 Il firmware non vede cosa è collegato alle porte: la libreria cerca nell'albero USB del

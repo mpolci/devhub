@@ -26,9 +26,14 @@ typedef struct {
 // Wake the chip if it may be asleep (both PWR_EN low and no recent traffic).
 bool ucs2114_wake(i2c_bus_t bus);
 bool ucs2114_check_id(i2c_bus_t bus);
-// Enable automatic VBUS discharge (400 ms) and restrict ALERT# to
-// overcurrent/overtemperature; verified by read-back.
+// Enable automatic VBUS discharge (400 ms), restrict ALERT# to
+// overcurrent/overtemperature and start the charge accumulation; verified by read-back.
 bool ucs2114_configure(i2c_bus_t bus);
+// Port current, 13.3 mA resolution. ch 0 = chip port 1, ch 1 = chip port 2.
+bool ucs2114_read_current_ma(i2c_bus_t bus, uint8_t ch, uint16_t *ma);
+// Charge delivered since the last reset, in µAh (updated by the chip once a second).
+bool ucs2114_read_charge_uah(i2c_bus_t bus, uint8_t ch, uint32_t *uah);
+bool ucs2114_reset_charge(i2c_bus_t bus, uint8_t ch);
 // Read and clear the interrupt status registers.
 bool ucs2114_read_events(i2c_bus_t bus, ucs2114_events_t *ev);
 bool ucs2114_read_reg(i2c_bus_t bus, uint8_t reg, uint8_t *value);

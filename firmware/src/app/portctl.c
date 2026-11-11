@@ -39,6 +39,9 @@ static void hw_set_enabled(uint8_t port, bool on) {
         board_port_power(port, true);
         board_port_data(port, true);
         on_time[port] = board_millis();
+        if ((defaults_charge_reset_get() >> port) & 1u) {
+            portctl_reset_charge(port);
+        }
     } else {
         board_port_data(port, false);
         board_port_power(port, false);
@@ -85,7 +88,7 @@ bool portctl_chip_init(uint8_t chip) {
     } else if (!ucs2114_read_events(c->bus, &ev) || !ucs2114_configure(c->bus)) {
         error = "configuration failed";
     } else {
-        LOG("ucs %u: configured (discharge 400 ms, ALERT# masked)", chip + 1);
+        LOG("ucs %u: configured (discharge 400 ms, ALERT# masked, charge accumulation)", chip + 1);
         c->ok = true;
     }
     // Retried every second: report a failure once, not at every attempt.
@@ -196,6 +199,24 @@ void portctl_task(uint32_t now) {
             board_led_port(p, ports_led(p, now));
         }
     }
+}
+
+static chip_t *usable_chip(uint8_t port) {
+    if (port >= BOARD_N_PORTS) {
+        return NULL;
+    }
+    chip_t *c = &chips[port / 2];
+    return (c->ok && bus_available(c)) ? c : NULL;
+}
+
+bool portctl_measure(uint8_t port, uint16_t *ma, uint32_t *uah) {
+    chip_t *c = usable_chip(port);
+    return c && ucs2114_read_current_ma(c->bus, port % 2, ma) && ucs2114_read_charge_uah(c->bus, port % 2, uah);
+}
+
+bool portctl_reset_charge(uint8_t port) {
+    chip_t *c = usable_chip(port);
+    return c && ucs2114_reset_charge(c->bus, port % 2);
 }
 
 bool portctl_chip_ok(uint8_t chip) {

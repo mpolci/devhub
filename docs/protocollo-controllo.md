@@ -2,7 +2,7 @@
 
 Canale USB HID, usage page vendor (0xFF00), report ID fissi, report da 64 byte, little endian.
 HID non richiede driver dedicati e `hidapi` è disponibile sui sistemi previsti.
-La bozza riflette D60–D66, D68 e D96–D102; firmware e libreria host la implementano e sono
+La bozza riflette D60–D66, D68 e D96–D103; firmware e libreria host la implementano e sono
 provati sul prototipo Rev A.
 Il controllo resta HID e i cicli/impulsi sono eseguiti dal MCU: il PC invia il comando
 senza dover restare in esecuzione per inviare la riaccensione.
@@ -22,8 +22,9 @@ libreria non sono collaudati, poi diventa 1.0.
 - Lo stato porta è logico: `enabled`, `cycle_active`, `fault`. Non è una misura della VBUS
   né una conferma del riavvio del dispositivo. Guasti e cause sono solo quelli rilevabili
   dall'hardware selezionato; un segnale generico resta un guasto generico.
-- Nessun campo di corrente, tensione, budget, corrente annunciata sulle CC o `budget_blocked`.
-  L'unica grandezza misurata è la temperatura del MCU (D102).
+- Grandezze misurate: corrente e carica accumulata di ogni porta, dai controller delle porte
+  (D103), e temperatura del MCU (D102). Nessun campo di tensione, corrente totale, budget,
+  corrente annunciata sulle CC o `budget_blocked`.
 - Il MCU governa VBUS e dati con un unico comando logico; la sequenza interna del controller
   è ammessa. Non esiste il parametro `on_delay_ms`.
 
@@ -76,15 +77,18 @@ i parametri iniziano al byte 3, in quello di evento i dati iniziano al byte 2.
 | cmd | Nome | Parametri | Risposta |
 |---|---|---|---|
 | 0x01 | GET_INFO | — | proto_version, fw_version, n_ports, n_relays, capabilities, serial |
-| 0x02 | GET_STATUS | — | stato di sistema, stato logico, guasti e avvisi per porta, stato relè |
+| 0x02 | GET_STATUS | — | stato di sistema; per porta stato logico, guasti, avvisi, corrente e carica; stato relè; temperatura del MCU |
 | 0x10 | SET_PORT | port, on (0/1): VBUS e dati insieme | status |
 | 0x11 | CYCLE_PORT | port, off_ms (u16): durata dal comando di disabilitazione VBUS, inclusa la scarica | status di accettazione; il ciclo prosegue autonomamente nel MCU |
 | 0x12 | SET_ALL | on (0/1) | status; le accensioni sono sfalsate |
+| 0x13 | RESET_CHARGE | port | status; la carica accumulata della porta riparte da zero; `HW_ERROR` se il controller non risponde |
 | 0x20 | SET_RELAY | relay, line (0 = connected, 1 = disconnected) | status |
 | 0x21 | PULSE_RELAY | relay, ms (u16): stacca la linea e poi la ricollega | status |
 | 0x30 | GET_DEFAULTS | — | maschera delle porte abilitate all'accensione |
 | 0x31 | SET_DEFAULTS | maschera delle porte abilitate all'accensione (u8, bit 0 = porta 1) | status; i relè all'accensione sono sempre a riposo, linea collegata |
-| 0x32 | SAVE_DEFAULTS | — | status; scrive in flash |
+| 0x32 | SAVE_DEFAULTS | — | status; scrive in flash le porte abilitate all'accensione e l'azzeramento automatico della carica |
+| 0x33 | GET_CHARGE_RESET | — | maschera delle porte la cui carica si azzera a ogni accensione |
+| 0x34 | SET_CHARGE_RESET | maschera (u8, bit 0 = porta 1); di fabbrica 0 | status |
 | 0x40 | CLEAR_FAULT | port | status; toglie il blocco e lascia la porta disabilitata |
 | 0x50 | RESET_HUB | — | status prima del reset; hub e dispositivi downstream, controllo incluso, ri-enumerano |
 | 0x7E | REBOOT | — | — |
@@ -106,9 +110,9 @@ Dati di `GET_STATUS`, dal byte 4 della risposta:
 | Offset | Campo | Tipo | Note |
 |---|---|---|---|
 | 4 | system | u8 | bit 0 = guasto ingresso segnalato dall'eFuse; bit 1 = hub configurato via SMBus; bit 2 = controller porte 1-2 non risponde; bit 3 = controller porte 3-4 non risponde |
-| 5 | porte | 3 byte per porta | `state`, `fault`, `warning`, nell'ordine delle porte |
-| 5 + 3·n_ports | relè | 1 byte per relè | bit 0 = linea staccata; bit 1 = impulso in corso |
-| 5 + 3·n_ports + n_relays | mcu_temp | i8 | temperatura del chip del MCU in °C (D102); −128 se la lettura non riesce |
+| 5 | porte | 9 byte per porta | `state` (u8), `fault` (u8), `warning` (u8), `current` (u16), `charge` (u32), nell'ordine delle porte |
+| 5 + 9·n_ports | relè | 1 byte per relè | bit 0 = linea staccata; bit 1 = impulso in corso |
+| 5 + 9·n_ports + n_relays | mcu_temp | i8 | temperatura del chip del MCU in °C (D102); −128 se la lettura non riesce |
 
 Byte di una porta:
 
@@ -123,6 +127,15 @@ Byte di una porta:
 | `warning` | 0 | scarica non riuscita: VBUS sostenuta dall'esterno |
 | | 1 | tensione di ritorno sulla VBUS |
 | | 2 | VBUS sotto il minimo del controller |
+
+| `current` | — | corrente della porta in mA, passo 13,3 mA; 0xFFFF se il controller non risponde |
+| `charge` | — | carica erogata dall'ultimo azzeramento in µAh, aggiornata ogni secondo; 0xFFFFFFFF se il controller non risponde |
+
+`current` e `charge` vengono dagli UCS2114 (D103): corrente ±2 % sopra 200 mA e ±2 passi sotto,
+carica ±4,5 %. Lo zero della corrente non è esatto: a porta vuota si legge 0 o 13 mA e la
+carica cresce di qualche mAh all'ora. La carica si conserva con la porta spenta; si azzera con
+`RESET_CHARGE`, a ogni accensione per le porte indicate da `SET_CHARGE_RESET`, e quando il
+controller si resetta o resta senza alimentazione; un riavvio del solo MCU non la azzera.
 
 `fault` conserva la causa finché la porta è bloccata. Gli avvisi non bloccano la porta né
 il ciclo (D98) e restano impostati fino al comando successivo sulla stessa porta.

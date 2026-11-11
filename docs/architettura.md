@@ -1,9 +1,10 @@
 # Architettura
 
 L'architettura funzionale segue i requisiti semplificati D60–D66 e le decisioni D68–D87: controllo delle porte
-e riavvio temporizzato, senza misura dei consumi, delle tensioni delle porte/5V_SYS o delle CC
-d'ingresso. Lo schema v0.3 la applica (D79); il PCB da 100 × 100 mm (D84) è realizzato e il
-prototipo è montato. Il firmware segue D96–D101.
+e riavvio temporizzato, senza misura delle tensioni delle porte/5V_SYS, della corrente totale o
+delle CC d'ingresso; corrente e carica per porta vengono dai controller delle porte (D103). Lo
+schema v0.3 la applica (D79); il PCB da 100 × 100 mm (D84) è realizzato e il prototipo è
+montato. Il firmware segue D96–D103.
 D75 sceglie due UCS2114-1-V/LX con due bus I²C indipendenti e quattro PI3USB4002A.
 La scarica automatica va configurata all’avvio, con 400 ms come durata iniziale da validare.
 Componenti e alternative: [componenti.md](componenti.md).
@@ -49,7 +50,7 @@ Si sceglie la soluzione complessivamente più semplice, rispettando i limiti ele
 
 Commutazione dati, VBUS e scarica possono essere integrate nello stesso componente:
 non sono prescritti interruttori separati o una sequenza pilotata pin per pin dal MCU.
-Non sono previsti INA3221, shunt o ADC sostitutivi per le misure eliminate.
+Non sono previsti INA3221, shunt o ADC sostitutivi: la corrente per porta la misurano gli UCS2114 (D103).
 
 ## Scelte progettuali
 
@@ -162,7 +163,7 @@ autoalimentata può restare collegata ed essere sottoposta a cicli. Scollegament
 sospensione del PC non cambiano lo stato di porte e relè (D100).
  Le accensioni multiple sono sfalsate per contenere l'inrush,
 con intervallo da verificare sul circuito. Restano limitazione hardware e segnali di guasto;
-il firmware non calcola consumi o budget, non sceglie la porta più energivora e non espone
+il firmware non calcola budget, non sceglie la porta più energivora e non espone
 un budget impostabile. Un sovraccarico complessivo può far intervenire alimentatore/eFuse e
 spegnere l'intero hub: non si garantisce la continuità delle altre porte. Le azioni del MCU
 dipendono dai guasti realmente segnalati e dal fatto che la logica resti alimentata.
@@ -328,7 +329,7 @@ Requisiti del blocco da realizzare:
 | Alimentazione | 5 V, 2 A su ciascuna delle quattro USB-C, entro il totale condiviso |
 | Scarica | Attiva, integrata o discreta; ciclo temporizzato senza misura VBUS; durata sicura da definire |
 | Protezioni | Limitazione hardware, blocco inverso, ESD e segnalazione di guasto; limiti da verificare sul controller |
-| Misure | Nessun sensore di corrente o tensione per porta |
+| Misure | Corrente e carica per porta dagli UCS2114 (D103); nessuna misura di tensione |
 | CC downstream | Rp da 56 kΩ alla VBUS commutata; invariata la scelta di non rilevare l'inserimento (D29/D30) |
 | LED | Uno dal MCU: spento = disabilitata, fisso = abilitata, lampeggiante = guasto, prioritario; stato logico |
 | Pulsante | Ogni pressione alterna lo stato; debounce firmware e notifica all'host; nessun controllo del budget |
@@ -402,13 +403,13 @@ ripiego se la rifusione dell'hub dà problemi. La D è il ripiego se non si vuol
 
 ## Protezioni (uso in laboratorio)
 
-La rimozione delle misure non elimina le protezioni hardware: eFuse/TVS all'ingresso,
+Le protezioni sono hardware e non dipendono dalle misure: eFuse/TVS all'ingresso,
 limitazione di corrente e blocco inverso negli UCS2114, switch protetti PI3USB4002A e
 USBLC6-2SC6 upstream. Le prestazioni vanno verificate sul prototipo.
 
 | Rischio | Comportamento richiesto o limite |
 |---|---|
-| Corto o sovraccarico di una porta | Limitazione hardware e gestione del guasto disponibile; nessuna misura di ampere |
+| Corto o sovraccarico di una porta | Limitazione hardware e gestione del guasto disponibile; la corrente misurata (D103) è solo informativa |
 | Sovraccarico totale | Protezioni d'ingresso/alimentatore; possibile spegnimento di tutto l'hub |
 | Sovratensione o picco all'ingresso | Conservare eFuse, TVS e avvio dolce; limiti del circuito come descritti sopra |
 | Corto dei dati su VBUS o scarica ESD | Protezione hardware; verificarne le prestazioni con il nuovo controller e il layout |

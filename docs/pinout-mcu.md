@@ -87,7 +87,8 @@ VBUS upstream, due controlli del hub, UART, USB e SWD.
 - I2C1 su PB8/PB9: hub USB2517 a 0x2C in modalità SMBus e U4; I2C2 su PB10/PB11: U5.
 - UCS2114 (D75): all'avvio PWR_EN bassi e dati aperti, risveglio dei controller, abilitazione
   di EN_VBUS_DISCHG con timer 400 ms e verifica per lettura, poi accensione sfalsata delle
-  porte. Charge rationing e override software dei pin restano disabilitati; niente comandi
+  porte. Charge rationing abilitato in modalità "Ignore" solo per contare la carica (D103);
+  override software dei pin disabilitato; niente comandi
   DISCHG_LOAD senza timer. Dopo una perdita di alimentazione dei controller reinizializzare
   (bit RESET del registro 03h).
 - Registri UCS2114 (DS20005743B): il controller dorme con entrambi i PWR_EN bassi e torna a

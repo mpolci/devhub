@@ -76,6 +76,13 @@ static void cmd_status(int argc, char **argv) {
         P("port %u: state 0x%02X fault 0x%02X warning 0x%02X | EN=%d DATA=%d ALERT#=%s\r\n", p + 1, ports_state(p),
           ports_fault_cause(p), ports_warnings(p), board_port_power_get(p), board_port_data_get(p),
           board_port_alert(p) ? "low" : "high");
+        uint16_t ma;
+        uint32_t uah;
+        if (portctl_measure(p, &ma, &uah)) {
+            P("        %u mA, %lu.%03lu mAh\r\n", ma, (unsigned long)(uah / 1000), (unsigned long)(uah % 1000));
+        } else {
+            P("        measurement not available\r\n");
+        }
     }
     P("relay: state 0x%02X (coil %s)\r\n", relay_state(), board_relay_get() ? "energized" : "released");
     P("efuse fault: %s, defaults mask 0x%X (%s)\r\n", board_efuse_fault() ? "yes" : "no", defaults_get(),
@@ -150,7 +157,7 @@ static void cmd_gpio(int argc, char **argv) {
 }
 
 static void cmd_port(int argc, char **argv) {
-    // port <n> on|off|cycle [ms]|clear
+    // port <n> on|off|cycle [ms]|clear|reset-charge
     int n = argc >= 3 ? index_arg(argv[1], BOARD_N_PORTS) : -1;
     if (n < 0) {
         usage_error();
@@ -166,6 +173,8 @@ static void cmd_port(int argc, char **argv) {
         st = ports_cycle((uint8_t)n, argc >= 4 ? (uint16_t)atoi(argv[3]) : 0, now);
     } else if (eq(argv[2], "clear")) {
         st = ports_clear_fault((uint8_t)n);
+    } else if (eq(argv[2], "reset-charge")) {
+        st = portctl_reset_charge((uint8_t)n) ? ST_OK : ST_HW_ERROR;
     } else {
         usage_error();
         return;
@@ -326,9 +335,11 @@ static void cmd_i2c(int argc, char **argv) {
 }
 
 static void cmd_defaults(int argc, char **argv) {
-    // defaults | defaults set <hex mask> | defaults save
+    // defaults | defaults set <hex mask> | defaults charge-reset <hex mask> | defaults save
     if (argc == 3 && eq(argv[1], "set")) {
         defaults_set((uint8_t)strtoul(argv[2], NULL, 16));
+    } else if (argc == 3 && eq(argv[1], "charge-reset")) {
+        defaults_charge_reset_set((uint8_t)strtoul(argv[2], NULL, 16));
     } else if (argc == 2 && eq(argv[1], "save")) {
         P("%s\r\n", defaults_save() ? "saved" : "flash write failed");
         return;
@@ -336,7 +347,8 @@ static void cmd_defaults(int argc, char **argv) {
         usage_error();
         return;
     }
-    P("defaults mask 0x%X (%s)\r\n", defaults_get(), defaults_from_flash() ? "flash" : "not saved");
+    P("defaults mask 0x%X, charge reset at turn-on 0x%X (%s)\r\n", defaults_get(), defaults_charge_reset_get(),
+      defaults_from_flash() ? "flash" : "not saved");
 }
 
 static void cmd_log(int argc, char **argv) {
@@ -366,10 +378,10 @@ static const command_t commands[] = {
     {"version", "", cmd_version},
     {"status", "", cmd_status},
     {"log", "(log lines since start-up)", cmd_log},
-    {"port", "<n> on|off|cycle [ms]|clear", cmd_port},
+    {"port", "<n> on|off|cycle [ms]|clear|reset-charge", cmd_port},
     {"all", "on|off", cmd_all},
     {"relay", "connect|disconnect|pulse <ms>", cmd_relay},
-    {"defaults", "[set <hex mask>|save]", cmd_defaults},
+    {"defaults", "[set <hex mask>|charge-reset <hex mask>|save]", cmd_defaults},
     {"hub", "[status|reset|dump]", cmd_hub},
     {"ucs", "<1|2> id|init|status|dump|write <reg> <val>", cmd_ucs},
     {"led", "<n>|host on|off, led auto", cmd_led},

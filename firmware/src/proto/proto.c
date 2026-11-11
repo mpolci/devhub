@@ -69,6 +69,11 @@ static uint32_t get_u32(const uint8_t *p) {
     return (uint32_t)p[0] | ((uint32_t)p[1] << 8) | ((uint32_t)p[2] << 16) | ((uint32_t)p[3] << 24);
 }
 
+static void put_u16(uint8_t *p, uint16_t v) {
+    p[0] = (uint8_t)v;
+    p[1] = (uint8_t)(v >> 8);
+}
+
 static void put_u32(uint8_t *p, uint32_t v) {
     p[0] = (uint8_t)v;
     p[1] = (uint8_t)(v >> 8);
@@ -120,6 +125,15 @@ void proto_handle(const uint8_t *report, uint16_t len) {
             *p++ = ports_state(i);
             *p++ = ports_fault_cause(i);
             *p++ = ports_warnings(i);
+            uint16_t ma;
+            uint32_t uah;
+            if (!sys->port_measure(i, &ma, &uah)) {
+                ma = PROTO_CURRENT_UNAVAILABLE;
+                uah = PROTO_CHARGE_UNAVAILABLE;
+            }
+            put_u16(p, ma);
+            put_u32(p + 2, uah);
+            p += 6;
         }
         *p++ = relay_state();
         *p++ = (uint8_t)sys->mcu_temp_c();
@@ -149,6 +163,12 @@ void proto_handle(const uint8_t *report, uint16_t len) {
             ports_set_all(arg[0] != 0, now);
         }
         break;
+
+    case CMD_RESET_CHARGE: {
+        uint8_t port = index_of(arg[0], PROTO_N_PORTS);
+        status = (port == 0xFF) ? ST_BAD_PARAM : sys->port_reset_charge(port) ? ST_OK : ST_HW_ERROR;
+        break;
+    }
 
     case CMD_SET_RELAY:
         if (index_of(arg[0], PROTO_N_RELAYS) == 0xFF || arg[1] > 1) {
@@ -180,6 +200,18 @@ void proto_handle(const uint8_t *report, uint16_t len) {
 
     case CMD_SAVE_DEFAULTS:
         status = sys->defaults_save() ? ST_OK : ST_STORAGE_ERROR;
+        break;
+
+    case CMD_GET_CHARGE_RESET:
+        data[0] = sys->charge_reset_get();
+        break;
+
+    case CMD_SET_CHARGE_RESET:
+        if (arg[0] >> PROTO_N_PORTS) {
+            status = ST_BAD_PARAM;
+        } else {
+            sys->charge_reset_set(arg[0]);
+        }
         break;
 
     case CMD_CLEAR_FAULT: {

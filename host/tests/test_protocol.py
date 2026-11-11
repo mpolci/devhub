@@ -17,6 +17,11 @@ def event(evt, data):
     return (bytes([p.REPORT_ID_EVENT, evt]) + bytes(data)).ljust(p.REPORT_SIZE, b"\x00")
 
 
+def status_data(ports, relay=1, temp=37, system=0x02):
+    """GET_STATUS payload; ports: (state, fault, warning, mA, µAh) per port."""
+    return bytes([system]) + b"".join(struct.pack("<BBBHI", *port) for port in ports) + bytes([relay, temp & 0xFF])
+
+
 INFO_DATA = bytes([0, 1, 0, 1, 0, 4, 1]) + struct.pack("<I", 1) + bytes(range(0xA0, 0xAC))
 
 
@@ -28,7 +33,8 @@ class FakeTransport:
         self.rx = deque()
         self.pending_events = []
         self.status_code = 0
-        self.status_data = bytes([0x02, 1, 0, 0, 2, 0, 1, 4, 1, 0, 0, 0, 2, 1, 37])
+        self.status_data = status_data([(1, 0, 0, 120, 85300), (2, 0, 1, 0, 0), (4, 1, 0, 0, 0),
+                                        (0, 0, 2, 0xFFFF, 0xFFFFFFFF)])
         self.silent = False
 
     def write(self, report):
@@ -40,7 +46,7 @@ class FakeTransport:
         if self.silent or cmd in (p.Command.REBOOT, p.Command.ENTER_BOOTLOADER):
             return
         data = {p.Command.GET_INFO: INFO_DATA, p.Command.GET_STATUS: self.status_data,
-                p.Command.GET_DEFAULTS: bytes([0x05])}.get(cmd, b"")
+                p.Command.GET_DEFAULTS: bytes([0x05]), p.Command.GET_CHARGE_RESET: bytes([0x02])}.get(cmd, b"")
         self.rx.append(response(cmd, seq, self.status_code, data))
 
     def read(self, timeout_ms):
@@ -94,12 +100,15 @@ def test_status(dev):
     assert d["relays"] == [{"relay": 1, "line": "disconnected", "pulse_active": False}]
     assert d["ports"][2]["fault_causes"] == ["overcurrent"]
     assert status.mcu_temp_c == 37 and d["mcu_temp_c"] == 37
+    assert (status.ports[0].current_ma, status.ports[0].charge_uah) == (120, 85300)
+    assert d["ports"][0]["charge_mah"] == 85.3
+    assert status.ports[3].current_ma is None and d["ports"][3]["charge_mah"] is None  # not readable
 
 
 def test_status_temperature():
-    data = bytes([0x02] + [0] * 12 + [0])
-    assert p.parse_status(data + bytes([0xF6]), 4, 1).mcu_temp_c == -10
-    assert p.parse_status(data + bytes([0x80]), 4, 1).mcu_temp_c is None  # reading failed
+    ports = [(0, 0, 0, 0, 0)] * 4
+    assert p.parse_status(status_data(ports, temp=-10), 4, 1).mcu_temp_c == -10
+    assert p.parse_status(status_data(ports, temp=-128), 4, 1).mcu_temp_c is None  # reading failed
 
 
 def test_command_payloads(dev, fake):
@@ -110,6 +119,8 @@ def test_command_payloads(dev, fake):
     dev.set_relay(1, disconnected=True)
     dev.pulse_relay(1, 250)
     dev.set_defaults([1, 3])
+    dev.reset_charge(2)
+    dev.set_charge_reset([2, 4])
     dev.save_defaults()
     dev.reset_hub()
     dev.reboot()
@@ -123,6 +134,8 @@ def test_command_payloads(dev, fake):
         (0x20, bytes([1, 1])),
         (0x21, bytes([1, 250])),
         (0x31, bytes([0x05])),
+        (0x13, bytes([2])),
+        (0x34, bytes([0x0A])),
         (0x32, b""),
         (0x50, b""),
         (0x7E, b""),
@@ -136,6 +149,9 @@ def test_defaults(dev):
     assert dev.get_defaults() == [1, 3]
     with pytest.raises(ValueError):
         dev.set_defaults([0])
+    assert dev.get_charge_reset() == [2]
+    with pytest.raises(ValueError):
+        dev.set_charge_reset([9])
 
 
 def test_error_status(dev, fake):

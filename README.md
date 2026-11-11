@@ -18,12 +18,13 @@ il PC può:
 | Velocità | USB 2.0 Hi-Speed (480 Mbit/s) |
 | Alimentazione per porta | 5 V, fino a 2 A sulla singola porta USB-C, circa 2,4 A totali stimati, con limitazione di corrente e sezionamento per porta |
 | Sezionamento | VBUS **e** D+/D− con unico comando logico; ammessa la sequenza interna del controller |
-| Ciclo di spegnimento/riaccensione porta | Ciclo temporizzato con scarica attiva, durata configurabile; default indicativo 1 s da validare, nessuna misura di corrente o tensione |
+| Ciclo di spegnimento/riaccensione porta | Ciclo temporizzato con scarica attiva, durata configurabile; default indicativo 1 s da validare, senza verifica della tensione |
 | Indicazione porta | Un LED dal MCU: spento, acceso fisso, lampeggiante per guasto |
 | Alimentazione hub | richiesti alimentatore USB-C 5 V / 3 A senza negoziazione PD e cavo adeguato; nessuna verifica delle CC |
 | Upstream (verso il PC) | USB-C (USB 2.0) |
 | Controllo | STM32G0B1 su porta interna dell'hub, interfaccia USB HID senza driver + CLI Python |
 | Relè ausiliari | 1 × SPDT su due boccole a banana COM/NC, contatti max 16 V / 3 A |
+| Misure | Corrente e carica erogata per porta, temperatura del controllo; nessuna tensione |
 | Pannello | 5 pulsanti; 5 LED: uno per porta USB, con lampeggio guasti, e uno di host collegato |
 
 I 3 A d'ingresso comprendono anche i consumi interni: un sovraccarico complessivo può
@@ -68,10 +69,10 @@ completo (D84–D95, vedi [hardware/README.md](hardware/README.md)). Il prototip
 montato e funziona: corretti alcuni difetti di saldatura, nessuna modifica al PCB.
 
 Firmware ([firmware/README.md](firmware/README.md)) e libreria Python con CLI
-([host/README.md](host/README.md)) sono scritti secondo D96–D102 e il protocollo 0.1. Sul
+([host/README.md](host/README.md)) sono scritti secondo D96–D103 e il protocollo 0.1. Sul
 prototipo sono verificati hub configurato via SMBus, aggiornamento via DFU attraverso il
 hub, le quattro porte (accensione, spegnimento, ciclo, enumerazione di un dispositivo),
-relè, LED, pulsanti, default in flash, eventi, watchdog e temperatura del MCU. Restano le misure con strumenti:
+relè, LED, pulsanti, default in flash, eventi, watchdog, temperatura del MCU e corrente delle porte. Restano le misure con strumenti:
 durata della scarica e del ciclo, sfasamento delle accensioni, guasti reali e ritorno di
 alimentazione (D98), tempi I²C, corrente dei LED, transitori al reset e in DFU. Dopo le misure
 il protocollo passerà alla versione 1.0.

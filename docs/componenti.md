@@ -746,7 +746,8 @@ riguarda soltanto la variante autonoma non adottata. Nessun GPIO DIS richiesto.
 
 All’avvio: PWR_EN bassi, dati aperti, risveglio dei controller, abilitazione di
 EN_VBUS_DISCHG, timer 400 ms e verifica per lettura; quindi default ON sfalsato.
-Mantenere disabilitati charge rationing e override software dei pin, evitando comandi
+Charge rationing in modalità "Ignore", solo per contare la carica (D103); override software
+dei pin disabilitato, evitando comandi
 DISCHG_LOAD senza timer. Dopo perdita dell’alimentazione del controller reinizializzare.
 La gestione D73 resta nel MCU. Il tempo 400 ms amplia il margine sui condensatori,
 ma non elimina la necessità di definire la capacità effettivamente supportata.

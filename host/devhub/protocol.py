@@ -36,11 +36,14 @@ class Command(enum.IntEnum):
     SET_PORT = 0x10
     CYCLE_PORT = 0x11
     SET_ALL = 0x12
+    RESET_CHARGE = 0x13
     SET_RELAY = 0x20
     PULSE_RELAY = 0x21
     GET_DEFAULTS = 0x30
     SET_DEFAULTS = 0x31
     SAVE_DEFAULTS = 0x32
+    GET_CHARGE_RESET = 0x33
+    SET_CHARGE_RESET = 0x34
     CLEAR_FAULT = 0x40
     RESET_HUB = 0x50
     REBOOT = 0x7E
@@ -107,6 +110,9 @@ class Capabilities(enum.IntFlag):
 
 
 TEMP_UNAVAILABLE = -128
+CURRENT_UNAVAILABLE = 0xFFFF
+CHARGE_UNAVAILABLE = 0xFFFFFFFF
+PORT_STATUS_SIZE = 9  # state, fault, warning, current (u16 mA), charge (u32 µAh)
 
 
 def _flag_names(value: enum.IntFlag) -> List[str]:
@@ -148,6 +154,8 @@ class PortStatus:
     state: PortState
     fault: PortFault
     warning: PortWarning
+    current_ma: Optional[int]  # None if the port controller cannot be read
+    charge_uah: Optional[int]  # charge delivered since the last reset, µAh
 
     @property
     def enabled(self) -> bool:
@@ -169,6 +177,8 @@ class PortStatus:
             "fault": self.faulted,
             "fault_causes": _flag_names(self.fault),
             "warnings": _flag_names(self.warning),
+            "current_ma": self.current_ma,
+            "charge_mah": None if self.charge_uah is None else self.charge_uah / 1000,
         }
 
 
@@ -292,9 +302,13 @@ def parse_status(data: bytes, n_ports: int, n_relays: int) -> Status:
     system = SystemFlags(data[0])
     ports = []
     for i in range(n_ports):
-        state, fault, warning = data[1 + 3 * i : 4 + 3 * i]
-        ports.append(PortStatus(i + 1, PortState(state), PortFault(fault), PortWarning(warning)))
-    base = 1 + 3 * n_ports
+        state, fault, warning, ma, uah = struct.unpack_from("<BBBHI", data, 1 + PORT_STATUS_SIZE * i)
+        ports.append(PortStatus(
+            i + 1, PortState(state), PortFault(fault), PortWarning(warning),
+            current_ma=None if ma == CURRENT_UNAVAILABLE else ma,
+            charge_uah=None if uah == CHARGE_UNAVAILABLE else uah,
+        ))
+    base = 1 + PORT_STATUS_SIZE * n_ports
     relays = [RelayState(data[base + i]) for i in range(n_relays)]
     temp = struct.unpack_from("<b", data, base + n_relays)[0]
     if temp == TEMP_UNAVAILABLE:

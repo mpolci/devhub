@@ -8,7 +8,9 @@
 // --- Fakes ---------------------------------------------------------------------
 
 static uint32_t now_ms;
-static uint8_t defaults_mask;
+static uint8_t defaults_mask, charge_reset_mask;
+static int charge_resets[4];
+static bool measure_ok;
 static bool save_ok;
 static int hub_resets, reboots, bootloaders;
 static bool coil;
@@ -32,6 +34,22 @@ static uint8_t sys_flags(void) {
 }
 static int8_t sys_temp(void) {
     return 37;
+}
+
+static bool sys_measure(uint8_t port, uint16_t *ma, uint32_t *uah) {
+    *ma = (uint16_t)(100 * (port + 1));
+    *uah = 1000000u + port;
+    return measure_ok;
+}
+static bool sys_reset_charge(uint8_t port) {
+    charge_resets[port]++;
+    return measure_ok;
+}
+static uint8_t sys_charge_reset_get(void) {
+    return charge_reset_mask;
+}
+static void sys_charge_reset_set(uint8_t m) {
+    charge_reset_mask = m;
 }
 
 static void sys_uid(uint8_t uid[12]) {
@@ -58,13 +76,29 @@ static void sys_bootloader(void) {
     bootloaders++;
 }
 
-static const proto_sys_t sys = {sys_now,          sys_flags,         sys_temp,      sys_uid,
-                                sys_defaults_get, sys_defaults_set,  sys_defaults_save,
-                                sys_hub_reset,    sys_reboot,        sys_bootloader};
+static const proto_sys_t sys = {
+    .now = sys_now,
+    .system_flags = sys_flags,
+    .mcu_temp_c = sys_temp,
+    .get_uid = sys_uid,
+    .port_measure = sys_measure,
+    .port_reset_charge = sys_reset_charge,
+    .defaults_get = sys_defaults_get,
+    .defaults_set = sys_defaults_set,
+    .defaults_save = sys_defaults_save,
+    .charge_reset_get = sys_charge_reset_get,
+    .charge_reset_set = sys_charge_reset_set,
+    .request_hub_reset = sys_hub_reset,
+    .request_reboot = sys_reboot,
+    .request_bootloader = sys_bootloader,
+};
 
 static void setup(void) {
     now_ms = 0;
     defaults_mask = 0x0F;
+    charge_reset_mask = 0;
+    memset(charge_resets, 0, sizeof charge_resets);
+    measure_ok = true;
     save_ok = true;
     hub_resets = reboots = bootloaders = 0;
     ports_init(&ports_hw);
@@ -140,13 +174,45 @@ static void test_get_status_layout(void) {
     const uint8_t *r = command(CMD_GET_STATUS, NULL, 0);
     CHECK_EQ(r[3], ST_OK);
     CHECK_EQ(r[4], SYS_HUB_CONFIGURED);
+    // Each port: state, fault, warning, current (u16 mA), charge (u32 µAh).
     CHECK_EQ(r[5], 0);                       // port 1 state
-    CHECK_EQ(r[8], PORT_STATE_ENABLED);      // port 2 state
-    CHECK_EQ(r[10], PORT_WARN_BACK_VOLTAGE); // port 2 warning
-    CHECK_EQ(r[11], PORT_STATE_FAULT);       // port 3 state
-    CHECK_EQ(r[12], PORT_FAULT_OVERCURRENT); // port 3 fault
-    CHECK_EQ(r[17], RELAY_STATE_DISCONNECTED);
-    CHECK_EQ(r[18], 37); // MCU temperature
+    CHECK_EQ(r[14], PORT_STATE_ENABLED);     // port 2 state
+    CHECK_EQ(r[16], PORT_WARN_BACK_VOLTAGE); // port 2 warning
+    CHECK_EQ(r[17] | (r[18] << 8), 200);     // port 2 current
+    CHECK_EQ((uint32_t)r[19] | ((uint32_t)r[20] << 8) | ((uint32_t)r[21] << 16) | ((uint32_t)r[22] << 24),
+             1000001u);                      // port 2 charge
+    CHECK_EQ(r[23], PORT_STATE_FAULT);       // port 3 state
+    CHECK_EQ(r[24], PORT_FAULT_OVERCURRENT); // port 3 fault
+    CHECK_EQ(r[41], RELAY_STATE_DISCONNECTED);
+    CHECK_EQ(r[42], 37); // MCU temperature
+}
+
+static void test_status_without_measurements(void) {
+    setup();
+    measure_ok = false;
+    const uint8_t *r = command(CMD_GET_STATUS, NULL, 0);
+    CHECK_EQ(r[8] | (r[9] << 8), 0xFFFF); // port 1 current not available
+    CHECK_EQ(r[10] & r[11] & r[12] & r[13], 0xFF);
+}
+
+static void test_charge_commands(void) {
+    setup();
+    const uint8_t *r = command(CMD_RESET_CHARGE, ARGS(3));
+    CHECK_EQ(r[3], ST_OK);
+    CHECK_EQ(charge_resets[2], 1);
+    r = command(CMD_RESET_CHARGE, ARGS(5));
+    CHECK_EQ(r[3], ST_BAD_PARAM);
+    measure_ok = false;
+    r = command(CMD_RESET_CHARGE, ARGS(1));
+    CHECK_EQ(r[3], ST_HW_ERROR);
+
+    r = command(CMD_SET_CHARGE_RESET, ARGS(0x05));
+    CHECK_EQ(r[3], ST_OK);
+    CHECK_EQ(charge_reset_mask, 0x05);
+    r = command(CMD_GET_CHARGE_RESET, NULL, 0);
+    CHECK_EQ(r[4], 0x05);
+    r = command(CMD_SET_CHARGE_RESET, ARGS(0x10));
+    CHECK_EQ(r[3], ST_BAD_PARAM);
 }
 
 static void test_set_port_and_event(void) {
@@ -274,6 +340,8 @@ static void test_ignores_other_reports_and_queue_overflow(void) {
 int main(void) {
     RUN(test_get_info_layout);
     RUN(test_get_status_layout);
+    RUN(test_status_without_measurements);
+    RUN(test_charge_commands);
     RUN(test_set_port_and_event);
     RUN(test_bad_parameters);
     RUN(test_cycle_command);

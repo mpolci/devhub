@@ -27,13 +27,16 @@ Exit code 1 when none is found.
 Print protocol and firmware versions, number of ports and relays, optional
 capabilities of the firmware and serial number.
 """),
-    ("status", "status [--json]", "state of ports and relay", f"""
+    ("status", "status [--json]", "ports (state, current, charge) and relay", f"""
 Print the system flags, the state of each port and of the relay. On macOS and
 Linux each port also shows the device attached to it, as the computer sees it:
 manufacturer and product, [VID:PID] and its serial ports (e.g. /dev/cu.usbmodem1103);
 '-' when nothing is attached to a port that is on.
 
 Port states: off, on, cycling (power cycle in progress), FAULT (latched off).
+Each port shows its current (13.3 mA steps, about 2 % above 200 mA) and the
+charge it delivered since the count was last reset, in mAh (4.5 %, updated
+once a second); '?' if the port controller cannot be read.
   fault causes  overcurrent, overtemperature, generic: the port is switched off
                 and stays off until 'port <n> on' or 'port <n> clear', or until
                 its button is pressed.
@@ -50,7 +53,7 @@ controllers switch a port off on their own above 120 °C (overtemperature).
 
 Exit code {EXIT_FAULT} when a port is latched in fault.
 """),
-    ("port", "port <n> on|off|cycle|clear [--ms MS]", "switch port n, power cycle it, clear a fault", f"""
+    ("port", "port <n> on|off|cycle|clear|reset-charge [--ms MS]", "switch, power cycle, clear a fault, reset the charge count", f"""
 Control port n (1-4, as on the front panel). VBUS and data lines are switched
 together.
 
@@ -62,6 +65,9 @@ together.
            switch-off and includes the VBUS discharge. The cycle runs in the
            devhub: the command returns at once.
   clear    remove the fault latch; the port stays off.
+  reset-charge
+           restart the charge count of the port from zero (see 'status';
+           'defaults charge-reset' does it at every turn-on).
 
 on and off during a cycle cancel it. A cycle only removes the power that the
 port supplies: a board with its own power supply keeps running, use the relay
@@ -87,15 +93,21 @@ relay: n is always 1. At power-on the relay is at rest: line connected.
 
   devhub relay 1 cycle --ms 2000   cut the line for 2 s
 """),
-    ("defaults", "defaults show|set [ports...]|save", "ports enabled at power-on", """
-The ports switched on when the devhub powers up (factory setting: all).
+    ("defaults", "defaults show|set|charge-reset [ports...]|save", "settings kept in flash", """
+Settings kept by the devhub: the ports switched on when it powers up (factory
+setting: all) and the ports whose charge count restarts from zero at every
+turn-on (factory setting: none).
 
-  show               print the ports enabled at power-on.
-  set [ports...]     change them; no ports = all off at power-on.
-  save               write them to flash. Without save the change is lost
-                     at the next power-on.
+  show                        print both settings.
+  set [ports...]              ports enabled at power-on; none = all off.
+  charge-reset [ports...]     ports whose charge count is reset when they switch
+                              on (command, button, end of a cycle, power-on);
+                              none = only 'port <n> reset-charge' resets it.
+  save                        write both settings to flash. Without save the
+                              changes are lost at the next power-on.
 
   devhub defaults set 1 3 && devhub defaults save
+  devhub defaults charge-reset 2      count port 2 from each turn-on
 """),
     ("watch", "watch [--json]", "print events as they happen", """
 Print events until Ctrl-C: port_changed, port_fault, port_warning,
@@ -212,7 +224,7 @@ def _parser() -> argparse.ArgumentParser:
 
     port = add("port")
     port.add_argument("n", type=int, help="port number, 1-4")
-    port.add_argument("action", choices=["on", "off", "cycle", "clear"])
+    port.add_argument("action", choices=["on", "off", "cycle", "clear", "reset-charge"])
     port.add_argument("--ms", type=int, default=p.CYCLE_DEFAULT_MS, help="off time of a cycle (default %(default)s)")
 
     all_ = add("all")
@@ -224,8 +236,8 @@ def _parser() -> argparse.ArgumentParser:
     relay.add_argument("--ms", type=int, default=500, help="disconnect time of a cycle (default %(default)s)")
 
     df = add("defaults")
-    df.add_argument("action", choices=["show", "set", "save"])
-    df.add_argument("ports", nargs="*", type=int, help="for 'set': ports enabled at power-on (none = all off)")
+    df.add_argument("action", choices=["show", "set", "charge-reset", "save"])
+    df.add_argument("ports", nargs="*", type=int, help="for 'set' and 'charge-reset' (none = no port)")
 
     hub = add("hub")
     hub.add_argument("action", choices=["reset"])
@@ -259,7 +271,9 @@ def _print_status(dev: Devhub, as_json: bool) -> int:
         for port in status.ports:
             d = port.to_dict()
             state = "FAULT" if d["fault"] else "cycling" if d["cycle_active"] else "on" if d["enabled"] else "off"
-            line = f"port {port.port}: {state:<7}"
+            current = "?" if port.current_ma is None else f"{port.current_ma} mA"
+            charge = "?" if port.charge_uah is None else f"{port.charge_uah / 1000:.2f} mAh"
+            line = f"port {port.port}: {state:<7} {current:>8} {charge:>12}"
             found = devices.get(port.port) if devices is not None else None
             if found:
                 line += "  " + found.describe()
@@ -313,8 +327,10 @@ def _run(args: argparse.Namespace) -> int:
                 dev.set_port(args.n, False)
             elif args.action == "cycle":
                 dev.cycle_port(args.n, args.ms)
-            else:
+            elif args.action == "clear":
                 dev.clear_fault(args.n)
+            else:
+                dev.reset_charge(args.n)
         elif args.command == "all":
             dev.set_all(args.action == "on")
         elif args.command == "relay":
@@ -325,9 +341,12 @@ def _run(args: argparse.Namespace) -> int:
         elif args.command == "defaults":
             if args.action == "set":
                 dev.set_defaults(args.ports)
+            elif args.action == "charge-reset":
+                dev.set_charge_reset(args.ports)
             elif args.action == "save":
                 dev.save_defaults()
             print("ports enabled at power-on:", " ".join(map(str, dev.get_defaults())) or "none")
+            print("charge reset at turn-on:  ", " ".join(map(str, dev.get_charge_reset())) or "none")
         elif args.command == "hub":
             dev.reset_hub()
         elif args.command == "watch":

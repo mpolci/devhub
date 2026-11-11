@@ -21,11 +21,14 @@
 #define CMD_SET_PORT 0x10
 #define CMD_CYCLE_PORT 0x11
 #define CMD_SET_ALL 0x12
+#define CMD_RESET_CHARGE 0x13
 #define CMD_SET_RELAY 0x20
 #define CMD_PULSE_RELAY 0x21
 #define CMD_GET_DEFAULTS 0x30
 #define CMD_SET_DEFAULTS 0x31
 #define CMD_SAVE_DEFAULTS 0x32
+#define CMD_GET_CHARGE_RESET 0x33
+#define CMD_SET_CHARGE_RESET 0x34
 #define CMD_CLEAR_FAULT 0x40
 #define CMD_RESET_HUB 0x50
 #define CMD_REBOOT 0x7E
@@ -83,8 +86,10 @@
 // Capabilities
 #define CAP_CDC_CONSOLE 0x00000001u
 
-// MCU temperature in GET_STATUS when the reading fails
+// Values in GET_STATUS when the reading fails
 #define PROTO_TEMP_UNAVAILABLE (-128)
+#define PROTO_CURRENT_UNAVAILABLE 0xFFFFu
+#define PROTO_CHARGE_UNAVAILABLE 0xFFFFFFFFu
 
 // Timing (to be validated on the prototype)
 #define PORT_STAGGER_MS 100

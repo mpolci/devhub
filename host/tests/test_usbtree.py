@@ -47,6 +47,20 @@ def test_mac_ports_and_ttys():
     assert devices[4].product == "USB JTAG/serial debug unit"  # device string, not the sanitized name
 
 
+def test_ioreg_with_control_characters():
+    out = (b'<?xml version="1.0" encoding="UTF-8"?>\n<plist version="1.0"><array><dict>'
+           b'<key>USB Serial Number</key><string>7M\x06NW462O\x18XC</string></dict></array></plist>\n')
+    assert usbtree._parse_ioreg(out) == [{"USB Serial Number": "7M?NW462O?XC"}]
+
+
+def test_lookup_failure_returns_none(monkeypatch):
+    def broken():
+        raise RuntimeError("unexpected")
+    monkeypatch.setattr(usbtree.sys, "platform", "darwin")
+    monkeypatch.setattr(usbtree, "_ioreg", broken)
+    assert usbtree.attached_devices(SERIAL) is None
+
+
 def test_mac_other_serial():
     assert usbtree._mac("OTHER", _mac_tree()) == {}
 

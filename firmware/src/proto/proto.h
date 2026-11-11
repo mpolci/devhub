@@ -13,9 +13,14 @@ typedef struct {
     uint8_t (*system_flags)(void);
     int8_t (*mcu_temp_c)(void); // PROTO_TEMP_UNAVAILABLE if it cannot be read
     void (*get_uid)(uint8_t uid[12]);
+    // Port (from 0) current in mA and charge in µAh; false if it cannot be read.
+    bool (*port_measure)(uint8_t port, uint16_t *ma, uint32_t *uah);
+    bool (*port_reset_charge)(uint8_t port);
     uint8_t (*defaults_get)(void);
     void (*defaults_set)(uint8_t mask);
     bool (*defaults_save)(void);
+    uint8_t (*charge_reset_get)(void);
+    void (*charge_reset_set)(uint8_t mask);
     void (*request_hub_reset)(void);
     void (*request_reboot)(void);
     void (*request_bootloader)(void);

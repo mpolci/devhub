@@ -4,11 +4,16 @@
 
 #define UCS_ADDR 0x57
 
+#define REG_CURRENT2 0x00 // chip port 2
+#define REG_CURRENT1 0x01 // chip port 1
 #define REG_PORT_STATUS 0x02
 #define REG_INT_STATUS2 0x03 // chip port 2
 #define REG_INT_STATUS1 0x04 // chip port 1
 #define REG_GEN_CFG2 0x11
 #define REG_GEN_CFG1 0x12
+#define REG_TAC2 0x16 // total accumulated charge, 4 bytes, chip port 2
+#define REG_TAC1 0x1A // chip port 1
+#define REG_RATION_CFG 0x22
 #define REG_PRODUCT_ID 0xFD
 #define REG_MANUFACTURER_ID 0xFE
 
@@ -37,6 +42,21 @@
 
 #define CFG1_VALUE (CFG_ALERT_MASK | CFG1_EN_VBUS_DISCHG)
 #define CFG2_VALUE (CFG_ALERT_MASK | CFG2_DISCHG_TIME_400MS)
+
+// Charge rationing enabled on both channels with the "Ignore" behaviour and the
+// threshold left at its maximum: the chip only accumulates the charge, it never
+// switches a port off nor asserts ALERT#.
+#define RTN_EN1 0x80
+#define RTN_RST1 0x40
+#define RTN_BEH1_IGNORE 0x30
+#define RTN_EN2 0x08
+#define RTN_RST2 0x04
+#define RTN_BEH2_IGNORE 0x03
+#define RATION_VALUE (RTN_EN1 | RTN_BEH1_IGNORE | RTN_EN2 | RTN_BEH2_IGNORE)
+
+// Measurement scales: 13.3 mA and 0.00367 mAh per LSB.
+#define CURRENT_MA_X10_PER_LSB 133u
+#define CHARGE_UAH_X100_PER_LSB 367u
 
 #define WAKE_DELAY_MS 5    // tSMB_WAKE is 4 ms typical
 #define IDLE_SLEEP_MS 150  // tIDLE_SLEEP is 200 ms typical
@@ -89,14 +109,65 @@ bool ucs2114_check_id(i2c_bus_t bus) {
 }
 
 bool ucs2114_configure(i2c_bus_t bus) {
-    uint8_t v1, v2;
-    if (!ucs2114_write_reg(bus, REG_GEN_CFG2, CFG2_VALUE) || !ucs2114_write_reg(bus, REG_GEN_CFG1, CFG1_VALUE)) {
+    uint8_t v1, v2, vr;
+    if (!ucs2114_write_reg(bus, REG_GEN_CFG2, CFG2_VALUE) || !ucs2114_write_reg(bus, REG_GEN_CFG1, CFG1_VALUE) ||
+        !ucs2114_write_reg(bus, REG_RATION_CFG, RATION_VALUE)) {
         return false;
     }
-    if (!ucs2114_read_reg(bus, REG_GEN_CFG2, &v2) || !ucs2114_read_reg(bus, REG_GEN_CFG1, &v1)) {
+    if (!ucs2114_read_reg(bus, REG_GEN_CFG2, &v2) || !ucs2114_read_reg(bus, REG_GEN_CFG1, &v1) ||
+        !ucs2114_read_reg(bus, REG_RATION_CFG, &vr)) {
         return false;
     }
-    return (v1 & CFG1_RW_MASK) == CFG1_VALUE && (v2 & CFG2_RW_MASK) == CFG2_VALUE;
+    return (v1 & CFG1_RW_MASK) == CFG1_VALUE && (v2 & CFG2_RW_MASK) == CFG2_VALUE && vr == RATION_VALUE;
+}
+
+bool ucs2114_read_current_ma(i2c_bus_t bus, uint8_t ch, uint16_t *ma) {
+    uint8_t raw;
+    if (!ucs2114_read_reg(bus, ch == 0 ? REG_CURRENT1 : REG_CURRENT2, &raw)) {
+        return false;
+    }
+    *ma = (uint16_t)((raw * CURRENT_MA_X10_PER_LSB + 5u) / 10u);
+    return true;
+}
+
+static bool read_tac(i2c_bus_t bus, uint8_t reg, uint32_t *raw) {
+    uint8_t b[4];
+    if (!ucs2114_wake(bus) || !i2c_read_reg(bus, UCS_ADDR, reg, b, sizeof b)) {
+        accessed[bus] = false;
+        return false;
+    }
+    touch(bus);
+    *raw = (((uint32_t)b[0] << 24) | ((uint32_t)b[1] << 16) | ((uint32_t)b[2] << 8) | b[3]) >> 6;
+    return true;
+}
+
+bool ucs2114_read_charge_uah(i2c_bus_t bus, uint8_t ch, uint32_t *uah) {
+    // The registers are updated once a second: a block read that straddles an
+    // update can mix old and new bytes, so read until two reads agree.
+    uint8_t reg = ch == 0 ? REG_TAC1 : REG_TAC2;
+    uint32_t a, b;
+    if (!read_tac(bus, reg, &a)) {
+        return false;
+    }
+    for (uint8_t tries = 0; tries < 3; tries++) {
+        if (!read_tac(bus, reg, &b)) {
+            return false;
+        }
+        if (a == b) {
+            *uah = (uint32_t)(((uint64_t)a * CHARGE_UAH_X100_PER_LSB + 50u) / 100u);
+            return true;
+        }
+        a = b;
+    }
+    return false;
+}
+
+bool ucs2114_reset_charge(i2c_bus_t bus, uint8_t ch) {
+    // RTN_RST clears the accumulated charge; it must go back to 0 for the
+    // accumulation to restart.
+    uint8_t rst = ch == 0 ? RTN_RST1 : RTN_RST2;
+    return ucs2114_write_reg(bus, REG_RATION_CFG, RATION_VALUE | rst) &&
+           ucs2114_write_reg(bus, REG_RATION_CFG, RATION_VALUE);
 }
 
 static uint8_t decode(uint8_t reg) {

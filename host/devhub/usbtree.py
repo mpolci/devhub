@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import os
 import plistlib
+import re
 import subprocess
 import sys
 from dataclasses import dataclass, field
@@ -76,7 +77,7 @@ def attached_devices(hub_serial: str) -> Optional[Dict[int, AttachedDevice]]:
             return _mac(hub_serial, _ioreg())
         if sys.platform.startswith("linux"):
             return _linux(hub_serial, Path("/sys/bus/usb/devices"))
-    except (OSError, subprocess.SubprocessError, ValueError, plistlib.InvalidFileException):
+    except Exception:  # the device list is extra information: never let it break a command
         pass
     return None
 
@@ -89,6 +90,16 @@ def _ioreg() -> list:
         ["ioreg", "-a", "-l", "-r", "-c", "IOUSBHostDevice", "-w0"],
         check=True, capture_output=True, timeout=5,
     ).stdout
+    return _parse_ioreg(out)
+
+
+# Control characters are not allowed in XML, but ioreg copies them as they are from
+# string descriptors (some debug probes have a binary serial number).
+_XML_INVALID = re.compile(rb"[\x00-\x08\x0b\x0c\x0e-\x1f]")
+
+
+def _parse_ioreg(out: bytes) -> list:
+    out = _XML_INVALID.sub(b"?", out)
     return plistlib.loads(out) if out.strip() else []
 
 
