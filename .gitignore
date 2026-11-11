@@ -49,3 +49,4 @@ enclosure/backup/
 enclosure/.fcedit-work.FCStd
 enclosure/pcb/*.step
 enclosure/verify-report.txt
+enclosure/print/backup/

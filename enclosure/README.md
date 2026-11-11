@@ -9,6 +9,7 @@ enclosure/pcb/devhub-pcb.FCStd     riferimento del PCB (STEP di KiCad + segnapos
 enclosure/pcb/devhub-pcb.step      STEP esportato da KiCad, escluso da git
 enclosure/scripts/                 script di costruzione, modifica e verifica
 enclosure/scripts/edits/           modifiche da script già applicate al file, in ordine
+enclosure/print/                   STL orientati per la stampa e progetto Bambu Studio
 ```
 
 ## Struttura
@@ -107,6 +108,24 @@ i modelli 3D di K1 (Omron G5Q-1) e dei test point Keystone 5000 (TP1, TP10): `bu
 li sostituisce con l'ingombro massimo del datasheet. Aggiunge anche i cappucci dei pulsanti
 (Ø 6 mm, 10 mm sopra il PCB). Il riferimento è interamente generato, quindi si può rifare dopo
 ogni modifica del PCB.
+
+## Esportazione per la stampa
+
+```bash
+/Applications/FreeCAD.app/Contents/Resources/bin/freecadcmd -c "exec(open('enclosure/scripts/export_print.py').read())"
+```
+
+Scrive in `enclosure/print/` tre STL già orientati, centrati in X/Y e con Z = 0 sul piatto:
+
+- `lid.stl`: il coperchio capovolto, con la faccia superiore sul piatto.
+- `light-pipes.stl`: le guide luce, con la stessa trasformazione del coperchio. In Bambu
+  Studio vanno aggiunte come parte dell'oggetto del coperchio, non come oggetto separato,
+  così restano nei loro fori e si assegnano al filamento trasparente.
+- `bottom-plate.stl`: il fondo, con la faccia esterna sul piatto.
+
+Il documento FreeCAD viene solo letto. Il progetto Bambu Studio (`devhub-enclosure.3mf`) si
+gestisce dalla GUI: dopo una nuova esportazione le mesh si aggiornano con "Ricarica dal disco",
+che rilegge gli STL da cui sono state importate.
 
 ## Verifica
 
