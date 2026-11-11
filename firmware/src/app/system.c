@@ -86,6 +86,7 @@ static const proto_sys_t proto_sys = {
     .charge_reset_set = defaults_charge_reset_set,
     .port_limit_get = defaults_port_limit_get,
     .tolerance_get = defaults_tolerance_get,
+    .limit_in_force = portctl_effective_limit,
     .port_limit_set = portctl_set_limit,
     .supply_get = defaults_supply_get,
     .supply_set = defaults_supply_set,

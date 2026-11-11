@@ -87,9 +87,10 @@ variante senza MCU non è adottata. Lo schema v0.3 applica questi requisiti (D79
   di 3 A o gestione di budget diversi. Restano le resistenze Rd da 5,1 kΩ su CC1 e CC2,
   necessarie per ricevere alimentazione USB-C, e le protezioni hardware d'ingresso.
 - **RF-15** Le accensioni multiple sono sfalsate per contenere l'inrush. Il firmware gestisce
-  le segnalazioni di guasto disponibili dall'hardware, senza calcolare budget
-  o scegliere la porta più energivora. La protezione da sovraccarico è hardware: il limite di ogni
-  porta si può abbassare (D104), ma un sovraccarico complessivo può interrompere l'intero hub. Non è garantita la continuità delle altre porte.
+  le segnalazioni di guasto disponibili dall'hardware. Il limite di ogni porta si può abbassare
+  (D104); quando la corrente totale resta sopra quella dell'alimentatore il firmware riduce, e se
+  serve spegne, la porta che consuma di più (D105). Un sovraccarico improvviso oltre il limite
+  dell'eFuse può comunque interrompere l'intero hub. Non è garantita la continuità delle altre porte.
   Dopo un guasto hardware segnalato della porta, il MCU interrompe l’eventuale ciclo,
   disabilita VBUS e dati e mantiene il LED lampeggiante (D73). Il ripristino richiede
   un tentativo esplicito da pulsante o PC; se il guasto persiste, la porta torna bloccata.
@@ -118,7 +119,8 @@ variante senza MCU non è adottata. Lo schema v0.3 applica questi requisiti (D79
   dipendere dalle misure eliminate; condizioni e limiti vanno verificati sul circuito scelto.
 - **RNF-4** Firmware e strumento host open source e documentati; protocollo stabile e versionato.
 - **RNF-5** **Un solo LED per porta USB**, pilotato dal MCU: spento = disabilitata,
-  acceso fisso = abilitata, lampeggiante = guasto. Il guasto ha priorità sull'indicazione di
+  acceso fisso = abilitata, acceso con un breve spegnimento ogni secondo = abilitata con limite
+  ridotto dal controllo della corrente totale (D105), lampeggiante = guasto. Il guasto ha priorità sull'indicazione di
   abilitazione; il dettaglio disponibile dall'hardware si legge dal PC. Il LED indica lo stato
   logico, non la presenza misurata di VBUS. LED di sistema: host collegato e relè (acceso a linea staccata); nessun LED di accensione (D82, D90).
 

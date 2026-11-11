@@ -163,3 +163,26 @@ def test_port_limits(dev):
     finally:
         dev.set_port_limit(port, original.ports_ma[port - 1], original.tolerances_ms[port - 1])
         dev.set_supply_limit(original.supply_ma)  # not saved to flash
+
+
+def test_supply_budget(dev):
+    """A supply declared below the load: the port drawing most is reduced (warning), then switched off."""
+    ports = dev.status().ports
+    top = max(ports, key=lambda port: port.current_ma or 0)
+    if (top.current_ma or 0) < 700:
+        pytest.skip("needs a device drawing at least 0.7 A on a port")
+    original = dev.get_limits()
+    try:
+        drain(dev)
+        dev.set_supply_limit(1000)  # every port load plus 0.48 A inside is above it
+        time.sleep(0.5)
+        port = dev.status().ports[top.port - 1]
+        assert port.faulted or "budget" in port.to_dict()["warnings"]
+        time.sleep(0.5)
+        port = dev.status().ports[top.port - 1]
+        assert port.faulted and port.to_dict()["fault_causes"] == ["budget"]
+    finally:
+        dev.set_supply_limit(original.supply_ma)  # not saved to flash
+        dev.set_port(top.port, True)
+        time.sleep(0.3)
+        assert dev.get_limits().in_force_ma[top.port - 1] == original.ports_ma[top.port - 1]

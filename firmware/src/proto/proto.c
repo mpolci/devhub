@@ -223,6 +223,7 @@ void proto_handle(const uint8_t *report, uint16_t len) {
         put_u16(&data[2 * PROTO_N_PORTS], sys->supply_get());
         for (uint8_t i = 0; i < PROTO_N_PORTS; i++) {
             put_u16(&data[2 * PROTO_N_PORTS + 2 + 2 * i], sys->tolerance_get(i));
+            put_u16(&data[4 * PROTO_N_PORTS + 2 + 2 * i], sys->limit_in_force(i));
         }
         break;
 

@@ -48,7 +48,8 @@ class FakeTransport:
         data = {p.Command.GET_INFO: INFO_DATA, p.Command.GET_STATUS: self.status_data,
                 p.Command.GET_DEFAULTS: bytes([0x05]), p.Command.GET_CHARGE_RESET: bytes([0x02]),
                 p.Command.GET_LABEL: b"esp\0",
-                p.Command.GET_LIMITS: struct.pack("<9H", 2670, 530, 2670, 960, 3000, 100, 250, 100, 100)}.get(cmd, b"")
+                p.Command.GET_LIMITS: struct.pack("<13H", 2670, 530, 2670, 960, 3000, 100, 250, 100, 100,
+                                                  2670, 530, 960, 960)}.get(cmd, b"")
         self.rx.append(response(cmd, seq, self.status_code, data))
 
     def read(self, timeout_ms):
@@ -163,6 +164,7 @@ def test_defaults(dev):
     limits = dev.get_limits()
     assert limits.ports_ma == [2670, 530, 2670, 960] and limits.supply_ma == 3000
     assert limits.tolerances_ms == [100, 250, 100, 100]
+    assert limits.in_force_ma == [2670, 530, 960, 960]
     assert limits.ceiling_ma(530) == 960 and limits.ceiling_ma(2670) == 2670
     assert limits.worst_case_ma == 6830 + p.INTERNAL_MAX_MA
     with pytest.raises(ValueError):

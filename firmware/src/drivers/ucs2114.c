@@ -133,6 +133,18 @@ bool ucs2114_read_current_ma(i2c_bus_t bus, uint8_t ch, uint16_t *ma) {
     return true;
 }
 
+bool ucs2114_read_currents_ma(i2c_bus_t bus, uint16_t *ch0_ma, uint16_t *ch1_ma) {
+    uint8_t b[2]; // 00h = chip port 2, 01h = chip port 1
+    if (!ucs2114_wake(bus) || !i2c_read_reg(bus, UCS_ADDR, REG_CURRENT2, b, sizeof b)) {
+        accessed[bus] = false;
+        return false;
+    }
+    touch(bus);
+    *ch1_ma = (uint16_t)((b[0] * CURRENT_MA_X10_PER_LSB + 5u) / 10u);
+    *ch0_ma = (uint16_t)((b[1] * CURRENT_MA_X10_PER_LSB + 5u) / 10u);
+    return true;
+}
+
 static bool read_tac(i2c_bus_t bus, uint8_t reg, uint32_t *raw) {
     uint8_t b[4];
     if (!ucs2114_wake(bus) || !i2c_read_reg(bus, UCS_ADDR, reg, b, sizeof b)) {

@@ -41,11 +41,14 @@ Each port shows its current (13.3 mA steps, about 2 % above 200 mA) and the
 charge it delivered since the count was last reset, in mAh (4.5 %, updated
 once a second); '?' if the port controller cannot be read.
   fault causes  overcurrent, overtemperature, current_limit (over the port limit
-                longer than its tolerance, see 'limit'), generic: the port is switched off
+                longer than its tolerance, see 'limit'), budget (switched off to
+                keep the total within the power supply), generic: the port is switched off
                 and stays off until 'port <n> on' or 'port <n> clear', or until
                 its button is pressed.
   warnings      discharge_failed, back_voltage (the board on the port has its own
-                supply), vbus_low: reported only, the port keeps working.
+                supply), vbus_low: reported only, the port keeps working;
+                budget: its limit was lowered because the total current went
+                above the power supply (see 'limit').
 System flags: hub_configured (normal), input_fault (power input protection
 tripped), controller_12_error / controller_34_error (port controller of ports
 1-2 or 3-4 not responding).
@@ -111,6 +114,15 @@ normal consumption, as for a fuse.
   --tolerance MS      time in current limiting before the port is switched off
                       ({p.TOLERANCE_MIN_MS}-{p.TOLERANCE_MAX_MS} ms); kept if not given.
   supply <current>    current the power supply can deliver (factory 3 A).
+                      When the ports plus the devhub itself stay above it
+                      for 50 ms, the devhub lowers the limit of the port
+                      drawing most, to the step that brings the total back
+                      (warning budget; its LED goes off briefly every second);
+                      a port already at 0.53 A is switched
+                      off and latched (cause budget). A lowered limit stays
+                      until the port is switched on again or its limit is
+                      set; meanwhile the port may stay in current limiting,
+                      as a charging device does.
 
 Current as amperes (1.07, 1.07A), milliamperes (530mA) or 'max'. The settings
 are kept in flash with 'defaults save'.
@@ -450,6 +462,9 @@ def _print_limits(limits: p.Limits) -> None:
                    f"{limits.tolerances_ms[port - 1]} ms")
         else:
             how = "switched off about 6 ms above it"
+        now = limits.in_force_ma[port - 1]
+        if now < ma:
+            how = f"lowered to {now / 1000:.2f} A by the supply budget"
         print(f"port {port}: {ma / 1000:.2f} A, {how}")
     print(f"supply: {limits.supply_ma / 1000:.2f} A")
     worst = limits.worst_case_ma

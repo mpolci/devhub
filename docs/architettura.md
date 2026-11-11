@@ -168,10 +168,12 @@ avvisi letti dai registri ed esposti al PC, senza blocco né lampeggio: una sche
 autoalimentata può restare collegata ed essere sottoposta a cicli. Scollegamento o
 sospensione del PC non cambiano lo stato di porte e relè (D100).
  Le accensioni multiple sono sfalsate per contenere l'inrush,
-con intervallo da verificare sul circuito. Restano limitazione hardware e segnali di guasto;
-il firmware non calcola budget, non sceglie la porta più energivora e non espone
-un budget impostabile. Un sovraccarico complessivo può far intervenire alimentatore/eFuse e
-spegnere l'intero hub: non si garantisce la continuità delle altre porte. Le azioni del MCU
+con intervallo da verificare sul circuito. Restano limitazione hardware e segnali di guasto.
+Il firmware sorveglia la corrente totale (D105): se le porte più i consumi interni restano oltre
+la corrente dell'alimentatore per 50 ms, abbassa il limite della porta che consuma di più e, se
+è già al minimo, la spegne. Agisce sui sovraccarichi graduali; uno improvviso oltre i 3,5 A
+dell'eFuse lo fa intervenire in circa 8 ms e spegne l'intero hub: non si garantisce la
+continuità delle altre porte. Le azioni del MCU
 dipendono dai guasti realmente segnalati e dal fatto che la logica resti alimentata.
 
 **Protezione d'ingresso.** TVS **SMAJ20A** ed eFuse **TPS259470A** (U13, D21), la cui uscita
@@ -337,7 +339,7 @@ Requisiti del blocco da realizzare:
 | Protezioni | Limitazione hardware, blocco inverso, ESD e segnalazione di guasto; limiti da verificare sul controller |
 | Misure | Corrente e carica per porta dagli UCS2114 (D103); nessuna misura di tensione |
 | CC downstream | Rp da 56 kΩ alla VBUS commutata; invariata la scelta di non rilevare l'inserimento (D29/D30) |
-| LED | Uno dal MCU: spento = disabilitata, fisso = abilitata, lampeggiante = guasto, prioritario; stato logico |
+| LED | Uno dal MCU: spento = disabilitata, fisso = abilitata, brevi spegnimenti = limite ridotto (D105), lampeggiante = guasto, prioritario; stato logico |
 | Pulsante | Ogni pressione alterna lo stato; debounce firmware e notifica all'host; nessun controllo del budget |
 
 Le porte USB-C attuali non rilevano l'inserimento sulle CC: VBUS è presente quando la porta

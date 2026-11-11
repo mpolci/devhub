@@ -83,6 +83,10 @@ port 4: on         53 mA     4.41 mAh  SanDisk Cruzer Edge [0781:556b]
 Fino a 1,28 A gli spunti brevi passano e la porta si spegne con causa `current_limit` solo se
 resta oltre il limite più della tolleranza (`--tolerance`, di fabbrica 100 ms); da 1,6 A si spegne
 dopo circa 6 ms. Va scelto con margine sul consumo normale, come un fusibile.
+
+Se le porte più i consumi interni restano oltre la corrente dell'alimentatore per 50 ms, il devhub
+abbassa il limite della porta che consuma di più (avviso `budget`, LED della porta acceso con un
+breve spegnimento ogni secondo) e, se è già al minimo, la spegne (causa `budget`). Il limite ridotto vale fino alla successiva accensione della porta.
 `devhub limit` mostra i limiti e il caso peggiore, cioè la loro somma più i consumi interni,
 confrontato con la corrente dell'alimentatore (`devhub limit supply 5` per uno da 5 A). Salvati
 con `devhub defaults save`.

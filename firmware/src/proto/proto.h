@@ -23,6 +23,7 @@ typedef struct {
     void (*charge_reset_set)(uint8_t mask);
     uint16_t (*port_limit_get)(uint8_t port); // mA
     uint16_t (*tolerance_get)(uint8_t port);  // ms
+    uint16_t (*limit_in_force)(uint8_t port); // mA, lower than the configured one if reduced (D105)
     uint16_t (*port_limit_set)(uint8_t port, uint16_t ma, uint16_t tolerance_ms); // returns the limit applied
     uint16_t (*supply_get)(void);
     void (*supply_set)(uint16_t ma);

@@ -78,12 +78,14 @@
 #define PORT_FAULT_OVERCURRENT 0x01
 #define PORT_FAULT_OVERTEMP 0x02
 #define PORT_FAULT_LIMIT 0x04 // in current limiting longer than the tolerance (D104)
+#define PORT_FAULT_BUDGET 0x08 // switched off to bring the total current within the supply (D105)
 #define PORT_FAULT_GENERIC 0x80
 
 // Port warning bits
 #define PORT_WARN_DISCHARGE 0x01
 #define PORT_WARN_BACK_VOLTAGE 0x02
 #define PORT_WARN_VBUS_LOW 0x04
+#define PORT_WARN_BUDGET 0x08 // limit lowered to bring the total current within the supply (D105)
 
 // Relay state bits
 #define RELAY_STATE_DISCONNECTED 0x01

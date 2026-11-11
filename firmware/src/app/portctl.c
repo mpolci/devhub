@@ -12,7 +12,14 @@
 #include "proto/proto.h"
 
 #define POLL_MS 100
-#define CC_POLL_MS 20 // current limiting check, for ports with a Constant Current limit
+#define CC_POLL_MS 20 // current limiting and total current checks
+// Total current (D105): ports plus the devhub itself against the power supply.
+#define INTERNAL_MA 480     // hub, MCU, LEDs and an energized relay, worst case
+#define BUDGET_HOLD_MS 50   // the total must stay above the supply this long
+// LED of a port whose limit was lowered by the total current check: on, with a
+// short off pulse every period; distinct from the regular fault blink.
+#define REDUCED_LED_PERIOD_MS 1000
+#define REDUCED_LED_OFF_MS 100
 #define RETRY_MS 1000
 // ALERT# level is ignored for this long after a turn-on; edges are not.
 #define ALERT_GRACE_MS 20
@@ -29,12 +36,20 @@ static chip_t chips[PORTCTL_N_CHIPS] = {{.bus = I2C_BUS_1}, {.bus = I2C_BUS_2}};
 static uint32_t on_time[BOARD_N_PORTS];
 static uint32_t cc_since[BOARD_N_PORTS]; // first poll that found the port limiting
 static bool cc_active[BOARD_N_PORTS];
+// Limit lowered by the total current check, 0 when the configured one applies.
+static uint16_t reduced_limit[BOARD_N_PORTS];
+static bool over_budget;
+static uint32_t over_since;
 static bool started;
 static bool led_override;
 
 static bool bus_available(const chip_t *c) {
     return c->bus != I2C_BUS_1 || hub_ctrl_i2c1_available();
 }
+
+static chip_t *usable_chip(uint8_t port);
+static uint16_t effective_limit(uint8_t port);
+static bool apply_limits(chip_t *c, uint8_t chip);
 
 // --- Callbacks of the port logic --------------------------------------------
 
@@ -43,6 +58,13 @@ static void hw_set_enabled(uint8_t port, bool on) {
         board_port_power(port, true);
         board_port_data(port, true);
         on_time[port] = board_millis();
+        if (reduced_limit[port]) { // a limit lowered by the total current check lasts until the next turn-on
+            reduced_limit[port] = 0;
+            chip_t *c = usable_chip(port);
+            if (c) {
+                apply_limits(c, port / 2);
+            }
+        }
         if ((defaults_charge_reset_get() >> port) & 1u) {
             portctl_reset_charge(port);
         }
@@ -90,12 +112,11 @@ bool portctl_chip_init(uint8_t chip) {
     if (!ucs2114_check_id(c->bus)) {
         error = "not found";
     } else if (!ucs2114_read_events(c->bus, &ev) || !ucs2114_configure(c->bus) ||
-               !ucs2114_set_current_limits(c->bus, defaults_port_limit_get(chip * 2),
-                                           defaults_port_limit_get(chip * 2 + 1))) {
+               !apply_limits(c, chip)) {
         error = "configuration failed";
     } else {
         LOG("ucs %u: configured (discharge 400 ms, ALERT# masked, charge accumulation, limits %u/%u mA)", chip + 1,
-            defaults_port_limit_get(chip * 2), defaults_port_limit_get(chip * 2 + 1));
+            effective_limit(chip * 2), effective_limit(chip * 2 + 1));
         c->ok = true;
     }
     // Retried every second: report a failure once, not at every attempt.
@@ -111,8 +132,16 @@ static uint8_t fault_cause(uint8_t evt) {
                      ((evt & UCS_EVT_OVERTEMP) ? PORT_FAULT_OVERTEMP : 0));
 }
 
+static uint16_t effective_limit(uint8_t port) {
+    return reduced_limit[port] ? reduced_limit[port] : defaults_port_limit_get(port);
+}
+
 static bool cc_limited(uint8_t port) {
-    return defaults_port_limit_get(port) <= UCS2114_CC_MAX_MA;
+    return effective_limit(port) <= UCS2114_CC_MAX_MA;
+}
+
+static bool apply_limits(chip_t *c, uint8_t chip) {
+    return ucs2114_set_current_limits(c->bus, effective_limit(chip * 2), effective_limit(chip * 2 + 1));
 }
 
 static uint8_t warning_bits(uint8_t evt) {
@@ -189,6 +218,10 @@ static void check_cc(uint8_t chip, uint32_t now) {
             cc_active[port] = false;
             continue;
         }
+        if (reduced_limit[port]) {
+            cc_active[port] = false; // lowered by the total current check: limiting is the point
+            continue;
+        }
         if (!cc_active[port]) {
             cc_active[port] = true;
             cc_since[port] = now;
@@ -197,6 +230,68 @@ static void check_cc(uint8_t chip, uint32_t now) {
             cc_active[port] = false;
             ports_fault(port, PORT_FAULT_LIMIT);
         }
+    }
+}
+
+// Total current check (D105): when the ports plus the devhub itself stay above the
+// power supply for BUDGET_HOLD_MS, lower the limit of the port drawing most to the
+// step that would bring the total back within the supply; a port already at the
+// lowest step is switched off and latched instead.
+static void check_budget(uint32_t now) {
+    uint16_t ma[BOARD_N_PORTS] = {0};
+    uint32_t total = INTERNAL_MA;
+    for (uint8_t chip = 0; chip < PORTCTL_N_CHIPS; chip++) {
+        chip_t *c = &chips[chip];
+        uint8_t first = (uint8_t)(chip * 2);
+        if (!ports_is_powered(first) && !ports_is_powered(first + 1)) {
+            continue;
+        }
+        if (!c->ok || !bus_available(c) || !ucs2114_read_currents_ma(c->bus, &ma[first], &ma[first + 1])) {
+            return; // incomplete reading: no decision
+        }
+        for (uint8_t i = first; i < first + 2; i++) {
+            if (!ports_is_powered(i)) {
+                ma[i] = 0;
+            }
+            total += ma[i];
+        }
+    }
+    uint16_t supply = defaults_supply_get();
+    if (total <= supply) {
+        over_budget = false;
+        return;
+    }
+    if (!over_budget) {
+        over_budget = true;
+        over_since = now;
+        return;
+    }
+    if ((uint32_t)(now - over_since) < BUDGET_HOLD_MS) {
+        return;
+    }
+    over_budget = false; // the next action waits for a new BUDGET_HOLD_MS
+    uint8_t port = 0;
+    for (uint8_t i = 1; i < BOARD_N_PORTS; i++) {
+        if (ma[i] > ma[port]) {
+            port = i;
+        }
+    }
+    uint32_t excess = total - supply;
+    uint16_t target = ma[port] > excess ? (uint16_t)(ma[port] - excess) : 0;
+    uint16_t lowered = ucs2114_ilim_round(target); // the lowest step if target is below it
+    chip_t *c = usable_chip(port);
+    if (lowered < effective_limit(port) && c) {
+        LOG("budget: %lu mA over %u mA, port %u limit %u -> %u mA", (unsigned long)total, supply, port + 1,
+            effective_limit(port), lowered);
+        reduced_limit[port] = lowered;
+        cc_active[port] = false;
+        if (!apply_limits(c, port / 2)) {
+            LOG("ucs %u: current limit not applied", port / 2 + 1);
+        }
+        ports_warning(port, PORT_WARN_BUDGET);
+    } else {
+        LOG("budget: %lu mA over %u mA, port %u off", (unsigned long)total, supply, port + 1);
+        ports_fault(port, PORT_FAULT_BUDGET);
     }
 }
 
@@ -251,12 +346,21 @@ void portctl_task(uint32_t now) {
             check_cc(i, now);
         }
     }
+    static uint32_t next_budget;
+    if ((int32_t)(now - next_budget) >= 0) {
+        next_budget = now + CC_POLL_MS;
+        check_budget(now);
+    }
 
     ports_task(now);
 
     if (!led_override) {
         for (uint8_t p = 0; p < BOARD_N_PORTS; p++) {
-            board_led_port(p, ports_led(p, now));
+            bool led = ports_led(p, now);
+            if (reduced_limit[p] && ports_is_powered(p)) {
+                led = (now % REDUCED_LED_PERIOD_MS) >= REDUCED_LED_OFF_MS;
+            }
+            board_led_port(p, led);
         }
     }
 }
@@ -287,12 +391,16 @@ uint16_t portctl_set_limit(uint8_t port, uint16_t ma, uint16_t tolerance_ms) {
     defaults_port_limit_set(port, limit);
     defaults_tolerance_set(port, tolerance_ms);
     cc_active[port] = false;
-    uint8_t first = (uint8_t)(port & ~1u);
+    reduced_limit[port] = 0; // a limit set by hand replaces one lowered by the total current check
     chip_t *c = usable_chip(port);
-    if (c && !ucs2114_set_current_limits(c->bus, defaults_port_limit_get(first), defaults_port_limit_get(first + 1))) {
+    if (c && !apply_limits(c, port / 2)) {
         LOG("ucs %u: current limit not applied", port / 2 + 1);
     }
     return limit;
+}
+
+uint16_t portctl_effective_limit(uint8_t port) {
+    return port < BOARD_N_PORTS ? effective_limit(port) : 0;
 }
 
 bool portctl_chip_ok(uint8_t chip) {

@@ -31,6 +31,8 @@ bool ucs2114_check_id(i2c_bus_t bus);
 bool ucs2114_configure(i2c_bus_t bus);
 // Port current, 13.3 mA resolution. ch 0 = chip port 1, ch 1 = chip port 2.
 bool ucs2114_read_current_ma(i2c_bus_t bus, uint8_t ch, uint16_t *ma);
+// Currents of both channels in one transaction.
+bool ucs2114_read_currents_ma(i2c_bus_t bus, uint16_t *ch0_ma, uint16_t *ch1_ma);
 // Charge delivered since the last reset, in µAh (updated by the chip once a second).
 bool ucs2114_read_charge_uah(i2c_bus_t bus, uint8_t ch, uint32_t *uah);
 bool ucs2114_reset_charge(i2c_bus_t bus, uint8_t ch);

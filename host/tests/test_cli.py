@@ -142,9 +142,11 @@ def test_parse_current_invalid():
 
 def test_limits_verdict(capsys):
     from devhub import protocol as p
-    cli._print_limits(p.Limits(ports_ma=[530, 530, 530, 530], supply_ma=3000, tolerances_ms=[100] * 4))
+    cli._print_limits(p.Limits(ports_ma=[530, 530, 530, 530], supply_ma=3000, tolerances_ms=[100] * 4, in_force_ma=[530] * 4))
     out = capsys.readouterr().out.splitlines()
     assert out[0] == "port 1: 0.53 A, up to 0.96 A for at most 100 ms"
     assert out[-1] == "worst case: 2.12 A from the ports + 0.48 A inside = 2.60 A, 0.40 A margin"
-    cli._print_limits(p.Limits(ports_ma=[2670] * 4, supply_ma=3000, tolerances_ms=[100] * 4))
-    assert capsys.readouterr().out.splitlines()[-1].endswith("= 11.16 A, 8.16 A above the supply")
+    cli._print_limits(p.Limits(ports_ma=[2670] * 4, supply_ma=3000, tolerances_ms=[100] * 4, in_force_ma=[2670, 2670, 960, 2670]))
+    out = capsys.readouterr().out.splitlines()
+    assert out[2] == "port 3: 2.67 A, lowered to 0.96 A by the supply budget"
+    assert out[-1].endswith("= 11.16 A, 8.16 A above the supply")

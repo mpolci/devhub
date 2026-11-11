@@ -60,6 +60,9 @@ static void sys_charge_reset_set(uint8_t m) {
 static uint16_t sys_limit_get(uint8_t port) {
     return port_limits[port];
 }
+static uint16_t sys_limit_in_force(uint8_t port) {
+    return port == 2 ? 960 : port_limits[port];
+}
 static uint16_t sys_tolerance_get(uint8_t port) {
     return tolerances[port];
 }
@@ -124,6 +127,7 @@ static const proto_sys_t sys = {
     .charge_reset_set = sys_charge_reset_set,
     .port_limit_get = sys_limit_get,
     .tolerance_get = sys_tolerance_get,
+    .limit_in_force = sys_limit_in_force,
     .port_limit_set = sys_limit_set,
     .supply_get = sys_supply_get,
     .supply_set = sys_supply_set,
@@ -305,6 +309,8 @@ static void test_limit_commands(void) {
     CHECK_EQ(r[12] | (r[13] << 8), 5000);
     CHECK_EQ(r[14] | (r[15] << 8), 100); // port 1 tolerance
     CHECK_EQ(r[16] | (r[17] << 8), 500); // port 2 tolerance
+    CHECK_EQ(r[22] | (r[23] << 8), 2670); // port 1 limit in force
+    CHECK_EQ(r[26] | (r[27] << 8), 960);  // port 3 limit in force: reduced
 }
 
 static void test_set_port_and_event(void) {

@@ -23,6 +23,8 @@ bool portctl_reset_charge(uint8_t port);
 // lowest one) and the time it may stay in current limiting, store them in the
 // settings and apply them. Returns the limit applied in mA.
 uint16_t portctl_set_limit(uint8_t port, uint16_t ma, uint16_t tolerance_ms);
+// Limit in force: the configured one, or a lower one set by the total current check (D105).
+uint16_t portctl_effective_limit(uint8_t port);
 // Suspend the port logic's control of the LEDs (console LED test).
 void portctl_led_override(bool on);
 

@@ -392,8 +392,9 @@ static void cmd_limit(int argc, char **argv) {
         return;
     }
     for (uint8_t p = 0; p < BOARD_N_PORTS; p++) {
-        P("port %u: %u mA, ceiling %u mA, tolerance %u ms\r\n", p + 1, defaults_port_limit_get(p),
-          ucs2114_ceiling_ma(defaults_port_limit_get(p)), defaults_tolerance_get(p));
+        uint16_t now_ma = portctl_effective_limit(p);
+        P("port %u: %u mA, in force %u mA, ceiling %u mA, tolerance %u ms\r\n", p + 1, defaults_port_limit_get(p),
+          now_ma, ucs2114_ceiling_ma(now_ma), defaults_tolerance_get(p));
     }
     P("supply: %u mA\r\n", defaults_supply_get());
 }

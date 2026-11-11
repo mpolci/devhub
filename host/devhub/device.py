@@ -206,8 +206,9 @@ class Devhub:
         info = self._info or self.info()
         data = self._command(Command.GET_LIMITS)
         n = info.n_ports
-        values = struct.unpack_from(f"<{2 * n + 1}H", data, 0)
-        return p.Limits(ports_ma=list(values[:n]), supply_ma=values[n], tolerances_ms=list(values[n + 1:]))
+        values = struct.unpack_from(f"<{3 * n + 1}H", data, 0)
+        return p.Limits(ports_ma=list(values[:n]), supply_ma=values[n], tolerances_ms=list(values[n + 1:2 * n + 1]),
+                        in_force_ma=list(values[2 * n + 1:]))
 
     def set_port_limit(self, port: int, ma: int, tolerance_ms: Optional[int] = None) -> None:
         """Set the current limit of a port; the device applies the largest step not above `ma`.

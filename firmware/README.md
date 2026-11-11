@@ -35,6 +35,8 @@ punti aperti e anomalie hardware sono in
   delle porte;
 - riavvio, salto al bootloader ST per l'aggiornamento via DFU, reset del hub, watchdog;
 - temperatura del chip del MCU dal sensore interno, con le calibrazioni di fabbrica (D102);
+- controllo della corrente totale contro l'alimentatore: riduzione e, se serve, spegnimento della
+  porta che consuma di più (D105);
 - limite di corrente di ogni porta abbassabile fino a 0,53 A, con tolleranza degli spunti fino a
   1,28 A e blocco `current_limit` (D104);
 - corrente e carica erogata di ogni porta dai controller, con azzeramento a comando o a ogni

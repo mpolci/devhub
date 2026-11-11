@@ -91,6 +91,7 @@ class PortFault(enum.IntFlag):
     OVERCURRENT = 0x01
     OVERTEMPERATURE = 0x02
     CURRENT_LIMIT = 0x04  # in current limiting longer than the port's tolerance
+    BUDGET = 0x08  # switched off to bring the total current within the supply
     GENERIC = 0x80
 
 
@@ -98,6 +99,7 @@ class PortWarning(enum.IntFlag):
     DISCHARGE_FAILED = 0x01
     BACK_VOLTAGE = 0x02
     VBUS_LOW = 0x04
+    BUDGET = 0x08  # limit lowered to bring the total current within the supply
 
 
 class RelayState(enum.IntFlag):
@@ -229,6 +231,7 @@ class Limits:
     ports_ma: List[int]  # current limit of each port, in port order
     supply_ma: int  # current the power supply can deliver
     tolerances_ms: List[int]  # time each port may stay in current limiting (limits up to CC_MAX_MA)
+    in_force_ma: List[int]  # limit applied now: lower than ports_ma where the total current check reduced it
 
     @staticmethod
     def ceiling_ma(limit_ma: int) -> int:
@@ -241,7 +244,8 @@ class Limits:
         return sum(self.ports_ma) + INTERNAL_MAX_MA
 
     def to_dict(self) -> dict:
-        return {"ports_ma": list(self.ports_ma), "tolerances_ms": list(self.tolerances_ms),
+        return {"ports_ma": list(self.ports_ma), "in_force_ma": list(self.in_force_ma),
+                "tolerances_ms": list(self.tolerances_ms),
                 "supply_ma": self.supply_ma, "worst_case_ma": self.worst_case_ma}
 
 
