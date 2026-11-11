@@ -64,6 +64,21 @@ devhub help [comando]
 `devhub` senza argomenti stampa una guida breve con i comandi ed esempi; `devhub help` la
 guida completa, `devhub help <comando>` i dettagli di un comando.
 
+Su macOS e Linux `status` mostra accanto a ogni porta il dispositivo collegato, come lo vede
+il PC: produttore e prodotto, VID:PID e porte seriali.
+
+```
+port 1: on       STMicroelectronics STLINK-V3 [0483:374e] /dev/cu.usbmodem212102
+port 2: on       SanDisk Cruzer Edge [0781:556b]
+port 3: on       -
+port 4: off
+```
+
+Il firmware non vede cosa è collegato alle porte: la libreria cerca nell'albero USB del
+sistema (`ioreg` su macOS, `/sys/bus/usb/devices` su Linux) il hub del devhub, che ha lo
+stesso numero di serie del dispositivo di controllo, e i dispositivi collegati alle sue porte
+1–4. Dalla libreria: `attached_devices(serial)`. Su Windows non è ancora disponibile.
+
 Su macOS un solo programma alla volta può aprire il dispositivo: con `devhub watch` in
 esecuzione gli altri comandi non riescono ad aprirlo.
 

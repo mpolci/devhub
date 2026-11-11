@@ -10,6 +10,7 @@ from typing import List, Optional
 from . import protocol as p
 from .device import Devhub, DevhubError, list_devices
 from .protocol import RelayState
+from .usbtree import attached_devices
 
 EXIT_OK = 0
 EXIT_ERROR = 1
@@ -27,7 +28,10 @@ Print protocol and firmware versions, number of ports and relays, optional
 capabilities of the firmware and serial number.
 """),
     ("status", "status [--json]", "state of ports and relay", f"""
-Print the system flags, the state of each port and of the relay.
+Print the system flags, the state of each port and of the relay. On macOS and
+Linux each port also shows the device attached to it, as the computer sees it:
+manufacturer and product, [VID:PID] and its serial ports (e.g. /dev/cu.usbmodem1103);
+'-' when nothing is attached to a port that is on.
 
 Port states: off, on, cycling (power cycle in progress), FAULT (latched off).
   fault causes  overcurrent, overtemperature, generic: the port is switched off
@@ -236,20 +240,34 @@ def _parser() -> argparse.ArgumentParser:
 
 def _print_status(dev: Devhub, as_json: bool) -> int:
     status = dev.status()
+    devices = attached_devices(dev.info().serial)  # None: not available on this platform
     if as_json:
-        print(json.dumps(status.to_dict(), indent=2))
+        d = status.to_dict()
+        if devices is not None:
+            for port in d["ports"]:
+                found = devices.get(port["port"])
+                port["device"] = found.to_dict() if found else None
+        print(json.dumps(d, indent=2))
     else:
         system = status.to_dict()["system"]
         print("system:", ", ".join(system) if system else "-")
         for port in status.ports:
             d = port.to_dict()
             state = "FAULT" if d["fault"] else "cycling" if d["cycle_active"] else "on" if d["enabled"] else "off"
+            line = f"port {port.port}: {state:<7}"
+            found = devices.get(port.port) if devices is not None else None
+            if found:
+                line += "  " + found.describe()
+            elif devices is not None and port.enabled:
+                line += "  -"
             extra = []
             if d["fault_causes"]:
                 extra.append("cause: " + ", ".join(d["fault_causes"]))
             if d["warnings"]:
                 extra.append("warnings: " + ", ".join(d["warnings"]))
-            print(f"port {port.port}: {state}" + (f"  ({'; '.join(extra)})" if extra else ""))
+            if extra:
+                line += f"  ({'; '.join(extra)})"
+            print(line.rstrip())
         for i, relay in enumerate(status.relays):
             line = "disconnected" if relay & RelayState.DISCONNECTED else "connected"
             pulse = " (pulse in progress)" if relay & RelayState.PULSE_ACTIVE else ""
