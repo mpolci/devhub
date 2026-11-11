@@ -58,7 +58,11 @@ devhub hub reset
 devhub watch [--json]
 devhub reboot
 devhub bootloader
+devhub help [comando]
 ```
+
+`devhub` senza argomenti stampa una guida breve con i comandi ed esempi; `devhub help` la
+guida completa, `devhub help <comando>` i dettagli di un comando.
 
 Su macOS un solo programma alla volta può aprire il dispositivo: con `devhub watch` in
 esecuzione gli altri comandi non riescono ad aprirlo.
