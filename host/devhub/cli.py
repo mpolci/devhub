@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 from typing import List, Optional
 
 from . import protocol as p
@@ -53,7 +54,7 @@ controllers switch a port off on their own above 120 °C (overtemperature).
 
 Exit code {EXIT_FAULT} when a port is latched in fault.
 """),
-    ("port", "port <n> on|off|cycle|clear|reset-charge [--ms MS]", "switch, power cycle, clear a fault, reset the charge count", f"""
+    ("port", "port <n> on|off|cycle|clear|reset-charge [--ms MS] [--wait]", "switch, power cycle, clear a fault, reset the charge count", f"""
 Control port n (1-4, as on the front panel). VBUS and data lines are switched
 together.
 
@@ -73,8 +74,14 @@ on and off during a cycle cancel it. A cycle only removes the power that the
 port supplies: a board with its own power supply keeps running, use the relay
 or a reset line for it.
 
+With --wait (macOS and Linux), 'on' and 'cycle' return only when a device is
+attached to the port and enumerated by the computer, and print it with its
+serial ports; exit code 1 if none appears within --timeout seconds (default 10).
+After a cycle it waits for the new enumeration, not for the old one.
+
   devhub port 2 cycle            port 2 off for 1 s, then on
   devhub port 2 cycle --ms 3000  port 2 off for 3 s
+  devhub port 2 cycle --wait     ... and wait for the board to come back
 """),
     ("all", "all on|off", "switch every port", """
   on    switch on every port, 100 ms apart to limit the inrush current. Ports
@@ -226,6 +233,8 @@ def _parser() -> argparse.ArgumentParser:
     port.add_argument("n", type=int, help="port number, 1-4")
     port.add_argument("action", choices=["on", "off", "cycle", "clear", "reset-charge"])
     port.add_argument("--ms", type=int, default=p.CYCLE_DEFAULT_MS, help="off time of a cycle (default %(default)s)")
+    port.add_argument("--wait", action="store_true", help="on, cycle: wait for the device to enumerate")
+    port.add_argument("--timeout", type=float, default=10.0, help="for --wait, seconds (default %(default)s)")
 
     all_ = add("all")
     all_.add_argument("action", choices=["on", "off"])
@@ -294,6 +303,61 @@ def _print_status(dev: Devhub, as_json: bool) -> int:
     return EXIT_FAULT if any(port.faulted for port in status.ports) else EXIT_OK
 
 
+def _wait_for_device(dev: Devhub, serial: str, port: int, before, timeout: float) -> int:
+    """Wait until the port is on and a device other than `before` is enumerated on it.
+
+    `before` is the device seen before the command, to be ignored (None to accept any).
+    """
+    deadline = time.monotonic() + timeout
+    seen = None
+    while True:
+        state = dev.status().ports[port - 1]
+        if state.faulted:
+            print(f"devhub: port {port} latched in fault", file=sys.stderr)
+            return EXIT_ERROR
+        if state.enabled and not state.cycle_active:
+            found = (attached_devices(serial) or {}).get(port)
+            if found and (before is None or found.session != before.session):
+                # The serial ports appear shortly after the device: wait for two equal reads.
+                if found == seen:
+                    print(f"port {port}: {found.describe()}")
+                    return EXIT_OK
+                seen = found
+        if time.monotonic() > deadline:
+            print(f"devhub: no device enumerated on port {port} within {timeout:g} s", file=sys.stderr)
+            return EXIT_ERROR
+        time.sleep(0.2)
+
+
+def _port_command(dev: Devhub, args: argparse.Namespace) -> int:
+    before = None
+    if args.wait:
+        if args.action not in ("on", "cycle"):
+            print("devhub: --wait applies to 'on' and 'cycle'", file=sys.stderr)
+            return EXIT_ERROR
+        serial = dev.info().serial
+        devices = attached_devices(serial)
+        if devices is None:
+            print("devhub: --wait needs the USB device list, available on macOS and Linux", file=sys.stderr)
+            return EXIT_ERROR
+        # 'on' on a port already on accepts the device already there.
+        if args.action == "cycle" or not dev.status().ports[args.n - 1].enabled:
+            before = devices.get(args.n)
+    if args.action == "on":
+        dev.set_port(args.n, True)
+    elif args.action == "off":
+        dev.set_port(args.n, False)
+    elif args.action == "cycle":
+        dev.cycle_port(args.n, args.ms)
+    elif args.action == "clear":
+        dev.clear_fault(args.n)
+    else:
+        dev.reset_charge(args.n)
+    if args.wait:
+        return _wait_for_device(dev, serial, args.n, before, args.timeout)
+    return EXIT_OK
+
+
 def _run(args: argparse.Namespace) -> int:
     if args.command == "help":
         if args.topic is None:
@@ -321,16 +385,7 @@ def _run(args: argparse.Namespace) -> int:
         elif args.command == "status":
             return _print_status(dev, args.json)
         elif args.command == "port":
-            if args.action == "on":
-                dev.set_port(args.n, True)
-            elif args.action == "off":
-                dev.set_port(args.n, False)
-            elif args.action == "cycle":
-                dev.cycle_port(args.n, args.ms)
-            elif args.action == "clear":
-                dev.clear_fault(args.n)
-            else:
-                dev.reset_charge(args.n)
+            return _port_command(dev, args)
         elif args.command == "all":
             dev.set_all(args.action == "on")
         elif args.command == "relay":

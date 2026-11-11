@@ -50,7 +50,7 @@ Porte e relè sono numerati da 1. I comandi rifiutati dal dispositivo sollevano
 devhub list
 devhub info
 devhub status [--json]
-devhub port <n> on|off|cycle [--ms 1000]|clear|reset-charge
+devhub port <n> on|off|cycle [--ms 1000]|clear|reset-charge [--wait [--timeout 10]]
 devhub all on|off
 devhub relay <n> connect|disconnect|cycle [--ms 500]
 devhub defaults show|set [porte...]|charge-reset [porte...]|save
@@ -74,6 +74,10 @@ port 2: on         13 mA     0.42 mAh  -
 port 3: off         0 mA     0.38 mAh
 port 4: on         53 mA     4.41 mAh  SanDisk Cruzer Edge [0781:556b]
 ```
+
+`port <n> on|cycle --wait` torna solo quando sulla porta c'è un dispositivo enumerato dal PC
+(dopo un ciclo, la nuova enumerazione) e lo stampa con le sue porte seriali; codice di uscita 1
+se non compare entro `--timeout` secondi.
 
 Il firmware non vede cosa è collegato alle porte: la libreria cerca nell'albero USB del
 sistema (`ioreg` su macOS, `/sys/bus/usb/devices` su Linux) il hub del devhub, che ha lo

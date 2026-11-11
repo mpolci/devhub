@@ -39,6 +39,7 @@ class AttachedDevice:
     speed: Optional[str] = None  # low, full, high, super, super+
     is_hub: bool = False
     ttys: List[str] = field(default_factory=list)  # serial ports, e.g. /dev/cu.usbmodem1103
+    session: Optional[int] = None  # changes at every enumeration (macOS sessionID, Linux devnum)
 
     def describe(self) -> str:
         """One line: names, VID:PID and serial ports."""
@@ -128,6 +129,7 @@ def _mac(hub_serial: str, roots: list) -> Dict[int, AttachedDevice]:
             speed=_SPEEDS_MAC.get(child.get("Device Speed")),
             is_hub=child.get("bDeviceClass") == 9,
             ttys=sorted(_mac_ttys(child)),
+            session=child.get("sessionID"),
         )
     return result
 
@@ -207,6 +209,7 @@ def _linux(hub_serial: str, sysfs: Path) -> Dict[int, AttachedDevice]:
             speed=_SPEEDS_LINUX.get(_read(dev / "speed") or ""),
             is_hub=_read(dev / "bDeviceClass") == "09",
             ttys=sorted(_linux_ttys(dev)),
+            session=int(_read(dev / "devnum") or "0") or None,
         )
     return result
 
