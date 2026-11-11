@@ -15,7 +15,7 @@ static uint8_t defaults_mask, charge_reset_mask;
 static int charge_resets[4];
 static bool measure_ok;
 static char labels[4][16];
-static uint16_t port_limits[4], supply_ma;
+static uint16_t port_limits[4], tolerances[4], supply_ma;
 static bool save_ok;
 static int hub_resets, reboots, bootloaders;
 static bool coil;
@@ -60,8 +60,12 @@ static void sys_charge_reset_set(uint8_t m) {
 static uint16_t sys_limit_get(uint8_t port) {
     return port_limits[port];
 }
-static uint16_t sys_limit_set(uint8_t port, uint16_t ma) {
+static uint16_t sys_tolerance_get(uint8_t port) {
+    return tolerances[port];
+}
+static uint16_t sys_limit_set(uint8_t port, uint16_t ma, uint16_t tolerance_ms) {
     port_limits[port] = ma - ma % 10; // stands for the rounding to a step
+    tolerances[port] = tolerance_ms;
     return port_limits[port];
 }
 static uint16_t sys_supply_get(void) {
@@ -119,6 +123,7 @@ static const proto_sys_t sys = {
     .charge_reset_get = sys_charge_reset_get,
     .charge_reset_set = sys_charge_reset_set,
     .port_limit_get = sys_limit_get,
+    .tolerance_get = sys_tolerance_get,
     .port_limit_set = sys_limit_set,
     .supply_get = sys_supply_get,
     .supply_set = sys_supply_set,
@@ -138,6 +143,7 @@ static void setup(void) {
     memset(labels, 0, sizeof labels);
     for (int i = 0; i < 4; i++) {
         port_limits[i] = 2670;
+        tolerances[i] = 100;
     }
     supply_ma = 3000;
     save_ok = true;
@@ -278,12 +284,15 @@ static void test_label_commands(void) {
 
 static void test_limit_commands(void) {
     setup();
-    const uint8_t *r = command(CMD_SET_PORT_LIMIT, ARGS(2, 0x2D, 0x04)); // 1069 mA
+    const uint8_t *r = command(CMD_SET_PORT_LIMIT, ARGS(2, 0x2D, 0x04, 0xF4, 0x01)); // 1069 mA, 500 ms
     CHECK_EQ(r[3], ST_OK);
     CHECK_EQ(port_limits[1], 1060);
-    r = command(CMD_SET_PORT_LIMIT, ARGS(2, 0x10, 0x02)); // 528 mA: below the lowest step
+    CHECK_EQ(tolerances[1], 500);
+    r = command(CMD_SET_PORT_LIMIT, ARGS(2, 0x10, 0x02, 0x64, 0x00)); // 528 mA: below the lowest step
     CHECK_EQ(r[3], ST_BAD_PARAM);
-    r = command(CMD_SET_PORT_LIMIT, ARGS(5, 0x00, 0x10));
+    r = command(CMD_SET_PORT_LIMIT, ARGS(2, 0x2D, 0x04, 0x0A, 0x00)); // 10 ms: below the tolerance range
+    CHECK_EQ(r[3], ST_BAD_PARAM);
+    r = command(CMD_SET_PORT_LIMIT, ARGS(5, 0x00, 0x10, 0x64, 0x00));
     CHECK_EQ(r[3], ST_BAD_PARAM);
     r = command(CMD_SET_SUPPLY_LIMIT, ARGS(0x88, 0x13)); // 5000 mA
     CHECK_EQ(r[3], ST_OK);
@@ -294,6 +303,8 @@ static void test_limit_commands(void) {
     CHECK_EQ(r[4] | (r[5] << 8), 2670);
     CHECK_EQ(r[6] | (r[7] << 8), 1060);
     CHECK_EQ(r[12] | (r[13] << 8), 5000);
+    CHECK_EQ(r[14] | (r[15] << 8), 100); // port 1 tolerance
+    CHECK_EQ(r[16] | (r[17] << 8), 500); // port 2 tolerance
 }
 
 static void test_set_port_and_event(void) {

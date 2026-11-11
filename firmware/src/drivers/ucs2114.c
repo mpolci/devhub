@@ -15,6 +15,8 @@
 #define REG_TAC2 0x16 // total accumulated charge, 4 bytes, chip port 2
 #define REG_TAC1 0x1A // chip port 1
 #define REG_RATION_CFG 0x22
+#define REG_LIMIT_BEH2 0x23 // current limit behaviour, chip port 2
+#define REG_LIMIT_BEH1 0x24 // chip port 1
 #define REG_PRODUCT_ID 0xFD
 #define REG_MANUFACTURER_ID 0xFE
 
@@ -185,11 +187,68 @@ uint16_t ucs2114_ilim_round(uint16_t ma) {
     return ucs2114_ilim_ma[ilim_code(ma)];
 }
 
+// IBUS_R2MIN (SEL_R2_IMIN in registers 23h/24h, bits 4-2) for a limit: the next
+// step up keeps Constant Current mode with that ceiling; 100 mA forces Trip mode.
+#define R2MIN_MASK 0x1C
+#define R2MIN_100MA 0x00
+#define R2MIN_960MA 0x08
+#define R2MIN_1280MA 0x0C
+#define R2MIN_1600MA 0x10
+
+static uint8_t r2min_code(uint16_t limit_ma) {
+    switch (limit_ma) {
+    case 530:
+        return R2MIN_960MA;
+    case 960:
+    case 1070:
+        return R2MIN_1280MA;
+    case 1280:
+        return R2MIN_1600MA;
+    default:
+        return R2MIN_100MA;
+    }
+}
+
+uint16_t ucs2114_ceiling_ma(uint16_t limit_ma) {
+    switch (r2min_code(limit_ma)) {
+    case R2MIN_960MA:
+        return 960;
+    case R2MIN_1280MA:
+        return 1280;
+    case R2MIN_1600MA:
+        return 1600;
+    default:
+        return limit_ma;
+    }
+}
+
+static bool set_r2min(i2c_bus_t bus, uint8_t reg, uint16_t limit_ma) {
+    // Read-modify-write: the other bits hold VBUS_MIN and reserved fields.
+    uint8_t v, back;
+    if (!ucs2114_read_reg(bus, reg, &v)) {
+        return false;
+    }
+    v = (uint8_t)((v & ~R2MIN_MASK) | r2min_code(limit_ma));
+    return ucs2114_write_reg(bus, reg, v) && ucs2114_read_reg(bus, reg, &back) && back == v;
+}
+
 bool ucs2114_set_current_limits(i2c_bus_t bus, uint16_t ch0_ma, uint16_t ch1_ma) {
+    ch0_ma = ucs2114_ilim_round(ch0_ma);
+    ch1_ma = ucs2114_ilim_round(ch1_ma);
     uint8_t value = (uint8_t)((ilim_code(ch0_ma) << 3) | ilim_code(ch1_ma));
     uint8_t back;
-    return ucs2114_write_reg(bus, REG_CURRENT_LIMIT, value) && ucs2114_read_reg(bus, REG_CURRENT_LIMIT, &back) &&
+    return set_r2min(bus, REG_LIMIT_BEH1, ch0_ma) && set_r2min(bus, REG_LIMIT_BEH2, ch1_ma) &&
+           ucs2114_write_reg(bus, REG_CURRENT_LIMIT, value) && ucs2114_read_reg(bus, REG_CURRENT_LIMIT, &back) &&
            (back & 0x3F) == value;
+}
+
+bool ucs2114_read_cc_mode(i2c_bus_t bus, uint8_t *mask) {
+    uint8_t v;
+    if (!ucs2114_read_reg(bus, REG_PORT_STATUS, &v)) {
+        return false;
+    }
+    *mask = (uint8_t)(((v & 0x20) ? 1u : 0u) | ((v & 0x10) ? 2u : 0u)); // CC_MODE1, CC_MODE2
+    return true;
 }
 
 static uint8_t decode(uint8_t reg) {

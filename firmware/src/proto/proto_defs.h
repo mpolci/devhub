@@ -35,6 +35,8 @@
 #define CMD_SET_PORT_LIMIT 0x38
 #define CMD_SET_SUPPLY_LIMIT 0x39
 #define PORT_LIMIT_MIN_MA 530 // lowest step of the port controllers
+#define TOLERANCE_MIN_MS 20
+#define TOLERANCE_MAX_MS 10000
 #define SUPPLY_LIMIT_MIN_MA 1000
 #define SUPPLY_LIMIT_MAX_MA 6000
 #define PROTO_LABEL_FIELD 16 // label bytes in GET_LABEL/SET_LABEL, NUL-padded
@@ -75,6 +77,7 @@
 // Port fault cause bits
 #define PORT_FAULT_OVERCURRENT 0x01
 #define PORT_FAULT_OVERTEMP 0x02
+#define PORT_FAULT_LIMIT 0x04 // in current limiting longer than the tolerance (D104)
 #define PORT_FAULT_GENERIC 0x80
 
 // Port warning bits

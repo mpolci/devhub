@@ -91,8 +91,8 @@ i parametri iniziano al byte 3, in quello di evento i dati iniziano al byte 2.
 | 0x34 | SET_CHARGE_RESET | maschera (u8, bit 0 = porta 1); di fabbrica 0 | status |
 | 0x35 | GET_LABEL | port | nome della porta: 16 byte, completati con zeri; tutti zero se non impostato |
 | 0x36 | SET_LABEL | port, nome (16 byte, completati con zeri) | status; da 0 a 15 byte stampabili, vuoto = nessun nome; `BAD_PARAM` altrimenti |
-| 0x37 | GET_LIMITS | — | limite di corrente di ogni porta (u16 mA, nell'ordine delle porte), corrente dell'alimentatore (u16 mA) |
-| 0x38 | SET_PORT_LIMIT | port, mA (u16) | status; applicato subito come gradino più alto non superiore (0,53–2,67 A, D104); sotto 530 mA `BAD_PARAM` |
+| 0x37 | GET_LIMITS | — | limite di corrente di ogni porta (u16 mA, nell'ordine delle porte), corrente dell'alimentatore (u16 mA), tolleranza di ogni porta (u16 ms) |
+| 0x38 | SET_PORT_LIMIT | port, mA (u16), tolleranza in ms (u16, 20–10000) | status; applicato subito come gradino più alto non superiore (0,53–2,67 A, D104); sotto 530 mA o tolleranza fuori intervallo `BAD_PARAM` |
 | 0x39 | SET_SUPPLY_LIMIT | mA (u16), da 1000 a 6000; di fabbrica 3000 | status |
 | 0x40 | CLEAR_FAULT | port | status; toglie il blocco e lascia la porta disabilitata |
 | 0x50 | RESET_HUB | — | status prima del reset; hub e dispositivi downstream, controllo incluso, ri-enumerano |
@@ -129,6 +129,7 @@ Byte di una porta:
 | | 2 | `fault`: porta bloccata per guasto (D73) |
 | `fault` | 0 | sovracorrente |
 | | 1 | sovratemperatura del controller |
+| | 2 | `current_limit`: in limitazione oltre la tolleranza, o VBUS sotto il minimo, con un limite fino a 1,28 A (D104) |
 | | 7 | guasto generico: ALERT# attivo senza causa leggibile |
 | `warning` | 0 | scarica non riuscita: VBUS sostenuta dall'esterno |
 | | 1 | tensione di ritorno sulla VBUS |

@@ -52,7 +52,7 @@ devhub info
 devhub status [--json]
 devhub port <n>|<nome>|@testo on|off|cycle [--ms 1000]|clear|reset-charge [--wait [--timeout 10]]
 devhub label [<porta> <nome>|--clear]
-devhub limit [<porta>|supply <corrente>]
+devhub limit [<porta> <corrente> [--tolerance ms]|supply <corrente>]
 devhub find <testo>
 devhub log [--interval 1000] [--duration secondi]
 devhub all on|off
@@ -79,7 +79,10 @@ port 3: off         0 mA     0.38 mAh
 port 4: on         53 mA     4.41 mAh  SanDisk Cruzer Edge [0781:556b]
 ```
 
-`devhub limit 2 0.53` abbassa il limite di corrente della porta 2 (gradini da 0,53 a 2,67 A);
+`devhub limit 2 0.53` abbassa il limite di corrente della porta 2 (gradini da 0,53 a 2,67 A).
+Fino a 1,28 A gli spunti brevi passano e la porta si spegne con causa `current_limit` solo se
+resta oltre il limite più della tolleranza (`--tolerance`, di fabbrica 100 ms); da 1,6 A si spegne
+dopo circa 6 ms. Va scelto con margine sul consumo normale, come un fusibile.
 `devhub limit` mostra i limiti e il caso peggiore, cioè la loro somma più i consumi interni,
 confrontato con la corrente dell'alimentatore (`devhub limit supply 5` per uno da 5 A). Salvati
 con `devhub defaults save`.

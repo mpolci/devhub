@@ -21,8 +21,9 @@ typedef struct {
     bool (*defaults_save)(void);
     uint8_t (*charge_reset_get)(void);
     void (*charge_reset_set)(uint8_t mask);
-    uint16_t (*port_limit_get)(uint8_t port);             // mA
-    uint16_t (*port_limit_set)(uint8_t port, uint16_t ma); // returns the limit applied
+    uint16_t (*port_limit_get)(uint8_t port); // mA
+    uint16_t (*tolerance_get)(uint8_t port);  // ms
+    uint16_t (*port_limit_set)(uint8_t port, uint16_t ma, uint16_t tolerance_ms); // returns the limit applied
     uint16_t (*supply_get)(void);
     void (*supply_set)(uint16_t ma);
     const char *(*label_get)(uint8_t port);                         // port from 0

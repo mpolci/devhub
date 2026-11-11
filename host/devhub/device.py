@@ -205,12 +205,19 @@ class Devhub:
         """Current limits of the ports and current the power supply can deliver."""
         info = self._info or self.info()
         data = self._command(Command.GET_LIMITS)
-        values = struct.unpack_from(f"<{info.n_ports + 1}H", data, 0)
-        return p.Limits(ports_ma=list(values[:-1]), supply_ma=values[-1])
+        n = info.n_ports
+        values = struct.unpack_from(f"<{2 * n + 1}H", data, 0)
+        return p.Limits(ports_ma=list(values[:n]), supply_ma=values[n], tolerances_ms=list(values[n + 1:]))
 
-    def set_port_limit(self, port: int, ma: int) -> None:
-        """Set the current limit of a port; the device applies the largest step not above `ma`."""
-        self._command(Command.SET_PORT_LIMIT, struct.pack("<BH", port, ma))
+    def set_port_limit(self, port: int, ma: int, tolerance_ms: Optional[int] = None) -> None:
+        """Set the current limit of a port; the device applies the largest step not above `ma`.
+
+        `tolerance_ms` is how long the port may stay in current limiting (limits up to
+        CC_MAX_MA); None keeps the current one.
+        """
+        if tolerance_ms is None:
+            tolerance_ms = self.get_limits().tolerances_ms[port - 1]
+        self._command(Command.SET_PORT_LIMIT, struct.pack("<BHH", port, ma, tolerance_ms))
 
     def set_supply_limit(self, ma: int) -> None:
         """Current the power supply can deliver, for the comparison with the port limits."""

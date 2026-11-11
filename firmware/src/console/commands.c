@@ -371,7 +371,7 @@ static void cmd_defaults(int argc, char **argv) {
 }
 
 static void cmd_limit(int argc, char **argv) {
-    // limit | limit <n> <mA> | limit supply <mA>
+    // limit | limit <n> <mA> [tolerance ms] | limit supply <mA>
     if (argc == 3 && eq(argv[1], "supply")) {
         int ma = atoi(argv[2]);
         if (ma < SUPPLY_LIMIT_MIN_MA || ma > SUPPLY_LIMIT_MAX_MA) {
@@ -379,19 +379,21 @@ static void cmd_limit(int argc, char **argv) {
             return;
         }
         defaults_supply_set((uint16_t)ma);
-    } else if (argc == 3) {
+    } else if (argc == 3 || argc == 4) {
         int n = index_arg(argv[1], BOARD_N_PORTS);
-        if (n < 0) {
+        int tolerance = argc == 4 ? atoi(argv[3]) : (n >= 0 ? defaults_tolerance_get((uint8_t)n) : 0);
+        if (n < 0 || tolerance < TOLERANCE_MIN_MS || tolerance > TOLERANCE_MAX_MS) {
             usage_error();
             return;
         }
-        portctl_set_limit((uint8_t)n, (uint16_t)atoi(argv[2]));
+        portctl_set_limit((uint8_t)n, (uint16_t)atoi(argv[2]), (uint16_t)tolerance);
     } else if (argc != 1) {
         usage_error();
         return;
     }
     for (uint8_t p = 0; p < BOARD_N_PORTS; p++) {
-        P("port %u: %u mA\r\n", p + 1, defaults_port_limit_get(p));
+        P("port %u: %u mA, ceiling %u mA, tolerance %u ms\r\n", p + 1, defaults_port_limit_get(p),
+          ucs2114_ceiling_ma(defaults_port_limit_get(p)), defaults_tolerance_get(p));
     }
     P("supply: %u mA\r\n", defaults_supply_get());
 }
@@ -443,7 +445,7 @@ static const command_t commands[] = {
     {"relay", "connect|disconnect|pulse <ms>", cmd_relay},
     {"defaults", "[set <hex mask>|charge-reset <hex mask>|save]", cmd_defaults},
     {"label", "[<n> [text]]", cmd_label},
-    {"limit", "[<n> <mA>|supply <mA>]", cmd_limit},
+    {"limit", "[<n> <mA> [tolerance ms]|supply <mA>]", cmd_limit},
     {"hub", "[status|reset|dump]", cmd_hub},
     {"ucs", "<1|2> id|init|status|dump|write <reg> <val>", cmd_ucs},
     {"led", "<n>|host on|off, led auto", cmd_led},

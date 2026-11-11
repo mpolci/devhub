@@ -11,6 +11,7 @@ typedef struct {
     uint8_t charge_reset_mask;
     char labels[4][DEFAULTS_LABEL_LEN + 1]; // NUL-terminated
     uint16_t port_limit_ma[4];
+    uint16_t tolerance_ms[4];
     uint16_t supply_ma;
 } defaults_t;
 
@@ -27,6 +28,7 @@ void defaults_init(void) {
         memset(current.labels, 0, sizeof current.labels);
         for (uint8_t i = 0; i < 4; i++) {
             current.port_limit_ma[i] = DEFAULTS_FACTORY_PORT_LIMIT_MA;
+            current.tolerance_ms[i] = DEFAULTS_FACTORY_TOLERANCE_MS;
         }
         current.supply_ma = DEFAULTS_FACTORY_SUPPLY_MA;
     }
@@ -78,6 +80,16 @@ uint16_t defaults_port_limit_get(uint8_t port) {
 void defaults_port_limit_set(uint8_t port, uint16_t ma) {
     if (port < 4) {
         current.port_limit_ma[port] = ma;
+    }
+}
+
+uint16_t defaults_tolerance_get(uint8_t port) {
+    return port < 4 ? current.tolerance_ms[port] : 0;
+}
+
+void defaults_tolerance_set(uint8_t port, uint16_t ms) {
+    if (port < 4) {
+        current.tolerance_ms[port] = ms;
     }
 }
 

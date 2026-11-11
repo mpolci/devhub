@@ -155,7 +155,9 @@ contemporaneamente su tutte le porte. Hub e MCU sono alimentati solo dalla 5V_SY
 
 **Limite per porta (D104).** Il limite hardware di 2,67 A si può abbassare porta per porta,
 fino a 0,53 A: protegge le schede delicate e permette di tenere la somma dei limiti entro la
-corrente dell'alimentatore.
+corrente dell'alimentatore. Fino a 1,28 A il controller limita in corrente costante e il MCU
+spegne la porta solo se la limitazione dura oltre una tolleranza (di fabbrica 100 ms), così gli
+spunti all'accensione e al collegamento passano; da 1,6 A il controller stacca dopo circa 6 ms.
 
 **Gestione dei guasti (D64/D73).** Un guasto porta segnalato blocca la porta in OFF
 e interrompe l’eventuale ciclo, con LED lampeggiante; il MCU attende un tentativo esplicito

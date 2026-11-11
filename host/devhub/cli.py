@@ -40,7 +40,8 @@ Port states: off, on, cycling (power cycle in progress), FAULT (latched off).
 Each port shows its current (13.3 mA steps, about 2 % above 200 mA) and the
 charge it delivered since the count was last reset, in mAh (4.5 %, updated
 once a second); '?' if the port controller cannot be read.
-  fault causes  overcurrent, overtemperature, generic: the port is switched off
+  fault causes  overcurrent, overtemperature, current_limit (over the port limit
+                longer than its tolerance, see 'limit'), generic: the port is switched off
                 and stays off until 'port <n> on' or 'port <n> clear', or until
                 its button is pressed.
   warnings      discharge_failed, back_voltage (the board on the port has its own
@@ -88,23 +89,34 @@ After a cycle it waits for the new enumeration, not for the old one.
   devhub port 2 cycle --wait     ... and wait for the board to come back
   devhub port @esp32 cycle       power cycle the port where the ESP32 is
 """),
-    ("limit", "limit [<port>|supply <current>]", "current limits of the ports", f"""
+    ("limit", "limit [<port> <current> [--tolerance MS]|supply <current>]", "current limits of the ports", f"""
 Without arguments print the current limit of every port, the current the power
 supply can deliver and the worst case: the input current if every port draws
 its limit, plus up to {p.INTERNAL_MAX_MA / 1000:.2f} A used by the devhub itself. Above the supply,
 an overload can switch the whole devhub off.
 
-  <port> <current>    set the limit of a port. The port controller applies it
-                      at once: a port drawing more is switched off and latched
-                      as an overcurrent fault. Steps (A): 0.53 0.96 1.07 1.28 1.60 2.13 2.67
+Limits up to {p.CC_MAX_MA / 1000:.2f} A: above the limit the port controller holds the current
+and lets the voltage drop. Short peaks, like the capacitors of a device
+charging at turn-on or when it is plugged in, go through; if the port stays
+limited longer than its tolerance (default 100 ms) it is switched off and
+latched with cause current_limit. It never goes above a ceiling, the next step
+up (0.53 -> 0.96, 0.96 and 1.07 -> 1.28, 1.28 -> 1.60 A), where the controller
+switches it off at once. Higher limits: the port is switched off about 6 ms
+after going above, cause overcurrent. Choose a limit with margin over the
+normal consumption, as for a fuse.
+
+  <port> <current>    set the limit of a port, applied at once. Steps (A): 0.53 0.96 1.07 1.28 1.60 2.13 2.67
                       (2.67 A is the maximum, set by the board); the largest
                       step not above the value is used.
+  --tolerance MS      time in current limiting before the port is switched off
+                      ({p.TOLERANCE_MIN_MS}-{p.TOLERANCE_MAX_MS} ms); kept if not given.
   supply <current>    current the power supply can deliver (factory 3 A).
 
 Current as amperes (1.07, 1.07A), milliamperes (530mA) or 'max'. The settings
 are kept in flash with 'defaults save'.
 
   devhub limit 2 0.53            port 2 at most 0.53 A
+  devhub limit 2 0.53 --tolerance 500
   devhub limit supply 5          a 5 A power supply
 """),
     ("label", "label [<port> <text>|--clear]", "names of the ports", f"""
@@ -295,6 +307,7 @@ def _parser() -> argparse.ArgumentParser:
     limit = add("limit")
     limit.add_argument("target", nargs="?", metavar="port|supply", help="port number, label, @text, or 'supply'")
     limit.add_argument("current", nargs="?", help="amperes, NmA or 'max'")
+    limit.add_argument("--tolerance", type=int, help="ms in current limiting before switching off")
 
     label = add("label")
     label.add_argument("port", nargs="?", help="port number, label or @text")
@@ -432,7 +445,12 @@ def _parse_current(text: str) -> int:
 
 def _print_limits(limits: p.Limits) -> None:
     for port, ma in enumerate(limits.ports_ma, start=1):
-        print(f"port {port}: {ma / 1000:.2f} A")
+        if ma <= p.CC_MAX_MA:
+            how = (f"up to {limits.ceiling_ma(ma) / 1000:.2f} A for at most "
+                   f"{limits.tolerances_ms[port - 1]} ms")
+        else:
+            how = "switched off about 6 ms above it"
+        print(f"port {port}: {ma / 1000:.2f} A, {how}")
     print(f"supply: {limits.supply_ma / 1000:.2f} A")
     worst = limits.worst_case_ma
     margin = limits.supply_ma - worst
@@ -571,7 +589,9 @@ def _run(args: argparse.Namespace) -> int:
                 else:
                     if ma < p.PORT_LIMIT_STEPS_MA[0]:
                         raise _UsageError(f"the lowest port limit is {p.PORT_LIMIT_STEPS_MA[0] / 1000:.2f} A")
-                    dev.set_port_limit(_resolve_port(dev, args.target), min(ma, 0xFFFF))
+                    if args.tolerance is not None and not p.TOLERANCE_MIN_MS <= args.tolerance <= p.TOLERANCE_MAX_MS:
+                        raise _UsageError(f"tolerance from {p.TOLERANCE_MIN_MS} to {p.TOLERANCE_MAX_MS} ms")
+                    dev.set_port_limit(_resolve_port(dev, args.target), min(ma, 0xFFFF), args.tolerance)
             _print_limits(dev.get_limits())
             if args.target is not None:
                 print("(kept in flash only after 'devhub defaults save')")

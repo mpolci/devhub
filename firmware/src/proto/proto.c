@@ -221,15 +221,19 @@ void proto_handle(const uint8_t *report, uint16_t len) {
             put_u16(&data[2 * i], sys->port_limit_get(i));
         }
         put_u16(&data[2 * PROTO_N_PORTS], sys->supply_get());
+        for (uint8_t i = 0; i < PROTO_N_PORTS; i++) {
+            put_u16(&data[2 * PROTO_N_PORTS + 2 + 2 * i], sys->tolerance_get(i));
+        }
         break;
 
     case CMD_SET_PORT_LIMIT: {
         uint8_t port = index_of(arg[0], PROTO_N_PORTS);
         uint16_t ma = get_u16(&arg[1]);
-        if (port == 0xFF || ma < PORT_LIMIT_MIN_MA) {
+        uint16_t tolerance = get_u16(&arg[3]);
+        if (port == 0xFF || ma < PORT_LIMIT_MIN_MA || tolerance < TOLERANCE_MIN_MS || tolerance > TOLERANCE_MAX_MS) {
             status = ST_BAD_PARAM;
         } else {
-            sys->port_limit_set(port, ma);
+            sys->port_limit_set(port, ma, tolerance);
         }
         break;
     }

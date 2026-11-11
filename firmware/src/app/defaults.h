@@ -21,8 +21,11 @@ bool defaults_label_set(uint8_t port, const char *text, uint8_t len); // false i
 // Current limit of each port and current the power supply can deliver, in mA.
 #define DEFAULTS_FACTORY_PORT_LIMIT_MA 2670 // set by the COMM_ILIM resistors
 #define DEFAULTS_FACTORY_SUPPLY_MA 3000
+#define DEFAULTS_FACTORY_TOLERANCE_MS 100 // time a port may stay in current limiting
 uint16_t defaults_port_limit_get(uint8_t port);
 void defaults_port_limit_set(uint8_t port, uint16_t ma); // already rounded to a controller step
+uint16_t defaults_tolerance_get(uint8_t port);
+void defaults_tolerance_set(uint8_t port, uint16_t ms);
 uint16_t defaults_supply_get(void);
 void defaults_supply_set(uint16_t ma);
 bool defaults_save(void);

@@ -37,11 +37,24 @@ bool ucs2114_reset_charge(i2c_bus_t bus, uint8_t ch);
 
 // Current limit of each channel, below the one set by the COMM_ILIM resistor
 // (2.67 A on this board). Steps in mA; the chip cannot go above the resistor value.
+//
+// Below UCS2114_CC_MAX_MA the channel works in Constant Current mode: above the
+// limit it holds the current and lets VBUS drop, and it switches off on its own
+// only at the ceiling, the next step up (IBUS_R2MIN) or with VBUS under 2 V.
+// The firmware decides how long a channel may stay in current limiting. From
+// UCS2114_CC_MAX_MA up the channel works in Trip mode: it switches off after
+// about 6 ms over the limit.
 #define UCS2114_ILIM_STEPS 7
+#define UCS2114_CC_MAX_MA 1280
 extern const uint16_t ucs2114_ilim_ma[UCS2114_ILIM_STEPS];
 // Largest step not above ma; the lowest step if ma is below it.
 uint16_t ucs2114_ilim_round(uint16_t ma);
+// Current a channel can never exceed with this limit (the IBUS_R2MIN ceiling in
+// Constant Current mode, the limit itself in Trip mode).
+uint16_t ucs2114_ceiling_ma(uint16_t limit_ma);
 bool ucs2114_set_current_limits(i2c_bus_t bus, uint16_t ch0_ma, uint16_t ch1_ma);
+// Channels in Constant Current limiting right now: bit 0 = ch 0, bit 1 = ch 1.
+bool ucs2114_read_cc_mode(i2c_bus_t bus, uint8_t *mask);
 // Read and clear the interrupt status registers.
 bool ucs2114_read_events(i2c_bus_t bus, ucs2114_events_t *ev);
 bool ucs2114_read_reg(i2c_bus_t bus, uint8_t reg, uint8_t *value);

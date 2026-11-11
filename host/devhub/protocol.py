@@ -90,6 +90,7 @@ class PortState(enum.IntFlag):
 class PortFault(enum.IntFlag):
     OVERCURRENT = 0x01
     OVERTEMPERATURE = 0x02
+    CURRENT_LIMIT = 0x04  # in current limiting longer than the port's tolerance
     GENERIC = 0x80
 
 
@@ -121,6 +122,10 @@ CHARGE_UNAVAILABLE = 0xFFFFFFFF
 PORT_LIMIT_STEPS_MA = (530, 960, 1070, 1280, 1600, 2130, 2670)  # port controller current limits
 SUPPLY_LIMIT_MIN_MA = 1000
 SUPPLY_LIMIT_MAX_MA = 6000
+CC_MAX_MA = 1280  # limits up to this one work in Constant Current mode, with a tolerance
+CC_CEILING_MA = {530: 960, 960: 1280, 1070: 1280, 1280: 1600}  # hard ceiling of those limits
+TOLERANCE_MIN_MS = 20
+TOLERANCE_MAX_MS = 10000
 INTERNAL_MAX_MA = 480  # hub, MCU, LEDs and an energized relay, worst case (architettura.md)
 LABEL_MAX_BYTES = 15  # UTF-8 bytes of a port label
 PORT_STATUS_SIZE = 9  # state, fault, warning, current (u16 mA), charge (u32 µAh)
@@ -223,6 +228,12 @@ class Status:
 class Limits:
     ports_ma: List[int]  # current limit of each port, in port order
     supply_ma: int  # current the power supply can deliver
+    tolerances_ms: List[int]  # time each port may stay in current limiting (limits up to CC_MAX_MA)
+
+    @staticmethod
+    def ceiling_ma(limit_ma: int) -> int:
+        """Current a port can never exceed: above the limit only for the tolerance time."""
+        return CC_CEILING_MA.get(limit_ma, limit_ma)
 
     @property
     def worst_case_ma(self) -> int:
@@ -230,7 +241,8 @@ class Limits:
         return sum(self.ports_ma) + INTERNAL_MAX_MA
 
     def to_dict(self) -> dict:
-        return {"ports_ma": list(self.ports_ma), "supply_ma": self.supply_ma, "worst_case_ma": self.worst_case_ma}
+        return {"ports_ma": list(self.ports_ma), "tolerances_ms": list(self.tolerances_ms),
+                "supply_ma": self.supply_ma, "worst_case_ma": self.worst_case_ma}
 
 
 @dataclass(frozen=True)

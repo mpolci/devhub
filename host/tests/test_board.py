@@ -144,17 +144,22 @@ def test_cycle_wait_sees_the_new_enumeration(dev):
 
 
 def test_port_limits(dev):
+    # On the port drawing least: a lower limit must not trip a device attached elsewhere.
+    port = min(dev.status().ports, key=lambda p: p.current_ma or 0).port
     original = dev.get_limits()
     try:
-        dev.set_port_limit(3, 1000)
-        assert dev.get_limits().ports_ma[2] == 960  # largest step not above 1000 mA
-        dev.set_port_limit(3, 9999)
-        assert dev.get_limits().ports_ma[2] == 2670  # the maximum set by the board
+        dev.set_port_limit(port, 1000, 250)
+        limits = dev.get_limits()
+        assert limits.ports_ma[port - 1] == 960 and limits.tolerances_ms[port - 1] == 250  # step not above 1000 mA
+        with pytest.raises(CommandError):
+            dev.set_port_limit(port, 1000, 5)  # tolerance below the minimum
+        dev.set_port_limit(port, 9999)
+        assert dev.get_limits().ports_ma[port - 1] == 2670  # the maximum set by the board
         dev.set_supply_limit(5000)
         assert dev.get_limits().supply_ma == 5000
         with pytest.raises(CommandError):
-            dev.set_port_limit(3, 100)  # below the lowest step
-        assert all(port.current_ma is not None for port in dev.status().ports)  # controllers still fine
+            dev.set_port_limit(port, 100)  # below the lowest step
+        assert all(p.current_ma is not None for p in dev.status().ports)  # controllers still fine
     finally:
-        dev.set_port_limit(3, original.ports_ma[2])
+        dev.set_port_limit(port, original.ports_ma[port - 1], original.tolerances_ms[port - 1])
         dev.set_supply_limit(original.supply_ma)  # not saved to flash
