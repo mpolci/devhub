@@ -114,8 +114,9 @@ il PCB da 100 × 100 mm (D84) è sbrogliato.
 
 - Dimensionare e validare il circuito scelto D75: due UCS2114-1-V/LX e quattro PI3USB4002A,
   capacità, scarica automatica, guasti, ritorno di alimentazione e stato al reset/bootloader.
-- Verificare elettricamente sul prototipo il pinout a 48 pin: due I²C, HID, SWD, UART,
-  reset e bootloader.
+- Completare la verifica del pinout a 48 pin sul prototipo. Due I²C, USB HID e CDC, reset
+  del hub e ingresso nel bootloader funzionano; la sonda SWD riconosce il MCU. Restano
+  programmazione via SWD, UART di J9 e transitori di porte e relè durante reset e DFU.
 - Definire durata sicura della scarica, default e intervallo ammesso del ciclo sul circuito
   definitivo; il secondo proposto non è una garanzia per qualsiasi capacità o alimentazione esterna.
 - Confermare sul prototipo la gestione dei guasti D98: ALERT# mascherato, lettura della causa

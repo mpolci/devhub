@@ -5,14 +5,22 @@ Progetto KiCad 10 (schema, PCB, BOM) dell'hub.
 ```
 hardware/devhub/        progetto KiCad: devhub.kicad_pro, devhub.kicad_sch (radice), i fogli e devhub.kicad_pcb
 hardware/lib/           devhub.kicad_sym: simboli non presenti nelle librerie standard (USB2517, PI3USB4002A, TPS259470A, UCS2114) e SMAJ20A con pin K/A espliciti
-hardware/bom/           BOM e file per l'assemblaggio (da fare)
+hardware/devhub/production/   file di produzione Rev A: gerber (devhub_A.zip), BOM, posizioni, designatori, netlist IPC
+hardware/devhub/jlcpcb/       database del plugin di esportazione per JLCPCB
 ```
 
-## Stato: schema v0.3
+## Stato: schema v0.3, PCB Rev A
 
-Lo schema applica i [requisiti semplificati](../docs/requisiti.md) e le decisioni D60–D90
+Lo schema applica i [requisiti semplificati](../docs/requisiti.md) e le decisioni D60–D95
 (dettaglio in D79): quattro porte USB-C, un relè, cinque pulsanti, un LED per porta, LED del relè e di host. Il PCB
-da 100 × 100 mm ha il piazzamento iniziale ed è da sbrogliare (vedi sotto).
+da 100 × 100 mm è sbrogliato e prodotto come Rev A (vedi sotto).
+
+Il prototipo Rev A è montato e collaudato con il firmware. Alimentazioni, hub, MCU, controller
+delle porte, interruttori dati, LED, pulsanti e relè funzionano. Gli unici difetti trovati
+erano saldature di U3 (MCU), U4 e U5 (UCS2114), J401 (connettore della porta 4) e U401 (switch
+dati della porta 4), tutte ripassate. Nel PCB le reti sono corrette e non servono modifiche.
+Dettaglio delle prove in
+[../docs/lavorazioni/piano-firmware.md](../docs/lavorazioni/piano-firmware.md).
 
 Simboli delle librerie standard di KiCad più quelli di progetto in `lib/`; fogli gerarchici riusati per le
 porte. Componenti vicini collegati a filo, ma ogni rete ha comunque un nome esplicito: etichette

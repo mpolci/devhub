@@ -65,9 +65,13 @@ DigiKey come fornitore di riferimento.
 
 Schema elettrico v0.3 allineato ai requisiti (D79–D83); PCB 100 × 100 mm a quattro strati (D84)
 completo (D84–D95, vedi [hardware/README.md](hardware/README.md)). Il prototipo Rev A è
-montato: al banco sono verificate le alimentazioni, l'enumerazione del hub senza firmware e
-il collegamento al MCU. Firmware ([firmware/README.md](firmware/README.md)) e libreria
-Python con CLI ([host/README.md](host/README.md)) sono scritti secondo D96–D101 e il
-protocollo 0.1: il firmware gira sul prototipo, con hub configurato, controllo HID, console
-e aggiornamento via DFU verificati. Restano il collaudo delle singole funzioni, alcune
-saldature del MCU da sistemare, il dimensionamento della scarica e le verifiche elettriche.
+montato e funziona: corretti alcuni difetti di saldatura, nessuna modifica al PCB.
+
+Firmware ([firmware/README.md](firmware/README.md)) e libreria Python con CLI
+([host/README.md](host/README.md)) sono scritti secondo D96–D101 e il protocollo 0.1. Sul
+prototipo sono verificati hub configurato via SMBus, aggiornamento via DFU attraverso il
+hub, le quattro porte (accensione, spegnimento, ciclo, enumerazione di un dispositivo),
+relè, LED, pulsanti, default in flash, eventi e watchdog. Restano le misure con strumenti:
+durata della scarica e del ciclo, sfasamento delle accensioni, guasti reali e ritorno di
+alimentazione (D98), tempi I²C, corrente dei LED, transitori al reset e in DFU. Dopo le misure
+il protocollo passerà alla versione 1.0.

@@ -15,8 +15,9 @@ Servono 37 segnali funzionali, inclusi i due bus I²C; restano quattro GPIO libe
 ai due pin riservati DBCC. [Pinout](pinout-mcu.md).
 
 All’avvio del firmware le quattro porte sono abilitate di fabbrica, con accensioni
-sfalsate, salvo default diversi salvati (D74). Reset e bootloader restano da verificare
-elettricamente sul prototipo.
+sfalsate, salvo default diversi salvati (D74). Sul prototipo sono verificati il DFU con
+flash vuota e da firmware, e il reset del MCU senza reset del hub. Restano da misurare i
+transitori di porte e relè durante reset e DFU.
 
 ## Schema a blocchi funzionale
 
@@ -265,8 +266,9 @@ Dettagli verificati sul datasheet (DS00001598C) e sull'errata (DS80000628A):
   Procedura in [pinout-mcu.md](pinout-mcu.md).
 - **Avvio senza firmware e DFU (D34).** I pin del MCU sono scelti in modo che con il bootloader ST
   (AN2606) il hub parta con i default, veda VBUS e LOCAL_PWR corretti, e relè e porte restino a
-  riposo: dettaglio in [pinout-mcu.md](pinout-mcu.md). Non è ancora dimostrato: è la prima prova da
-  fare sul prototipo (DFU con flash vuota e dopo `ENTER_BOOTLOADER`).
+  riposo: dettaglio in [pinout-mcu.md](pinout-mcu.md). Verificato sul prototipo: DFU con flash
+  vuota attraverso il hub e dopo `ENTER_BOOTLOADER`, con il hub che resta acceso e configurato;
+  lo stato di porte e relè durante il DFU va ancora misurato.
 - **VBUS_DET** dalla VBUS upstream con partitore 100 k / 100 k, letto anche dal MCU (PB2, ADC).
   È il circuito raccomandato dalla USB2517 Hardware Design Checklist di Microchip (sezione 5.1):
   con l'alimentatore staccato e il PC collegato il nodo è a ~2,5 V con hub e MCU spenti, e i

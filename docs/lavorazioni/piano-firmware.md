@@ -9,90 +9,65 @@ protocollo, pinout, decisioni D96–D101); in caso di differenze prevalgono quel
 Il codice degli incrementi 1–10 è scritto in `firmware/` e `host/`; la logica indipendente
 dall'hardware supera i test su PC. Sul prototipo Rev A, collegato via USB e programmato via
 DFU, sono state fatte le prove possibili senza strumenti, dalla console sulla seriale
-virtuale e dalla libreria Python.
+virtuale e dalla libreria Python. La versione provata comprende le correzioni della
+revisione del codice (banco flash, sequenza dell'ADC, variabili persistenti fuori dalla RAM
+del bootloader, coda dei report, sorveglianza del reset del hub, recupero del bus I²C).
 
-Verificato sulla scheda:
+| Incremento | Verificato sulla scheda | Resta da verificare |
+|---|---|---|
+| 1. Scheletro e avvio sicuro | MCU riconosciuto dalla sonda SWD su J4; avvio, console sulla CDC, log di avvio conservato | programmazione via SWD; console sulla UART di J9; EN e relè a riposo durante il reset, all'oscilloscopio |
+| 2. GPIO della scheda | sei LED, cinque pulsanti senza rimbalzi, scatto del relè, VBUS sui test point TP11–TP14 | — |
+| 3. Hub USB2517 | configurazione SMBus con VID/PID e stringhe del progetto; quattro porte esterne più il dispositivo di controllo; un reset del MCU non resetta il hub; `hub reset` | porta del MCU non rimovibile nel descrittore; ripartenza dopo un reset del hub da U12 |
+| 4. USB del MCU | composito HID + CDC su macOS, console sulla seriale virtuale, LED_HOST | LED_HOST con bus sospeso |
+| 5. UCS2114 | U4 e U5 identificati; scarica automatica 400 ms e maschera di ALERT# scritte e rilette; limite 2,67 A dallo strap | rampa di scarica con carico capacitivo; cause dei guasti con sovraccarico e sorgente esterna; punti aperti di D98 |
+| 6. Logica delle porte | accensione, spegnimento e ciclo sulle quattro porte; chiavetta USB che enumera, sparisce e ricompare; accensioni sfalsate all'avvio | sfasamento e inrush misurati; corto su una porta con blocco, LED lampeggiante e riarmo |
+| 7. Relè | comando e impulso dalla CLI e dai test, evento con impulso da 200 ms; continuità fra le boccole che si interrompe allo scatto; LED acceso a linea staccata (D90) | impulso misurato sui contatti; relè a riposo in DFU |
+| 8. Protocollo HID e libreria | `info`, `status`, porte, relè, default, `REBOOT` dalla CLI, errori sui parametri, eventi di porta e relè, ciclo che prosegue a programma chiuso; sei test `pytest -m board` | eventi di guasto |
+| 9. Default in flash | salvataggi ripetuti e rilettura dopo il riavvio | record corrotto con ritorno ai default di fabbrica |
+| 10. Funzioni di sistema | DFU con flash vuota e da firmware, riprogrammazione senza sonda, ritorno al firmware dopo il "leave" di dfu-util; `REBOOT`; watchdog con `hang` (riavvio dopo circa 2,5 s, hub non resettato, porte che ripartono sfalsate); VBUS_DET letto dal MCU uguale alla misura col multimetro entro lo 0,2 % (vedi sotto) | evento `POWER_CHANGED` da EFUSE_FLT_N |
+| 11. Validazione e documenti | — | tutto (vedi sotto) |
 
-- DFU con flash vuota attraverso il hub; ingresso nel bootloader da firmware (`dfu`) con il
-  hub che resta acceso e configurato; riprogrammazione senza sonda.
-- Avvio dopo il "leave" di dfu-util: il bootloader salta al firmware senza reset, lasciando
-  vettori, interrupt e clock propri; il firmware lo riconosce e si riavvia da solo.
-- Sequenza di reset e configurazione SMBus del hub: enumera con VID/PID e stringhe del
-  progetto; il MCU compare sulla porta 6 come dispositivo composito HID + CDC su macOS; un
-  reset software del MCU non resetta il hub.
-- Controller U4 (porte 1-2) su I2C1: identificato, scarica automatica 400 ms e maschera di
-  ALERT# scritte e rilette, limite 2,67 A dallo strap.
-- Protocollo HID con la CLI: `info`, `status`, ciclo temporizzato di una porta, impulso del
-  relè, default, errori sui parametri.
+Dopo il "leave" di dfu-util il bootloader salta al firmware senza reset, lasciando vettori,
+interrupt e clock propri: il firmware lo riconosce e si riavvia da solo.
 
-- Dopo la ripassata delle saldature di U3: FAULT_P1 (PB0) ed EFUSE_FLT_N (PB1) regolari, la
-  porta 1 resta accesa e la segnalazione di guasto ingresso è rientrata. Tutti e sei i test
-  `pytest -m board` passano: accensione e spegnimento delle quattro porte, ciclo da 1 s
-  eseguito dal MCU, accensioni sfalsate, impulso del relè, default.
-- Record dei default in flash: salvataggi ripetuti e rilettura dopo il riavvio; `REBOOT`
-  da PC; eventi di porta e relè ricevuti con i tempi attesi (impulso da 200 ms, ciclo da
-  600 ms).
-- La versione provata comprende le correzioni della revisione del codice (banco flash,
-  sequenza dell'ADC, variabili persistenti fuori dalla RAM del bootloader, coda dei report,
-  sorveglianza del reset del hub, recupero del bus I²C).
+VBUS_DET, misurato col multimetro con il PC collegato e la lettura del MCU stabile:
 
-- Dopo la seconda ripassata (pin 23): I2C2_SDA regolare, controller U5 (porte 3-4)
-  identificato e configurato come U4. Nessuna anomalia di saldatura nota resta aperta.
+| Grandezza | Valore |
+|---|---|
+| VBUS upstream (R22 lato J2) | 5,281 V |
+| nodo R22/R23 (ingresso ADC) | 2,631 V, rapporto 0,498 |
+| +3V3 (TP3, riferimento dell'ADC) | 3,311 V |
+| lettura del MCU (`status`) | 5271 mV |
 
-Osservazioni al banco (LED, pulsanti, relè, VBUS):
+L'errore complessivo è di −10 mV. Lo scarto fra il rapporto nominale e quello misurato
+(−0,4 %) rientra nella tolleranza delle resistenze ed è compensato in parte dal riferimento
+dell'ADC, che il firmware assume a 3,300 V. Non serve una correzione con VREFINT.
 
-- LED: i quattro di porta, quello del relè e quello di host funzionano; il LED della porta
-  1 non si accendeva per la saldatura del pin 16 di U3 (PA5), poi ripassato.
-- Pulsanti: cinque su cinque, una pressione contata per ogni pressione, senza rimbalzi.
-- Relè: la continuità fra le boccole si interrompe allo scatto; LED acceso a linea staccata,
-  come da D90.
-- VBUS_DET: 5,1–5,3 V dopo la ripassata di U3 (il pin 21 era fra quelli mal saldati).
-- Porta 4: 5 V accesa, 0 V spenta.
+### Anomalie hardware
 
-Anomalie hardware sui controller delle porte, tutte risolte con ripassate ad aria calda
-di U4 e U5 (nel PCB le reti sono corrette):
+Tutte dovute a saldature, risolte con ripassate ad aria calda; nel PCB le reti sono corrette.
 
 | Componente | Pin | Sintomo | Come è stato individuato |
 |---|---|---|---|
+| U3 (MCU) | 16 (PA5), 21 (PB2), 23 (I2C2_SDA), oltre a quelli di FAULT_P1 (PB0) ed EFUSE_FLT_N (PB1) | LED della porta 1 spento; VBUS_DET errato; U5 irraggiungibile su I2C2; porta 1 che non restava accesa e guasto d'ingresso segnalato | — |
 | U4 e U5 | 1, PWR_EN1 | porte 1 e 3 sempre alimentate | rete EN bassa lato MCU, ma enable letto alto dal controller; con PIN_IGN (13h) il canale si spegneva |
 | U4 | 15, PWR_EN2 | porta 2 mai alimentata | enable mai visto nel registro 0Fh; con PWR_EN2S (11h) scritto via I²C TP12 saliva a 5 V |
 | U5 | 9 e 10, VS del canale 2 | porta 4 mai alimentata dopo una ripassata | enable visto, VS_LOW fisso nel registro 04h; sparito dopo la riparazione |
-
-Dopo le riparazioni entrambi i controller vedono i due enable, nessuna segnalazione
-residua, e i sei test `pytest -m board` passano.
-
-Prova con una chiavetta USB: enumera su tutte e quattro le porte (5 V a porta accesa e
-0 V a porta spenta sui test point TP11–TP14). Sulla porta 4 i dati non passavano, senza
-alcun tentativo di collegamento visto dal hub, finché non sono stati ripassati il
-connettore J401 e l'interruttore dati U401. Dopo la riparazione la chiavetta scompare dal
-Mac allo spegnimento della porta e ricompare alla riaccensione, sia con comandi separati
-sia con `CYCLE_PORT` da 1 s inviato dalla CLI. Il hub si presenta al Mac con cinque porte:
-le quattro esterne e, sulla quinta, il dispositivo di controllo (la porta 6 fisica
-rinumerata dopo la disabilitazione di DS5 e DS7).
-
-Watchdog: con il comando `hang` della console, che blocca il ciclo principale, il MCU si
-riavvia dopo circa 2,5 s con causa di reset "watchdog"; il hub non viene resettato e le
-quattro porte ripartono sfalsate secondo i default.
+| J401 e U401 | — | sulla porta 4 i dati non passavano, nessun tentativo di collegamento visto dal hub | VBUS presente sul test point, chiavetta che enumera sulle altre porte |
 
 Nota sui registri dell'UCS2114: con entrambi gli enable bassi il controller dorme e i
 registri di stato (0Fh, 10h, 13h) si leggono con valori diversi da quelli a controller
 sveglio; non vanno interpretati in quella condizione.
 
-Punti aperti dalle prove:
+### Punti aperti
 
 - **Guasto generico delle porte 1 e 2 all'accensione.** Visto una sola volta, alla prima
   accensione dopo la ripassata del pin 23; non riprodotto al ciclo di alimentazione
   successivo (log di avvio regolare, quattro porte accese), né dopo reset software o
   `hub reset`. Causa non determinata: se si ripresenta, il comando `log` mostra la maschera
   di ALERT# e i registri di stato letti al momento del guasto.
-- VBUS_DET legge 5,5–5,6 V con il PC collegato: da confrontare con un multimetro, il valore
-  reale atteso è intorno a 5 V.
-
-Ancora da verificare al banco, perché richiedono strumenti o l'osservazione della scheda:
-LED e pulsanti, VBUS e scarica sui test point, relè sui contatti, accensione sfalsata,
-guasti reali (corto, sorgente esterna) e comportamento di ALERT# mascherato (D98), numero
-di porte e porta non rimovibile nel descrittore del hub, watchdog, default in flash, UART
-di J9.
+- Le misure dell'incremento 11 e le verifiche rimaste nella tabella sopra richiedono strumenti
+  (oscilloscopio, carico elettronico, alimentatore esterno) o un guasto provocato.
 
 ## Punto di partenza
 

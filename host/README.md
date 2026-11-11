@@ -3,14 +3,21 @@
 Lato PC, in Python: libreria `devhub` e comando `devhub`, sopra `hidapi`. Protocollo in
 [../docs/protocollo-controllo.md](../docs/protocollo-controllo.md), versione 0.1.
 
-**Stato:** libreria e CLI di base provate con un trasporto simulato e sul prototipo Rev A.
+**Stato:** libreria e CLI coprono tutti i comandi e gli eventi del protocollo 0.1. Sono
+provate con un trasporto simulato e sul prototipo Rev A, dove passano i test `pytest -m board`.
 
 ## Installazione
+
+Dalla cartella `host/`:
 
 ```
 python3 -m venv .venv
 .venv/bin/pip install -e ".[test]"
 ```
+
+Il comando `devhub` viene installato nel venv: si usa come `.venv/bin/devhub` oppure come
+`devhub` dopo `source .venv/bin/activate`. Senza installare il pacchetto, sempre da `host/`,
+funziona `.venv/bin/python -m devhub`.
 
 ## Libreria
 

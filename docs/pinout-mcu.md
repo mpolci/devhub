@@ -144,6 +144,7 @@ bus fermo durante il rilascio del reset. Non resettare il hub nel normale salto 
 o al ritorno, per preservare il collegamento USB interno.
 
 PB2 mantiene il rilevamento upstream su pin FT: verificare il partitore alla massima VBUS
-upstream e con VDD = 0; nessun pull-up interno. USB usa HSI48 + CRS, senza HSE. Restano da
-verificare sul prototipo i transitori di avvio, la scarica con sorgente esterna, l'ingresso
-DFU, la corrente dei LED e i tempi I²C.
+upstream e con VDD = 0; nessun pull-up interno. USB usa HSI48 + CRS, senza HSE. Sul
+prototipo funzionano entrambi i bus I²C, l'USB del MCU, l'ingresso nel DFU (con flash vuota e
+da firmware) e il ritorno al firmware. Restano da verificare i transitori di avvio, la scarica
+con sorgente esterna, la corrente dei LED, i tempi I²C e la UART di J9.
