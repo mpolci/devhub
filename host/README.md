@@ -121,6 +121,21 @@ esecuzione gli altri comandi non riescono ad aprirlo.
 `-s <seriale>` sceglie il dispositivo. Codice di uscita 0 se tutto va bene, 1 su errore,
 2 quando `status` trova una porta bloccata per guasto.
 
+## Skill per agenti AI
+
+`skill-devhub/` contiene una skill in formato Agent Skills (`SKILL.md`) che spiega a un agente AI
+come comandare il devhub con la CLI e la libreria (D106): come si comportano le porte e la linea
+del relè, il power cycle con attesa della nuova enumerazione, guasti e avvisi, lettura dello
+stato. Per installarla per Claude Code basta un link:
+
+```
+ln -s "$PWD/host/skill-devhub" ~/.claude/skills/devhub
+```
+
+L'agente usa il `devhub` del PATH oppure `host/bin/devhub` del repository che contiene la skill.
+Può accendere, spegnere e ciclare le porte e comandare il relè senza chiedere; chiede conferma
+prima di cambiare impostazioni, salvarle in flash, resettare il hub o riavviare il devhub.
+
 ## Test
 
 ```
